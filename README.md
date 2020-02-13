@@ -24,19 +24,13 @@ pip install -r requirements.txt
 
 ## Quickstart
 
-Once the dependencies are installed, you can start the api with the following command:
+To run both the server and client, you can run the following command:
 
 ```bash
-npm run production
+npm run dev
 ```
 
-That will start the server on port 7082. To run the development server with hot module reloading, run:
-
-```bash
-npm run start
-```
-
-That will start the webpack dev server on port 7081.
+This will run the server on port 7082 and the client on 7081
 
 ## Tests
 

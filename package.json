@@ -19,11 +19,13 @@
     "lint-py": "pylint server/app.py",
     "lint": "npm run lint-js && npm run lint-py",
     "jest": "jest",
-    "test": "npm run build && npm run lint && npm run jest && pytest"
+    "test": "npm run build && npm run lint && npm run jest && pytest",
+    "dev": "concurrently \"npm run production\" \"npm run start\""
   },
   "dependencies": {
     "@babel/core": "^7.5.5",
     "babel-polyfill": "^6.26.0",
+    "concurrently": "^5.1.0",
     "connected-react-router": "^6.5.2",
     "history": "^4.7.2",
     "isomorphic-fetch": "^2.2.1",
