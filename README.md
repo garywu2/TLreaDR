@@ -30,7 +30,7 @@ To run both the server and client, you can run the following command:
 npm run dev
 ```
 
-This will run the server on port 7082 and the client on 7081
+This will run the server on port 5000 (defaulted by debug mode) and the client on 7081
 
 ## Tests
 
