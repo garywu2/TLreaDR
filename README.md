@@ -40,7 +40,6 @@ To do this follow these steps:
 ```
 SECRET_KEY='the secret key you generated in step 2'
 SQLALCHEMY_DATABASE_URI='postgresql://{username}:{password}@{JDBC_URL}/postgres
-FLASK_APP=server/app.py
 ```
 
 ## Quickstart
