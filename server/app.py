@@ -1,33 +1,28 @@
-'''server/app.py - main api app declaration'''
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, Blueprint
 from flask_cors import CORS
 
-'''Main wrapper for app creation'''
-app = Flask(__name__, static_folder='../build')
-CORS(app)
+from .config import Config
+from server.models import db
+from server.api.restplus import api
 
-##
-# API routes
-##
+from server.controllers.user_controller import ns as user_ns
 
-@app.route('/api/items')
-def items():
-  '''Sample API route for data'''
-  return jsonify([{'title': 'A'}, {'title': 'B'}])
 
-##
-# View route
-##
+def create_app():
+    """Main wrapper for app creation"""
+    app = Flask(__name__, static_folder='../build')
+    app.config.from_object(Config)
+    CORS(app)
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path):
-  '''Return index.html for all non-api routes'''
-  #pylint: disable=unused-argument
-  return send_from_directory(app.static_folder, 'index.html')
+    '''Initialize api and blueprint'''
+    blueprint = Blueprint('api', __name__, url_prefix='/api')
+    api.init_app(blueprint)
+    app.register_blueprint(blueprint)
 
-##
-# Debug Mode (updates page after each save)
-##
-app.debug = True
-app.run()
+    '''Loading api namespaces'''
+    api.add_namespace(user_ns)
+
+    '''Initialize models'''
+    db.init_app(app)
+
+    return app
