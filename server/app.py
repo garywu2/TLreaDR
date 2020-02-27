@@ -1,32 +1,23 @@
-'''server/app.py - main api app declaration'''
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, Blueprint
 from flask_cors import CORS
 
 from .config import Config
+from server.database import db
+from server.api.restplus import api
 
-'''Main wrapper for app creation'''
 app = Flask(__name__, static_folder='../build')
-app.config.from_object(Config)
-CORS(app)
 
+def initialize_app(app):
+    '''Main wrapper for app creation'''
+    app.config.from_object(Config)
+    CORS(app)
 
-##
-# API routes
-##
+    '''Initialize api and blueprint'''
+    blueprint = Blueprint('api', __name__, url_prefix='/api')
+    api.init_app(blueprint)
+    app.register_blueprint(blueprint)
 
-@app.route('/api/items')
-def items():
-    '''Sample API route for data'''
-    return jsonify([{'title': 'A'}, {'title': 'B'}])
+    '''Initialize database'''
+    db.init_app(app)
 
-
-##
-# View route
-##
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path):
-    '''Return index.html for all non-api routes'''
-    # pylint: disable=unused-argument
-    return send_from_directory(app.static_folder, 'index.html')
+initialize_app(app)
