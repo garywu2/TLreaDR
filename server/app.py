@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory, Blueprint
+from flask import Flask, Blueprint
 from flask_cors import CORS
 
 from .config import Config
