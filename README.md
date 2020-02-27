@@ -22,6 +22,27 @@ npm install --no-optional
 pip install -r requirements.txt
 ```
 
+Additionally, you need a .env file to store the private credentials used to connect to the database.
+
+To do this follow these steps:
+
+1. Create a **.env** file in the root project directory
+2. Generate a SECRET_KEY using the python shell
+
+```
+>>> import os
+>>> os.urandom(24)
+'\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8'
+```
+
+3. Add the following lines into the .env file
+
+```
+SECRET_KEY='the secret key you generated in step 2'
+SQLALCHEMY_DATABASE_URI='postgresql://{username}:{password}@{JDBC_URL}/postgres
+FLASK_APP=server/app.py
+```
+
 ## Quickstart
 
 To run both the server and client, you can run the following command:
