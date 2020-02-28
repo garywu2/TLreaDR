@@ -2,19 +2,23 @@
 # For more information take a look at:
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/#simple-relationships
 
+from sqlalchemy.dialects.postgresql import UUID
+from uuid import uuid4
 from datetime import datetime
 
 from . import db
 
 
 class Post(db.Model):
-    post_id = db.Column(db.Integer, primary_key=True)
+    post_uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     title = db.Column(db.String(80))
     body = db.Column(db.Text)
     pub_date = db.Column(db.DateTime)
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'))
     category = db.relationship('Category', backref=db.backref('posts', lazy='dynamic'))
+
+    author_uuid = db.Column(UUID(as_uuid=True), nullable=False)
 
     def __init__(self, title, body, category):
         self.title = title
