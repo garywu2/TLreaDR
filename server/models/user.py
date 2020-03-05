@@ -1,3 +1,6 @@
+from uuid import uuid4
+
+from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db
@@ -5,7 +8,7 @@ from . import db
 
 class User(db.Model):
     """ User Model for storing user related details """
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     username = db.Column(db.String(64), unique=True)
     email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(128))
