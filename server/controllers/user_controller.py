@@ -1,5 +1,6 @@
 from flask_restplus import Resource, fields, reqparse
 from flask import request, make_response
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from server.api.restplus import api
 from server.models.user import User
@@ -41,9 +42,9 @@ class AddUser(Resource):
         """
         data = request.args
 
-        email = data['email']
-        username = data['username']
-        password = data['password']
+        email = data.get('email')
+        username = data.get('username')
+        password = data.get('password')
 
         try:
             newUser = User(username, email, password)
@@ -88,8 +89,9 @@ class UserSearch(Resource):
         Gets a specified user
         """
         try:
-            results = User.query.filter_by(username=username).first()
-            return results
+            queriedUser = User.query.filter_by(username=username).first()
+            return queriedUser
+
         except Exception as e:
             return make_response({"message": str(e)}, 500)
 
@@ -105,25 +107,24 @@ class UserSearch(Resource):
         """
         data = request.args
 
-        new_email = data['new_email']
-        new_username = data['new_username']
-        new_password = data['new_password']
-
         try:
             userToBeEditted = User.query.filter_by(username=username).first()
 
-            if new_email:
-                userToBeEditted.email = data['new_email']
-            if new_username:
-                userToBeEditted.username = data['new_username']
-            if new_password:
-                userToBeEditted.password = data['new_password']
+            if userToBeEditted:
+                if data.get('new_email'):
+                    userToBeEditted.email = data.get('new_email')
+                if data.get('new_username'):
+                    userToBeEditted.username = data.get('new_username')
+                if data.get('new_password'):
+                    userToBeEditted.password = generate_password_hash(data.get('new_password'))
+            else:
+                return make_response({'message': 'user specified not found in database'}, 201)
 
             db.session.commit()
         except Exception as e:
             return make_response({"message": str(e)}, 500)
 
-        return make_response({'message': 'user has been editted successfully.'}, 201)
+        return make_response({'message': 'user has been edited successfully.'}, 201)
 
 
 
