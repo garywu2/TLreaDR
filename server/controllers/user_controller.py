@@ -64,7 +64,7 @@ class DeleteUser(Resource):
     user_delete_parser.add_argument('username', required=True, type=str, help='username of user')
 
     @ns.expect(user_delete_parser)
-    def post(self):
+    def delete(self):
         """
         Deletes a user
         """
