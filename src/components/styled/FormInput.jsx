@@ -12,7 +12,7 @@ export default props => {
     handleInputChange && handleInputChange(e.target.value);
 
   return (
-    <div>
+    <div style={{margin: "10px 0"}}>
       <div style={{ marginLeft: "5px" }}>
         <label className={props}>{label}</label>
       </div>
