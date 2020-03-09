@@ -38,7 +38,8 @@
     "redux": "^4.0.4",
     "redux-freeze": "^0.1.5",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "styled-components": "^5.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.5.5",
