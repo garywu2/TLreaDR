@@ -48,8 +48,8 @@ class AddUser(Resource):
         password = data.get('password')
 
         try:
-            newUser = User(username, email, password)
-            db.session.add(newUser)
+            new_user = User(username, email, password)
+            db.session.add(new_user)
             db.session.commit()
         except Exception as e:
             return {"message": str(e)}, 500
@@ -73,9 +73,9 @@ class DeleteUser(Resource):
         username = data.get('username')
 
         try:
-            userToBeDeleted = User.query.filter_by(username=username).first()
-            if userToBeDeleted:
-                db.session.delete(userToBeDeleted)
+            user_to_be_deleted = User.query.filter_by(username=username).first()
+            if user_to_be_deleted:
+                db.session.delete(user_to_be_deleted)
                 db.session.commit()
             else:
                 return {'message': 'user not found.'}, 404
@@ -94,9 +94,9 @@ class UserSearch(Resource):
         Gets a specified user
         """
         try:
-            queriedUser = User.query.filter_by(username=username).first()
-            if queriedUser:
-                return marshal(queriedUser, user_dto)
+            queried_user = User.query.filter_by(username=username).first()
+            if queried_user:
+                return marshal(queried_user, user_dto)
             else:
                 return {"message": 'user not found'}, 404
 
@@ -116,15 +116,15 @@ class UserSearch(Resource):
         data = request.args
 
         try:
-            userToBeEditted = User.query.filter_by(username=username).first()
+            user_to_be_edited = User.query.filter_by(username=username).first()
 
-            if userToBeEditted:
+            if user_to_be_edited:
                 if data.get('new_email'):
-                    userToBeEditted.email = data.get('new_email')
+                    user_to_be_edited.email = data.get('new_email')
                 if data.get('new_username'):
-                    userToBeEditted.username = data.get('new_username')
+                    user_to_be_edited.username = data.get('new_username')
                 if data.get('new_password'):
-                    userToBeEditted.password_hash = generate_password_hash(data.get('new_password'))
+                    user_to_be_edited.password_hash = generate_password_hash(data.get('new_password'))
             else:
                 return {'message': 'user specified not found in database'}, 201
 
@@ -155,10 +155,10 @@ class UserLogin(Resource):
         input_password = data.get('password')
 
         try:
-            queriedUser = User.query.filter_by(username=input_username).first()
-            if queriedUser:
-                if check_password_hash(queriedUser.password_hash, input_password):
-                    return marshal(queriedUser, user_dto)
+            queried_user = User.query.filter_by(username=input_username).first()
+            if queried_user:
+                if check_password_hash(queried_user.password_hash, input_password):
+                    return marshal(queried_user, user_dto)
                 else:
                     return {'message': 'invalid password'}, 404
             else:
