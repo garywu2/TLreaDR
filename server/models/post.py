@@ -14,6 +14,7 @@ class Post(db.Model):
     title = db.Column(db.String(80))
     body = db.Column(db.Text)
     pub_date = db.Column(db.DateTime)
+    image_link = db.Column(db.String(2083))
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.category_id'))
     category = db.relationship('Category', backref=db.backref('posts', lazy='dynamic'))
