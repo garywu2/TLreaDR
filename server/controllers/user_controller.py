@@ -69,7 +69,7 @@ class DeleteUser(Resource):
         """
         data = request.args
 
-        username = data['username']
+        username = data.get('username')
 
         try:
             userToBeDeleted = User.query.filter_by(username=username).first()
@@ -116,7 +116,7 @@ class UserSearch(Resource):
                 if data.get('new_username'):
                     userToBeEditted.username = data.get('new_username')
                 if data.get('new_password'):
-                    userToBeEditted.password = generate_password_hash(data.get('new_password'))
+                    userToBeEditted.password_hash = generate_password_hash(data.get('new_password'))
             else:
                 return make_response({'message': 'user specified not found in database'}, 201)
 
