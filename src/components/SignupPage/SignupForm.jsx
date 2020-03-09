@@ -23,6 +23,7 @@ const Row = styled.div`
 export default function SignupForm({handleSubmit}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const theme = useContext(ThemeContext);
 
   return (
@@ -46,8 +47,8 @@ export default function SignupForm({handleSubmit}) {
       <FormInput
         hasError={false}
         label="Email address"
-        handleInputChange={setUsername}
-        value={username}
+        handleInputChange={setEmail}
+        value={email}
         autocomplete="email"
       />
       <FormButton theme={theme}>Sign Up</FormButton>
