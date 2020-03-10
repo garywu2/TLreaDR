@@ -1,9 +1,8 @@
 from flask_restplus import Resource, fields, reqparse, marshal
-from flask import request, make_response
 
 from server.api.restplus import api
-from server.models.category import Category
 from server.models import db
+from server.models.category import Category
 
 ns = api.namespace('categories', description='Operations related to categories')
 
@@ -13,7 +12,8 @@ category_dto = api.model('category', {
 })
 
 category_parser = reqparse.RequestParser()
-category_parser.add_argument('name', required=True, type=str, help='name of category')
+category_parser.add_argument('name', required=True, type=str, help='name of category', location='json')
+
 
 @ns.route('/')
 class CategoryList(Resource):
@@ -53,11 +53,11 @@ class AddCategory(Resource):
         """
         Adds a new category
         """
-        data = request.args
+        args = category_parser.parse_args()
 
         try:
-            newCategory = Category(data.get('name'))
-            db.session.add(newCategory)
+            new_category = Category(args['name'])
+            db.session.add(new_category)
             db.session.commit()
         except Exception as e:
             return {"message": str(e)}, 500
@@ -73,14 +73,14 @@ class DeleteCategory(Resource):
         """
         Deletes a user
         """
-        data = request.args
+        args = category_parser.parse_args()
 
-        categoryToBeDeletedName = data.get('name')
+        category_to_be_deleted_name = args['name']
 
         try:
-            categoryToBeDeleted = Category.query.filter_by(name=categoryToBeDeletedName).first()
-            if categoryToBeDeleted:
-                db.session.delete(categoryToBeDeleted)
+            category_to_be_deleted = Category.query.filter_by(name=category_to_be_deleted_name).first()
+            if category_to_be_deleted:
+                db.session.delete(category_to_be_deleted)
                 db.session.commit()
             else:
                 return {'message': 'category not found.'}, 404
