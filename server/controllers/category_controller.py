@@ -1,4 +1,4 @@
-from flask_restplus import Resource, fields, reqparse
+from flask_restplus import Resource, fields, reqparse, marshal
 from flask import request, make_response
 
 from server.api.restplus import api
@@ -24,6 +24,25 @@ class CategoryList(Resource):
         """
         results = Category.query.all()
         return results
+
+
+@ns.route('/<string:category>')
+class CategorySearch(Resource):
+    @ns.response(code=201, model=category_dto, description='Success')
+    @ns.response(code=404, description='Not Found')
+    def get(self, category):
+        """
+        Gets a specified category
+        """
+        try:
+            queried_category = Category.query.filter_by(name=category).first()
+            if queried_category:
+                return marshal(queried_category, category_dto)
+            else:
+                return {"message": 'category not found'}, 404
+
+        except Exception as e:
+            return {"message": str(e)}, 500
 
 
 @ns.route('/add')
