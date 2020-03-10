@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config/client";
-import types from "./types";
+import {FETCH_USERS, LOGIN_USER} from "./types";
 
 export const addUser = async (email, username, password) => {
   const body = { email, username, password };
@@ -27,6 +27,8 @@ export const loginUser = async (username, password) => {
   if(response.status !== 200) {
     throw "Login failed";
   }
+
+  return {type: LOGIN_USER, user: response.data}
 };
 
 export const fetchUsers = async () => {
@@ -34,7 +36,7 @@ export const fetchUsers = async () => {
   const response = await axios.get(config.endpoint + "users");
 
   return {
-    type: types.FETCH_USERS,
-    users
+    type: FETCH_USERS,
+    users: response.data
   };
 };

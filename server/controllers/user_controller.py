@@ -34,7 +34,7 @@ user_login_parser.add_argument('username', required=True, type=str, help='userna
 user_login_parser.add_argument('password', required=True, type=str, help='password of user')
 
 
-@ns.route('/')
+@ns.route('')
 class UserCollection(Resource):
     @ns.marshal_list_with(user_dto)
     def get(self):

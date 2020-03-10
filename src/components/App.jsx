@@ -11,7 +11,7 @@ export default props => {
     // check localstorage to see if user is saved
     const userFromLocalStorage = ls.get("user");
     if (userFromLocalStorage) {
-      dispatch({ action: LOGIN_USER, user: userFromLocalStorage });
+      dispatch({ type: LOGIN_USER, user: userFromLocalStorage });
     }
   }, [dispatch]);
 

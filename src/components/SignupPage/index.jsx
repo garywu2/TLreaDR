@@ -6,12 +6,13 @@ import { useHistory } from "react-router-dom";
 
 const SignupPage = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
 
   // later write code to post to API
   const handleSignup = async (email, username, password) => {
     try {
       await addUser(email, username, password);
-      await loginUser(username, password);
+      dispatch(await loginUser(username, password));
       // redirect
       history.push("/");
     } catch(error) {
