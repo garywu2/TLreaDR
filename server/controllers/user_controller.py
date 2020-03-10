@@ -1,10 +1,9 @@
 from flask_restplus import Resource, fields, reqparse, marshal
-from flask import request, make_response, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from server.api.restplus import api
-from server.models.user import User
 from server.models import db
+from server.models.user import User
 
 ns = api.namespace('users', description='Operations related to users')
 
@@ -13,6 +12,7 @@ user_dto = api.model('user', {
     'email': fields.String(required=True, description='user email address'),
     'username': fields.String(required=True, description='user username'),
 })
+
 
 @ns.route('/')
 class UserList(Resource):
@@ -33,6 +33,7 @@ user_add_parser.add_argument('email', required=True, type=str, help='email of us
 user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
 user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
 
+
 @ns.route('/add')
 class AddUser(Resource):
 
@@ -52,8 +53,10 @@ class AddUser(Resource):
 
         return {'message': 'user has been created successfully.'}, 201
 
+
 user_delete_parser = reqparse.RequestParser()
 user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
+
 
 @ns.route('/delete')
 class DeleteUser(Resource):
@@ -77,10 +80,15 @@ class DeleteUser(Resource):
 
         return {'message': 'user has been deleted successfully.'}, 201
 
+
 user_edit_parser = reqparse.RequestParser()
-user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user', location='json')
-user_edit_parser.add_argument('new_username', nullable=True, required=False, type=str, help='new username of user', location='json')
-user_edit_parser.add_argument('new_password', nullable=True, required=False, type=str, help='new password of user', location='json')
+user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user',
+                              location='json')
+user_edit_parser.add_argument('new_username', nullable=True, required=False, type=str, help='new username of user',
+                              location='json')
+user_edit_parser.add_argument('new_password', nullable=True, required=False, type=str, help='new password of user',
+                              location='json')
+
 
 @ns.route('/<string:username>')
 class UserSearch(Resource):
@@ -131,6 +139,7 @@ user_login_parser = reqparse.RequestParser()
 user_login_parser.add_argument('username', required=True, type=str, help='username of user')
 user_login_parser.add_argument('password', required=True, type=str, help='password of user')
 
+
 @ns.route('/login')
 class UserLogin(Resource):
 
@@ -155,9 +164,3 @@ class UserLogin(Resource):
 
         except Exception as e:
             return {"message": str(e)}, 404
-
-
-
-
-
-
