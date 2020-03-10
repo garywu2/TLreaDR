@@ -16,6 +16,8 @@ class Comment(db.Model):
     author_uuid = db.Column(UUID(as_uuid=True), nullable=False)
     parent_uuid = db.Column(UUID(as_uuid=True), nullable=False)
 
+    post_flag = db.Column(db.Boolean, nullable=False)
+
     def __init__(self, comment_text, author_uuid, parent_uuid):
         self.comment_text = comment_text
         self.date_submitted = datetime.utcnow()
