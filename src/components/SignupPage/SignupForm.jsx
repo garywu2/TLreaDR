@@ -26,8 +26,13 @@ export default function SignupForm({handleSubmit}) {
   const [email, setEmail] = useState("");
   const theme = useContext(ThemeContext);
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    handleSubmit(email, username, password);
+  };
+
   return (
-    <Wrapper onSubmit={handleSubmit}>
+    <Wrapper onSubmit={handleFormSubmit}>
       <FormInput
         hasError={false}
         label="Username"
