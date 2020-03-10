@@ -3,7 +3,9 @@ import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import {Link} from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'; 
+import { LOGOUT_USER } from "../actions/types";
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
@@ -18,6 +20,7 @@ const Button = styled.a`
   font-size: 18px;
   font-family: "Montserrat", "sans-serif";
   text-decoration: none;
+  cursor: pointer;
 `;
 
 const LogoImage = styled.img`
@@ -53,14 +56,21 @@ const Search = styled.div`
 `
 
 const Navbar = () => {
-  const userAccount = useSelector(state => state.user)
+  const userAccount = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const handleLogout = () => {
+      dispatch({type:LOGOUT_USER});
+      history.push('/');
+  };
 
   return (
     <React.Fragment>
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        {!userAccount ? <Button href="/sign-in">Sign In</Button> : <Button href="/logout">Log Out</Button>}
+        {!userAccount ? <Button href="/sign-in">Sign In</Button> : <Button onClick={handleLogout}>Log Out</Button>}
       </NavbarWrapper>
       <SubheaderWrapper>
         <div>
