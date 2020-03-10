@@ -14,8 +14,8 @@ user_dto = api.model('user', {
 })
 
 
-@ns.route('/')
-class UserList(Resource):
+@ns.route('/collection')
+class UserCollection(Resource):
     @ns.marshal_list_with(user_dto)
     def get(self):
         """
@@ -33,9 +33,12 @@ user_add_parser.add_argument('email', required=True, type=str, help='email of us
 user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
 user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
 
+user_delete_parser = reqparse.RequestParser()
+user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
 
-@ns.route('/add')
-class AddUser(Resource):
+
+@ns.route('/')
+class UserItem(Resource):
 
     @api.expect(user_add_parser)
     def post(self):
@@ -52,14 +55,6 @@ class AddUser(Resource):
             return {"message": str(e)}, 500
 
         return {'message': 'user has been created successfully.'}, 201
-
-
-user_delete_parser = reqparse.RequestParser()
-user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
-
-
-@ns.route('/delete')
-class DeleteUser(Resource):
 
     @ns.expect(user_delete_parser)
     def delete(self):

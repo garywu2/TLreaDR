@@ -15,8 +15,8 @@ category_parser = reqparse.RequestParser()
 category_parser.add_argument('name', required=True, type=str, help='name of category', location='json')
 
 
-@ns.route('/')
-class CategoryList(Resource):
+@ns.route('/collection')
+class CategoryCollection(Resource):
     @ns.marshal_list_with(category_dto)
     def get(self):
         """
@@ -45,8 +45,8 @@ class CategorySearch(Resource):
             return {"message": str(e)}, 500
 
 
-@ns.route('/add')
-class AddCategory(Resource):
+@ns.route('/')
+class CategoryItem(Resource):
 
     @api.expect(category_parser)
     def post(self):
@@ -63,10 +63,6 @@ class AddCategory(Resource):
             return {"message": str(e)}, 500
 
         return {'message': 'category has been created successfully.'}, 201
-
-
-@ns.route('/delete')
-class DeleteCategory(Resource):
 
     @ns.expect(category_parser)
     def delete(self):
