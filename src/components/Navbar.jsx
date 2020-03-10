@@ -53,14 +53,14 @@ const Search = styled.div`
 `
 
 const Navbar = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const userAccount = useSelector(state => state.user)
 
   return (
     <React.Fragment>
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        {!loggedIn ? <Button href="/sign-in">Sign In</Button> : <Button href="/logout">Log Out</Button>}
+        {!userAccount ? <Button href="/sign-in">Sign In</Button> : <Button href="/logout">Log Out</Button>}
       </NavbarWrapper>
       <SubheaderWrapper>
         <div>
