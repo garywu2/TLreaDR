@@ -88,5 +88,6 @@
   },
   "jest": {
     "testEnvironment": "node"
-  }
+  },
+  "proxy": "http://localhost:7082"
 }
