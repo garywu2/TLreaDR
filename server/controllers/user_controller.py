@@ -13,8 +13,28 @@ user_dto = api.model('user', {
     'username': fields.String(required=True, description='user username'),
 })
 
+user_add_parser = reqparse.RequestParser()
+user_add_parser.add_argument('email', required=True, type=str, help='email of user', location='json')
+user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
+user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
 
-@ns.route('/collection')
+user_delete_parser = reqparse.RequestParser()
+user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
+
+user_edit_parser = reqparse.RequestParser()
+user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user',
+                              location='json')
+user_edit_parser.add_argument('new_username', nullable=True, required=False, type=str, help='new username of user',
+                              location='json')
+user_edit_parser.add_argument('new_password', nullable=True, required=False, type=str, help='new password of user',
+                              location='json')
+
+user_login_parser = reqparse.RequestParser()
+user_login_parser.add_argument('username', required=True, type=str, help='username of user')
+user_login_parser.add_argument('password', required=True, type=str, help='password of user')
+
+
+@ns.route('/')
 class UserCollection(Resource):
     @ns.marshal_list_with(user_dto)
     def get(self):
@@ -26,19 +46,6 @@ class UserCollection(Resource):
             return results
         except Exception as e:
             return {"message": str(e)}, 500
-
-
-user_add_parser = reqparse.RequestParser()
-user_add_parser.add_argument('email', required=True, type=str, help='email of user', location='json')
-user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
-user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
-
-user_delete_parser = reqparse.RequestParser()
-user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
-
-
-@ns.route('/')
-class UserItem(Resource):
 
     @api.expect(user_add_parser)
     def post(self):
@@ -56,37 +63,9 @@ class UserItem(Resource):
 
         return {'message': 'user has been created successfully.'}, 201
 
-    @ns.expect(user_delete_parser)
-    def delete(self):
-        """
-        Deletes a user
-        """
-        args = user_delete_parser.parse_args()
-
-        try:
-            user_to_be_deleted = User.query.filter_by(username=args['username']).first()
-            if user_to_be_deleted:
-                db.session.delete(user_to_be_deleted)
-                db.session.commit()
-            else:
-                return {'message': 'user not found.'}, 404
-        except Exception as e:
-            return {"message": str(e)}, 500
-
-        return {'message': 'user has been deleted successfully.'}, 201
-
-
-user_edit_parser = reqparse.RequestParser()
-user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user',
-                              location='json')
-user_edit_parser.add_argument('new_username', nullable=True, required=False, type=str, help='new username of user',
-                              location='json')
-user_edit_parser.add_argument('new_password', nullable=True, required=False, type=str, help='new password of user',
-                              location='json')
-
 
 @ns.route('/<string:username>')
-class UserSearch(Resource):
+class UserItem(Resource):
     @ns.response(code=201, model=user_dto, description='Success')
     @ns.response(code=404, description='Not Found')
     def get(self, username):
@@ -129,10 +108,24 @@ class UserSearch(Resource):
 
         return {'message': 'user has been edited successfully.'}, 201
 
+    @ns.expect(user_delete_parser)
+    def delete(self):
+        """
+        Deletes a user
+        """
+        args = user_delete_parser.parse_args()
 
-user_login_parser = reqparse.RequestParser()
-user_login_parser.add_argument('username', required=True, type=str, help='username of user')
-user_login_parser.add_argument('password', required=True, type=str, help='password of user')
+        try:
+            user_to_be_deleted = User.query.filter_by(username=args['username']).first()
+            if user_to_be_deleted:
+                db.session.delete(user_to_be_deleted)
+                db.session.commit()
+            else:
+                return {'message': 'user not found.'}, 404
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+        return {'message': 'user has been deleted successfully.'}, 201
 
 
 @ns.route('/login')
