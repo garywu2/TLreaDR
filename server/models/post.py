@@ -11,9 +11,9 @@ from . import db
 
 class Post(db.Model):
     post_uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    title = db.Column(db.String(80))
-    body = db.Column(db.Text)
-    pub_date = db.Column(db.DateTime)
+    title = db.Column(db.String(80), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    pub_date = db.Column(db.DateTime, nullable=False)
     image_link = db.Column(db.String(1000))
 
     category_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey('category.category_uuid'))
@@ -21,11 +21,13 @@ class Post(db.Model):
 
     author_uuid = db.Column(UUID(as_uuid=True), nullable=False)
 
-    def __init__(self, title, body, category):
+    def __init__(self, title, body, category_uuid, author_uuid, image_link):
         self.title = title
         self.body = body
         self.pub_date = datetime.utcnow()
-        self.category = category
+        self.category_uuid = category_uuid
+        self.author_uuid = author_uuid
+        self.image_link = image_link
 
     def __repr__(self):
         return '<Post {}>'.format(self.title)
