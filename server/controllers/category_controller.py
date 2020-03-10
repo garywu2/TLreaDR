@@ -15,7 +15,7 @@ category_parser = reqparse.RequestParser()
 category_parser.add_argument('name', required=True, type=str, help='name of category', location='json')
 
 
-@ns.route('/')
+@ns.route('')
 class CategoryCollection(Resource):
     @ns.marshal_list_with(category_dto)
     def get(self):
