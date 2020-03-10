@@ -14,7 +14,7 @@
     "build": "webpack --config webpack.config.js --mode=production",
     "compress": "webpack --config webpack.config.js --mode=production",
     "production": "npm run build && npm run serve",
-    "serve": "flask run --port=7082",
+    "serve": "flask run --port=7082 --host=0.0.0.0",
     "lint-js": "eslint -c './src/config/.eslintrc.js' src/",
     "lint-py": "pylint server/app.py",
     "lint": "npm run lint-js && npm run lint-py",
