@@ -8,7 +8,7 @@ export const addUser = async (email, username, password) => {
   console.log(body);
 
   // register user to database
-  const response = await axios.post(config.endpoint + "users/add", { ...body });
+  const response = await axios.post(config.endpoint + "users", { ...body });
 
   // return true if successfully created
   if(response.status !== 201) {
