@@ -10,7 +10,7 @@
     "url": "git+https://github.com/duhaime/react-boilerplate.git"
   },
   "scripts": {
-    "start": "webpack-dev-server --port 7081 --history-api-fallback --mode=development",
+    "start": "webpack-dev-server --port 7081 --host 0.0.0.0 --history-api-fallback --mode=development",
     "build": "webpack --config webpack.config.js --mode=production",
     "compress": "webpack --config webpack.config.js --mode=production",
     "production": "npm run build && npm run serve",
