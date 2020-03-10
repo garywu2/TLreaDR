@@ -1,8 +1,9 @@
-import React from "react";
+import React , { useState } from "react";
 import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import {Link} from 'react-router-dom';
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
@@ -34,7 +35,7 @@ const CategoryButton = styled.div`
   float: left;
 `;
 
-const Anchor = styled.a`
+const PageReference = styled(Link)`
   padding: 14px 16px;
   color: white;
   text-align: center;
@@ -52,26 +53,28 @@ const Search = styled.div`
 `
 
 const Navbar = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
+
   return (
     <React.Fragment>
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        <Button href="/sign-in">Sign In</Button>
+        {!loggedIn ? <Button href="/sign-in">Sign In</Button> : <Button href="/logout">Log Out</Button>}
       </NavbarWrapper>
       <SubheaderWrapper>
         <div>
           <CategoryButton>
-            <Anchor href="/home">Home</Anchor>
+            <PageReference to="/home">Home</PageReference>
           </CategoryButton>
           <CategoryButton>
-            <Anchor href="/News">News</Anchor>
+            <PageReference to="/News">News</PageReference>
           </CategoryButton>
           <CategoryButton>
-            <Anchor href="/Sports">Sports</Anchor>
+            <PageReference to="/Sports">Sports</PageReference>
           </CategoryButton>
           <CategoryButton>
-            <Anchor href="/Lifestyle">Lifestyle</Anchor>
+            <PageReference to="/Lifestyle">Lifestyle</PageReference>
           </CategoryButton>
         </div>
         <Search>
