@@ -18,9 +18,6 @@ user_add_parser.add_argument('email', required=True, type=str, help='email of us
 user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
 user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
 
-user_delete_parser = reqparse.RequestParser()
-user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
-
 user_edit_parser = reqparse.RequestParser()
 user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user',
                               location='json')
@@ -110,15 +107,12 @@ class UserItem(Resource):
 
         return {'message': 'user has been edited successfully.'}, 201
 
-    @ns.expect(user_delete_parser)
-    def delete(self):
+    def delete(self, username):
         """
         Deletes a user
         """
-        args = user_delete_parser.parse_args()
-
         try:
-            user_to_be_deleted = User.query.filter_by(username=args['username']).first()
+            user_to_be_deleted = User.query.filter_by(username=username).first()
             if user_to_be_deleted:
                 db.session.delete(user_to_be_deleted)
                 db.session.commit()
