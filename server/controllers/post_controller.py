@@ -4,7 +4,7 @@ from server.api.restplus import api
 from server.models import db
 from server.models.post import Post
 
-ns = api.namespace('posts', description='Operations related to posts')
+ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
 post_dto = api.model('post', {
     'post_uuid': fields.String(required=True, description='post uuid'),
@@ -24,10 +24,10 @@ post_add_parser.add_argument('image_link', type=str, help='link of attached imag
 post_add_parser.add_argument('category_uuid', type=str, required=True, help='category uuid', location='json')
 post_add_parser.add_argument('author_uuid', type=str, required=True, help='author uuid', location='json')
 
-@ns.route('/')
+@ns.route('')
 class PostCollection(Resource):
     @api.expect(post_add_parser)
-    def post(self):
+    def post(self, category):
         """
         Create a new posts
         """
