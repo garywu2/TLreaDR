@@ -10,7 +10,6 @@ from server.controllers.category_controller import ns as category_ns
 from server.controllers.post_controller import ns as post_ns
 
 
-
 def create_app():
     """Main wrapper for app creation"""
     app = Flask(__name__, static_folder='../build')

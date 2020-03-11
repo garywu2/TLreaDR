@@ -21,6 +21,9 @@ class Post(db.Model):
 
     author_uuid = db.Column(UUID(as_uuid=True), nullable=False)
 
+    upvotes = db.Column(db.Integer, nullable=False, default=0)
+    downvotes = db.Column(db.Integer, nullable=False, default=0)
+
     def __init__(self, title, body, category_uuid, author_uuid, image_link):
         self.title = title
         self.body = body

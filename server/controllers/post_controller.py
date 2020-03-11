@@ -4,7 +4,7 @@ from server.api.restplus import api
 from server.models import db
 from server.models.post import Post
 
-ns = api.namespace('posts', description='Operations related to posts')
+ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
 post_dto = api.model('post', {
     'post_uuid': fields.String(required=True, description='post uuid'),
@@ -39,7 +39,7 @@ class PostCollection(Resource):
             return {"message": str(e)}, 500
 
     @api.expect(post_add_parser)
-    def post(self):
+    def post(self, category):
         """
         Create a new posts
         """
