@@ -85,7 +85,7 @@ const Navbar = () => {
       <SubheaderWrapper>
         <div>
           <CategoryButton>
-            <PageReference to="/home">Home</PageReference>
+            <PageReference to="/">Home</PageReference>
           </CategoryButton>
           <CategoryButton>
             <PageReference to="/News">News</PageReference>
