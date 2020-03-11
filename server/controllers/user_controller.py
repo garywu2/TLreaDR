@@ -40,7 +40,7 @@ class UserCollection(Resource):
         """
         try:
             results = User.query.all()
-            return results
+            return results, 200
         except Exception as e:
             return {"message": str(e)}, 500
 
@@ -58,7 +58,7 @@ class UserCollection(Resource):
 
             # Queries database for the created user and return its UUID
             created_user = User.query.filter_by(username=args['username']).first()
-            return marshal(created_user, user_dto)
+            return marshal(created_user, user_dto), 200
 
         except Exception as e:
             return {"message": str(e)}, 500
@@ -74,7 +74,7 @@ class UserItem(Resource):
         try:
             queried_user = User.query.filter_by(username=username).first()
             if queried_user:
-                return marshal(queried_user, user_dto)
+                return marshal(queried_user, user_dto), 200
             else:
                 return {"message": 'user not found'}, 404
 
@@ -140,7 +140,7 @@ class UserLogin(Resource):
             queried_user = User.query.filter_by(username=args['username']).first()
             if queried_user:
                 if check_password_hash(queried_user.password_hash, args['password']):
-                    return marshal(queried_user, user_dto)
+                    return marshal(queried_user, user_dto), 200
                 else:
                     return {'message': 'authorization error'}, 401
             else:
