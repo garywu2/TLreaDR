@@ -4,6 +4,7 @@ from server.api.restplus import api
 from server.models import db
 from server.models.post import Post
 from server.models.category import Category
+from datetime import datetime
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
@@ -24,6 +25,10 @@ post_add_parser.add_argument('body', required=True, type=str, help='body of post
 post_add_parser.add_argument('image_link', type=str, help='link of attached image', location='json')    
 post_add_parser.add_argument('author_uuid', type=str, required=True, help='author uuid', location='json')
 
+post_edit_parser = reqparse.RequestParser()
+post_edit_parser.add_argument('new_title', nullable=True, type=str, help='new title of post', location='json')
+post_edit_parser.add_argument('new_body', nullable=True, type=str, help='new body of post', location='json')
+post_edit_parser.add_argument('new_image_link', nullable=True, type=str, help='new image linke', location='json')
 
 @ns.route('/posts')
 class PostCollection(Resource):
@@ -67,3 +72,51 @@ class PostCollection(Resource):
             return {"message": str(e)}, 500
 
         return {'message': 'post has been created successfully.'}, 201
+
+@ns.route('/<string:post_uuid>')
+class PostItem(Resource):
+    @ns.expect(post_edit_parser)
+    def put(self, category, post_uuid):
+        """
+        Updates an existing post's information
+        """
+        args = post_edit_parser.parse_args()
+
+        try:
+            post_to_be_edited = Post.query.filter_by(post_uuid=post_uuid).first()
+
+            if post_to_be_edited:
+                if args['new_title']:
+                    post_to_be_edited.title = args['new_title']
+                if args['new_body']:
+                    post_to_be_edited.body = args['new_body']
+                if args['new_image_link']:
+                    post_to_be_edited.image_link = args['new_image_link']
+
+                post_to_be_edited.edited_date = datetime.utcnow()    
+                post_to_be_edited.edited_flag = True    
+            else:
+                return {'message': 'post specified not found in database'}, 201
+            
+            db.session.commit()
+        except Exception as e:
+            return {"message": str(e)}, 500
+        
+        return {'message': 'post has been edited successfully.'}, 201
+
+    def delete(self, post_uuid, category):
+        """
+        Deletes a post
+        """
+        
+        try:
+            post_to_be_deleted = Post.query.filter_by(post_uuid=post_uuid).first()
+            if post_to_be_deleted:
+                db.session.delete(post_to_be_deleted)
+                db.session.commit()
+            else:
+                return {'message': 'post not found.'}, 404
+        except Exception as e:
+            return {"message": str(e)}, 500
+        
+        return {'message': 'post has been deleted successfully.'}, 201
