@@ -1,8 +1,11 @@
+import json
 from flask_restplus import Resource, fields, reqparse, marshal
+from datetime import datetime
 
 from server.api.restplus import api
 from server.models import db
 from server.models.category import Category
+from server.models import event_ref
 
 ns = api.namespace('categories', description='Operations related to categories')
 
@@ -14,6 +17,9 @@ category_dto = api.model('category', {
 category_parser = reqparse.RequestParser()
 category_parser.add_argument('name', required=True, type=str, help='name of category', location='json')
 
+def date_converter(o):
+    if isinstance(o, datetime):
+        return o.__str__()
 
 @ns.route('')
 class CategoryCollection(Resource):
@@ -36,6 +42,17 @@ class CategoryCollection(Resource):
             new_category = Category(args['name'])
             db.session.add(new_category)
             db.session.commit()
+
+            event_id = new_category.category_uuid
+
+            data_set = {
+                u'type': u"Category",
+                u'operation': u"Add",
+                u'name': new_category.name,
+                u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+            }
+
+            event_ref.document(event_id).set(data_set)
         except Exception as e:
             return {"message": str(e)}, 500
 
