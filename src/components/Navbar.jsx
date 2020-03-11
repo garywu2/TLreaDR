@@ -70,7 +70,8 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   // list of a subcategories that users can view
-  const categoryList = ['News','Sports','Lifestyle','Gaming'];
+  const categoryList = [{"name": "Home", "link": "/"}, {"name": 'News', "link": "/news"}, 
+    {"name": "Lifestyle", "link": "/lifestyle"}, {"name": 'Gaming', "link": "/gaming"}];
 
   const handleLogout = () => {
       dispatch({type:LOGOUT_USER});
@@ -86,17 +87,12 @@ const Navbar = () => {
       </NavbarWrapper>
       <SubheaderWrapper>
         <div>
-          <CategoryButton>
-            <PageReference to="/">
-              Home
-            </PageReference>
-          </CategoryButton>
           {
             // map through all categories in a list to display
             categoryList.map((category) =>
-              <CategoryButton key={category}>
-                <PageReference to={'/'.concat(category)}>
-                  {category}
+              <CategoryButton key={category.name}>
+                <PageReference to={category.link}>
+                  {category.name}
                 </PageReference>
               </CategoryButton>
             )
