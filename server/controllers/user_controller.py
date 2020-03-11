@@ -59,6 +59,7 @@ class UserCollection(Resource):
             db.session.add(new_user)
             db.session.commit()
 
+            # Queries database for the created user and return its UUID
             created_user = User.query.filter_by(username=args['username']).first()
             return marshal(created_user, user_dto)
 
