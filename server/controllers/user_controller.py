@@ -58,11 +58,13 @@ class UserCollection(Resource):
             new_user = User(args['username'], args['email'], args['password'])
             db.session.add(new_user)
             db.session.commit()
+
+            # Queries database for the created user and return its UUID
+            created_user = User.query.filter_by(username=args['username']).first()
+            return marshal(created_user, user_dto)
+
         except Exception as e:
             return {"message": str(e)}, 500
-
-        return {'message': 'user has been created successfully.'}, 201
-
 
 @ns.route('/<string:username>')
 class UserItem(Resource):
@@ -146,9 +148,9 @@ class UserLogin(Resource):
                 if check_password_hash(queried_user.password_hash, args['password']):
                     return marshal(queried_user, user_dto)
                 else:
-                    return {'message': 'invalid password'}, 404
+                    return {'message': 'authorization error'}, 401
             else:
-                return {'message': 'username not found'}, 404
+                return {'message': 'username not found'}, 401
 
         except Exception as e:
             return {"message": str(e)}, 404
