@@ -3,8 +3,6 @@ import FormInput from "../styled/FormInput";
 import styled, { ThemeContext } from "styled-components";
 import FormButton from "../styled/FormButton";
 import FormLink from "../styled/FormLink";
-import { Link } from "react-router-dom";
-import { string } from "prop-types";
 
 const Wrapper = styled.form`
   background-color: white;
