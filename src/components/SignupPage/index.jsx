@@ -11,8 +11,7 @@ const SignupPage = () => {
   // later write code to post to API
   const handleSignup = async (email, username, password) => {
     try {
-      await addUser(email, username, password);
-      dispatch(await loginUser(username, password));
+      dispatch(await addUser(email, username, password));
       // redirect
       history.push("/");
     } catch(error) {

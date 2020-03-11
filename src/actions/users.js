@@ -10,10 +10,13 @@ export const addUser = async (email, username, password) => {
   // register user to database
   const response = await axios.post(config.endpoint + "users", { ...body });
 
-  // return true if successfully created
-  if(response.status !== 201) {
+  if(response.status !== 200) {
     throw "Registration failed";
   }
+
+  // update store with user info if successfully registered
+  return {type: LOGIN_USER, user: response.data}
+
 };
 
 export const loginUser = async (username, password) => {
