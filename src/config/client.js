@@ -1,7 +1,7 @@
 let config = {
   api: {
     protocol: "http",
-    host: "localhost",
+    host: "10.13.160.57",
     port: 7082,
     prefix: "api"
   }

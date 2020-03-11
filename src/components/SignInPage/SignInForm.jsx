@@ -4,6 +4,7 @@ import styled, { ThemeContext } from "styled-components";
 import FormButton from "../styled/FormButton";
 import FormLink from "../styled/FormLink";
 import { Link } from "react-router-dom";
+import { string } from "prop-types";
 
 const Wrapper = styled.form`
   background-color: white;
@@ -24,59 +25,54 @@ const Row = styled.div`
 `;
 
 const WordFormat = styled.div`
-  visibility: hidden;
+  visibility: ${props => props.visible ? "visible" : "hidden"};
   text-align: center;
   color: #FF2A2A;
 `;
 
 const signUpTheme = {
-    primaryColor: "#03FF14",
-    darkerColor: "#52C180",
-    primaryTextColor: "#131516",
-    secondaryTextColor: "#fff"
-  }
+  primaryColor: "#03FF14",
+  darkerColor: "#52C180",
+  primaryTextColor: "#131516",
+  secondaryTextColor: "#fff"
+}
 
 
-export default function SignInForm({handleSubmit}) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const theme = useContext(ThemeContext);
-  
-    const handleFormSubmit = (e) => {
-      e.preventDefault();
-      handleSubmit(username, password);
-    };
-  
-    return (
-      <Wrapper onSubmit={handleFormSubmit}>
-        <FormInput
-          hasError={false}
-          label="Username"
-          handleInputChange={setUsername}
-          value={username}
-          autocomplete="username"
-        />
-        <FormInput
-          hasError={false}
-          label="Password"
-          handleInputChange={setPassword}
-          value={password}
-          type="password"
-          autocomplete="new-password"
-        />
-        <WordFormat>
-            Account not found, please try again!
+export default function SignInForm({ handleSubmit, hasErrors }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const theme = useContext(ThemeContext);
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    handleSubmit(username, password);
+  };
+
+  return (
+    <Wrapper onSubmit={handleFormSubmit}>
+      <FormInput
+        hasError={false}
+        label="Username"
+        handleInputChange={setUsername}
+        value={username}
+        autocomplete="username"
+      />
+      <FormInput
+        hasError={false}
+        label="Password"
+        handleInputChange={setPassword}
+        value={password}
+        type="password"
+        autocomplete="new-password"
+      />
+      <WordFormat visible={hasErrors}>
+        Account not found, please try again!
         </WordFormat>
-
-
-
-        <Row>
-         <FormLink to='/sign-up'
-            theme={signUpTheme}>Sign Up</FormLink> 
+      <Row>
+        <FormLink to='/sign-up'
+          theme={signUpTheme}>Sign Up</FormLink>
         <FormButton theme={theme}>Sign In</FormButton>
-        </Row>
-      </Wrapper>
-    );
-  }
-  
-
+      </Row>
+    </Wrapper>
+  );
+}

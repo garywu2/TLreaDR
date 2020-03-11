@@ -9,12 +9,11 @@ module.exports = {
   "extends": "eslint:recommended",
   "rules": {
     "indent": ["error", 2, { "SwitchCase": 1 }],
-    "linebreak-style": ["error", "unix"],
     "no-console": [ 0 ],
     "no-empty": [ 0 ],
     "no-undef": ["error", { "typeof": false }],
     "no-unused-vars": ["error", { "varsIgnorePattern": "React" }],
-    "quotes": ["error", "single"],
+    "quotes": ["error", "double"],
     "react/jsx-uses-vars": [ 2 ],
   },
   "plugins": [
