@@ -28,7 +28,7 @@ post_add_parser.add_argument('author_uuid', type=str, required=True, help='autho
 @ns.route('/')
 class PostCollection(Resource):
     @ns.marshal_list_with(post_dto)
-    def get(self):
+    def get(self, category):
         """
         Gets all uploaded posts
         """

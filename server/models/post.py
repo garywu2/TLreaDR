@@ -24,6 +24,8 @@ class Post(db.Model):
     upvotes = db.Column(db.Integer, nullable=False, default=0)
     downvotes = db.Column(db.Integer, nullable=False, default=0)
 
+    edited_flag = db.Column(db.Boolean, nullable=False, default=False)
+
     def __init__(self, title, body, category_uuid, author_uuid, image_link):
         self.title = title
         self.body = body
