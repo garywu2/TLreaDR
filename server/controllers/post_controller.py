@@ -3,6 +3,7 @@ from flask_restplus import Resource, fields, reqparse, marshal
 from server.api.restplus import api
 from server.models import db
 from server.models.post import Post
+from server.models.category import Category
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
@@ -20,20 +21,28 @@ post_dto = api.model('post', {
 post_add_parser = reqparse.RequestParser()
 post_add_parser.add_argument('title', required=True, type=str, help='title of post', location='json')
 post_add_parser.add_argument('body', required=True, type=str, help='body of post', location='json')
-post_add_parser.add_argument('image_link', type=str, help='link of attached image', location='json')
-post_add_parser.add_argument('category_uuid', type=str, required=True, help='category uuid', location='json')
+post_add_parser.add_argument('image_link', type=str, help='link of attached image', location='json')    
 post_add_parser.add_argument('author_uuid', type=str, required=True, help='author uuid', location='json')
 
 
-@ns.route('/')
+@ns.route('/posts')
 class PostCollection(Resource):
     @ns.marshal_list_with(post_dto)
     def get(self, category):
         """
         Gets all uploaded posts
         """
-        try:
+        if category=="all":
             results = Post.query.all()
+            return results
+        
+        try:
+            queried_category = Category.query.filter_by(name=category).first()
+
+            if queried_category is None:
+                return{"message": "category not found."}, 201
+
+            results = Post.query.filter_by(category_uuid=queried_category.category_uuid).all()
             return results
         except Exception as e:
             return {"message": str(e)}, 500
@@ -45,8 +54,13 @@ class PostCollection(Resource):
         """
         args = post_add_parser.parse_args()
 
+        queried_category = Category.query.filter_by(name=category).first()
+
+        if queried_category is None:
+            return{"message": "category not found."}, 201
+
         try:
-            new_post = Post(args['title'], args['body'], args['category_uuid'], args['author_uuid'], args['image_link'])
+            new_post = Post(args['title'], args['body'], queried_category.category_uuid, args['author_uuid'], args['image_link'])
             db.session.add(new_post)
             db.session.commit()
         except Exception as e:
