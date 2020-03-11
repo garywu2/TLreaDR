@@ -21,7 +21,17 @@ const Button = styled.a`
   font-family: "Montserrat", "sans-serif";
   text-decoration: none;
   cursor: pointer;
+  padding: 15px 10px;
 `;
+
+const SignInButton = styled(Link)`
+  color: #ffffff;
+  font-size: 18px;
+  font-family: "Montserrat", "sans-serif";
+  text-decoration: none;
+  cursor: pointer;
+  padding: 15px 10px;
+`
 
 const LogoImage = styled.img`
   height: 50px;
@@ -70,7 +80,7 @@ const Navbar = () => {
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        {!userAccount ? <Button href="/sign-in">Sign In</Button> : <Button onClick={handleLogout}>Log Out</Button>}
+        {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : <Button onClick={handleLogout}>Log Out</Button>}
       </NavbarWrapper>
       <SubheaderWrapper>
         <div>
