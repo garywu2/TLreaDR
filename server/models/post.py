@@ -14,6 +14,7 @@ class Post(db.Model):
     title = db.Column(db.String(80), nullable=False)
     body = db.Column(db.Text, nullable=False)
     pub_date = db.Column(db.DateTime, nullable=False)
+    edited_date = db.Column(db.DateTime, default=None)
     image_link = db.Column(db.String(1000))
 
     category_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey('category.category_uuid'), nullable=False)
