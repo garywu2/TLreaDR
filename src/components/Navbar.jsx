@@ -15,7 +15,7 @@ const NavbarWrapper = styled.div`
   padding: 10px 25px;
 `;
 
-const Button = styled.a`
+const SignOutButton = styled.a`
   color: #ffffff;
   font-size: 18px;
   font-family: "Montserrat", "sans-serif";
@@ -80,7 +80,7 @@ const Navbar = () => {
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : <Button onClick={handleLogout}>Log Out</Button>}
+        {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>}
       </NavbarWrapper>
       <SubheaderWrapper>
         <div>
