@@ -16,7 +16,7 @@ class Post(db.Model):
     pub_date = db.Column(db.DateTime, nullable=False)
     image_link = db.Column(db.String(1000))
 
-    category_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey('category.category_uuid'))
+    category_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey('category.category_uuid'), nullable=False)
     category = db.relationship('Category', backref=db.backref('posts', lazy='dynamic'))
 
     author_uuid = db.Column(UUID(as_uuid=True), nullable=False)

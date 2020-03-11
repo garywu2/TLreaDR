@@ -24,8 +24,20 @@ post_add_parser.add_argument('image_link', type=str, help='link of attached imag
 post_add_parser.add_argument('category_uuid', type=str, required=True, help='category uuid', location='json')
 post_add_parser.add_argument('author_uuid', type=str, required=True, help='author uuid', location='json')
 
+
 @ns.route('/')
 class PostCollection(Resource):
+    @ns.marshal_list_with(post_dto)
+    def get(self):
+        """
+        Gets all uploaded posts
+        """
+        try:
+            results = Post.query.all()
+            return results
+        except Exception as e:
+            return {"message": str(e)}, 500
+
     @api.expect(post_add_parser)
     def post(self):
         """
