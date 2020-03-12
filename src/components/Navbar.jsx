@@ -71,9 +71,11 @@ const Navbar = () => {
   const userAccount = useSelector(state => state.user);
   const dispatch = useDispatch();
   const history = useHistory();
+  
   // list of a subcategories that users can view
   const categories = [{"name": "Home", "link": "/"}, {"name": 'News', "link": "/category/news"}, 
     {"name": "Lifestyle", "link": "/category/lifestyle"}, {"name": 'Gaming', "link": "/category/gaming"}];
+
   // map through all the subcategories to display
   const categoryList = categories.map((category) => 
     <div key={category.name}>
@@ -96,10 +98,12 @@ const Navbar = () => {
         {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>}
       </NavbarWrapper>
       <SubheaderWrapper>
-        <CategoryWrapper>{categoryList}</CategoryWrapper>
+        <CategoryWrapper>
+          {categoryList}
+        </CategoryWrapper>
         <Search>
           <FontAwesomeIcon size="2x" icon={faSearch} />
-          <SearchBar type="text" placeholder="Search..."></SearchBar>
+          <SearchBar type="text" placeholder="Search..." />
         </Search>
       </SubheaderWrapper>
     </React.Fragment>
