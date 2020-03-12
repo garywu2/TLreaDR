@@ -60,17 +60,12 @@ class CategoryItem(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-    @ns.expect(category_parser)
-    def delete(self):
+    def delete(self, category):
         """
         Deletes a user
         """
-        args = category_parser.parse_args()
-
-        category_to_be_deleted_name = args['name']
-
         try:
-            category_to_be_deleted = Category.query.filter_by(name=category_to_be_deleted_name).first()
+            category_to_be_deleted = Category.query.filter_by(name=category).first()
             if category_to_be_deleted:
                 db.session.delete(category_to_be_deleted)
                 db.session.commit()
