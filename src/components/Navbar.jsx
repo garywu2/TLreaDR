@@ -73,7 +73,7 @@ const Navbar = () => {
   const history = useHistory();
 
   // list of a subcategories that users can view
-  const categories = [{"name": "Home", "link": "/"}, {"name": 'News', "link": "/category/news"}, 
+  const categories = [{"name": "All", "link": "/category/all"}, {"name": 'News', "link": "/category/news"}, 
     {"name": "Lifestyle", "link": "/category/lifestyle"}, {"name": 'Gaming', "link": "/category/gaming"}];
 
   // map through all the subcategories to display
