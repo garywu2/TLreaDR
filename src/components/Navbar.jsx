@@ -44,8 +44,10 @@ const SubheaderWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const CategoryButton = styled.div`
-  float: left;
+const CategoryWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 `;
 
 const PageReference = styled(Link)`
@@ -70,8 +72,16 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   // list of a subcategories that users can view
-  const categoryList = [{"name": "Home", "link": "/"}, {"name": 'News', "link": "/news"}, 
-    {"name": "Lifestyle", "link": "/lifestyle"}, {"name": 'Gaming', "link": "/gaming"}];
+  const categories = [{"name": "Home", "link": "/"}, {"name": 'News', "link": "/category/news"}, 
+    {"name": "Lifestyle", "link": "/category/lifestyle"}, {"name": 'Gaming', "link": "/category/gaming"}];
+  // map through all the subcategories to display
+  const categoryList = categories.map((category) => 
+    <div key={category.name}>
+      <PageReference to={category.link}>
+        {category.name}
+      </PageReference>
+    </div>
+  )
 
   const handleLogout = () => {
       dispatch({type:LOGOUT_USER});
@@ -86,18 +96,7 @@ const Navbar = () => {
         {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>}
       </NavbarWrapper>
       <SubheaderWrapper>
-        <div>
-          {
-            // map through all categories in a list to display
-            categoryList.map((category) =>
-              <CategoryButton key={category.name}>
-                <PageReference to={category.link}>
-                  {category.name}
-                </PageReference>
-              </CategoryButton>
-            )
-          }
-        </div>
+        <CategoryWrapper>{categoryList}</CategoryWrapper>
         <Search>
           <FontAwesomeIcon size="2x" icon={faSearch} />
           <SearchBar type="text" placeholder="Search..."></SearchBar>
