@@ -23,7 +23,7 @@ class CategoryCollection(Resource):
         Gets all categories
         """
         results = Category.query.all()
-        return results
+        return results, 200
 
     @api.expect(category_parser)
     def post(self):
@@ -53,24 +53,19 @@ class CategoryItem(Resource):
         try:
             queried_category = Category.query.filter_by(name=category).first()
             if queried_category:
-                return marshal(queried_category, category_dto)
+                return marshal(queried_category, category_dto), 200
             else:
                 return {"message": 'category not found'}, 404
 
         except Exception as e:
             return {"message": str(e)}, 500
 
-    @ns.expect(category_parser)
-    def delete(self):
+    def delete(self, category):
         """
         Deletes a user
         """
-        args = category_parser.parse_args()
-
-        category_to_be_deleted_name = args['name']
-
         try:
-            category_to_be_deleted = Category.query.filter_by(name=category_to_be_deleted_name).first()
+            category_to_be_deleted = Category.query.filter_by(name=category).first()
             if category_to_be_deleted:
                 db.session.delete(category_to_be_deleted)
                 db.session.commit()

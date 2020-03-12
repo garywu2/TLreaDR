@@ -12,3 +12,4 @@ venv/
 env/
 .idea
 migrations/
+.vscode/

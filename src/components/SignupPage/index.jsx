@@ -21,10 +21,6 @@ const SignupPage = () => {
     }
   };
 
-  const handleFetch = () => {
-    fetchUsers();
-  };
-
   return (
     <div>
       <SignupForm handleSubmit={handleSignup}></SignupForm>
