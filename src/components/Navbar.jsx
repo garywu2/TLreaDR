@@ -71,7 +71,7 @@ const Navbar = () => {
   const userAccount = useSelector(state => state.user);
   const dispatch = useDispatch();
   const history = useHistory();
-  
+
   // list of a subcategories that users can view
   const categories = [{"name": "Home", "link": "/"}, {"name": 'News', "link": "/category/news"}, 
     {"name": "Lifestyle", "link": "/category/lifestyle"}, {"name": 'Gaming', "link": "/category/gaming"}];
@@ -95,7 +95,8 @@ const Navbar = () => {
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>}
+        {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : 
+        <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>}
       </NavbarWrapper>
       <SubheaderWrapper>
         <CategoryWrapper>
