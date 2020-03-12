@@ -1,6 +1,9 @@
 from flask_restplus import Resource, fields, reqparse, marshal
 from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+from datetime import datetime
 
+from server.models import event_ref
 from server.api.restplus import api
 from server.models import db
 from server.models.user import User
@@ -58,6 +61,19 @@ class UserCollection(Resource):
 
             # Queries database for the created user and return its UUID
             created_user = User.query.filter_by(username=args['username']).first()
+
+            event_id = uuid.uuid4()
+            data_set = {
+                u'type': u"User",
+                u'operation': u"Add",
+                u'name': new_user.username,
+                u'email': new_user.email,
+                u'password': new_user.password_hash,
+                u'item_id':str(new_user.user_uuid),
+                u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+            }
+            event_ref.document(str(event_id)).set(data_set)
+
             return marshal(created_user, user_dto), 200
 
         except Exception as e:
@@ -102,6 +118,18 @@ class UserItem(Resource):
                 return {'message': 'user specified not found in database'}, 201
 
             db.session.commit()
+
+            event_id = uuid.uuid4()
+            data_set = {
+                u'type': u"User",
+                u'operation': u"Update",
+                u'name': user_to_be_edited.username,
+                u'email': user_to_be_edited.email,
+                u'password': user_to_be_edited.password_hash,
+                u'item_id': str(user_to_be_edited.user_uuid),
+                u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+            }
+            event_ref.document(str(event_id)).set(data_set)
         except Exception as e:
             return {"message": str(e)}, 500
 
@@ -116,6 +144,18 @@ class UserItem(Resource):
             if user_to_be_deleted:
                 db.session.delete(user_to_be_deleted)
                 db.session.commit()
+
+                event_id = uuid.uuid4()
+                data_set = {
+                    u'type': u"User",
+                    u'operation': u"Delete",
+                    u'name': user_to_be_deleted.username,
+                    u'email': user_to_be_deleted.email,
+                    u'password': user_to_be_deleted.password_hash,
+                    u'item_id': str(user_to_be_deleted.user_uuid),
+                    u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+                }
+                event_ref.document(str(event_id)).set(data_set)
             else:
                 return {'message': 'user not found.'}, 404
         except Exception as e:

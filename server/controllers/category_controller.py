@@ -1,8 +1,12 @@
+import json
 from flask_restplus import Resource, fields, reqparse, marshal
+from datetime import datetime
+import uuid
 
 from server.api.restplus import api
 from server.models import db
 from server.models.category import Category
+from server.models import event_ref
 
 ns = api.namespace('categories', description='Operations related to categories')
 
@@ -14,6 +18,9 @@ category_dto = api.model('category', {
 category_parser = reqparse.RequestParser()
 category_parser.add_argument('name', required=True, type=str, help='name of category', location='json')
 
+def date_converter(o):
+    if isinstance(o, datetime):
+        return o.__str__()
 
 @ns.route('')
 class CategoryCollection(Resource):
@@ -36,6 +43,17 @@ class CategoryCollection(Resource):
             new_category = Category(args['name'])
             db.session.add(new_category)
             db.session.commit()
+
+            event_id = uuid.uuid4()
+            data_set = {
+                u'type': u"Category",
+                u'operation': u"Add",
+                u'name': new_category.name,
+                u'item_id': str(new_category.category_uuid),
+                u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+            }
+            event_ref.document(str(event_id)).set(data_set)
+
         except Exception as e:
             return {"message": str(e)}, 500
 
@@ -61,19 +79,25 @@ class CategoryItem(Resource):
             return {"message": str(e)}, 500
 
     @ns.expect(category_parser)
-    def delete(self):
+    def delete(self, category):
         """
-        Deletes a user
+        Deletes a category
         """
-        args = category_parser.parse_args()
-
-        category_to_be_deleted_name = args['name']
-
         try:
-            category_to_be_deleted = Category.query.filter_by(name=category_to_be_deleted_name).first()
+            category_to_be_deleted = Category.query.filter_by(name=category).first()
             if category_to_be_deleted:
                 db.session.delete(category_to_be_deleted)
                 db.session.commit()
+
+                event_id = uuid.uuid4()
+                data_set = {
+                    u'type': u"Category",
+                    u'operation': u"Delete",
+                    u'name': category_to_be_deleted.name,
+                    u'item_id': str(category_to_be_deleted.category_uuid),
+                    u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+                }
+                event_ref.document(str(event_id)).set(data_set)
             else:
                 return {'message': 'category not found.'}, 404
         except Exception as e:
