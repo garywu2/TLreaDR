@@ -18,9 +18,6 @@ category_dto = api.model('category', {
 category_parser = reqparse.RequestParser()
 category_parser.add_argument('name', required=True, type=str, help='name of category', location='json')
 
-def date_converter(o):
-    if isinstance(o, datetime):
-        return o.__str__()
 
 @ns.route('')
 class CategoryCollection(Resource):

@@ -8,6 +8,7 @@ from server.api.restplus import api
 from server.controllers.user_controller import ns as user_ns
 from server.controllers.category_controller import ns as category_ns
 from server.controllers.post_controller import ns as post_ns
+from server.controllers.news_controller import ns as news_ns
 
 
 def create_app():
@@ -25,6 +26,7 @@ def create_app():
     api.add_namespace(user_ns)
     api.add_namespace(category_ns)
     api.add_namespace(post_ns)
+    api.add_namespace(news_ns)
 
     '''Initialize models'''
     db.init_app(app)
