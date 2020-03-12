@@ -61,8 +61,6 @@ class UserCollection(Resource):
 
             # Queries database for the created user and return its UUID
             created_user = User.query.filter_by(username=args['username']).first()
-            return marshal(created_user, user_dto), 200
-
 
             event_id = uuid.uuid4()
             data_set = {
@@ -75,6 +73,8 @@ class UserCollection(Resource):
                 u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
             }
             event_ref.document(str(event_id)).set(data_set)
+
+            return marshal(created_user, user_dto), 200
 
         except Exception as e:
             return {"message": str(e)}, 500
