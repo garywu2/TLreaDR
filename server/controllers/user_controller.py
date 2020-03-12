@@ -21,9 +21,6 @@ user_add_parser.add_argument('email', required=True, type=str, help='email of us
 user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
 user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
 
-user_delete_parser = reqparse.RequestParser()
-user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
-
 user_edit_parser = reqparse.RequestParser()
 user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user',
                               location='json')
@@ -46,7 +43,7 @@ class UserCollection(Resource):
         """
         try:
             results = User.query.all()
-            return results
+            return results, 200
         except Exception as e:
             return {"message": str(e)}, 500
 
@@ -61,6 +58,11 @@ class UserCollection(Resource):
             new_user = User(args['username'], args['email'], args['password'])
             db.session.add(new_user)
             db.session.commit()
+
+            # Queries database for the created user and return its UUID
+            created_user = User.query.filter_by(username=args['username']).first()
+            return marshal(created_user, user_dto), 200
+
 
             event_id = uuid.uuid4()
             data_set = {
@@ -77,9 +79,6 @@ class UserCollection(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-        return {'message': 'user has been created successfully.'}, 201
-
-
 @ns.route('/<string:username>')
 class UserItem(Resource):
     @ns.response(code=201, model=user_dto, description='Success')
@@ -91,7 +90,7 @@ class UserItem(Resource):
         try:
             queried_user = User.query.filter_by(username=username).first()
             if queried_user:
-                return marshal(queried_user, user_dto)
+                return marshal(queried_user, user_dto), 200
             else:
                 return {"message": 'user not found'}, 404
 
@@ -136,15 +135,12 @@ class UserItem(Resource):
 
         return {'message': 'user has been edited successfully.'}, 201
 
-    @ns.expect(user_delete_parser)
-    def delete(self):
+    def delete(self, username):
         """
         Deletes a user
         """
-        args = user_delete_parser.parse_args()
-
         try:
-            user_to_be_deleted = User.query.filter_by(username=args['username']).first()
+            user_to_be_deleted = User.query.filter_by(username=username).first()
             if user_to_be_deleted:
                 db.session.delete(user_to_be_deleted)
                 db.session.commit()
@@ -184,11 +180,11 @@ class UserLogin(Resource):
             queried_user = User.query.filter_by(username=args['username']).first()
             if queried_user:
                 if check_password_hash(queried_user.password_hash, args['password']):
-                    return marshal(queried_user, user_dto)
+                    return marshal(queried_user, user_dto), 200
                 else:
-                    return {'message': 'invalid password'}, 404
+                    return {'message': 'authorization error'}, 401
             else:
-                return {'message': 'username not found'}, 404
+                return {'message': 'username not found'}, 401
 
         except Exception as e:
             return {"message": str(e)}, 404

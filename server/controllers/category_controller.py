@@ -30,7 +30,7 @@ class CategoryCollection(Resource):
         Gets all categories
         """
         results = Category.query.all()
-        return results
+        return results, 200
 
     @api.expect(category_parser)
     def post(self):
@@ -71,7 +71,7 @@ class CategoryItem(Resource):
         try:
             queried_category = Category.query.filter_by(name=category).first()
             if queried_category:
-                return marshal(queried_category, category_dto)
+                return marshal(queried_category, category_dto), 200
             else:
                 return {"message": 'category not found'}, 404
 
