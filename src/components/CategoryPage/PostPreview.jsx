@@ -60,7 +60,8 @@ export default function PostPreview({ post, handleExpand }) {
             by{" "}
             <Link to={"/user/" + post.author.username}>
               {post.author.username}
-            </Link>
+            </Link>{" "}
+            on {post.pub_date.slice(0, 10).replace(/-/g, "/")}
           </small>
         </Header>
       </Body>

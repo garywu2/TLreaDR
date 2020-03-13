@@ -90,7 +90,8 @@ export default function PostExpanded({ post, handleExpand }) {
             by{" "}
             <Link to={"/user/" + post.author.username}>
               {post.author.username}
-            </Link>
+            </Link>{" "}
+            on {post.pub_date.slice(0, 10).replace(/-/g, "/")}
           </small>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
