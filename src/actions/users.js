@@ -5,13 +5,11 @@ import {FETCH_USERS, LOGIN_USER} from "./types";
 export const addUser = async (email, username, password) => {
   const body = { email, username, password };
 
-  console.log(body);
-
   // register user to database
   const response = await axios.post(config.endpoint + "users", { ...body });
 
   if(response.status !== 200) {
-    throw "Registration failed";
+    throw "Registration failed with error code " + response.status;
   }
 
   // update store with user info if successfully registered
@@ -28,7 +26,7 @@ export const loginUser = async (username, password) => {
   });
 
   if(response.status !== 200) {
-    throw "Login failed";
+    throw "Login failed with error code " + response.status;
   }
 
   return {type: LOGIN_USER, user: response.data}
