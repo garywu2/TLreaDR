@@ -9,5 +9,7 @@ export const getPostsByCategory = async categoryName => {
     throw "getPosts failed with error code " + response.status;
   }
 
-  return { type: FETCH_POSTS, posts: response.data };
+  const { posts } = response.data;
+
+  return { type: FETCH_POSTS, posts };
 };

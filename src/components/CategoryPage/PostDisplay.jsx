@@ -3,6 +3,7 @@ import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const Display = styled.div`
   background-color: white;
@@ -39,7 +40,7 @@ const Body = styled.div`
   margin: 0px 20px;
 `;
 
-const Title = styled.h2`
+const Header = styled.div`
   border-bottom: 7px solid
     ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   padding-bottom: 10px;
@@ -54,7 +55,7 @@ const Img = styled.img`
   border-bottom: 7px solid
     ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   margin-bottom: 20px;
-`
+`;
 
 export default function PostDisplay({ post }) {
   const theme = useContext(ThemeContext);
@@ -86,7 +87,15 @@ export default function PostDisplay({ post }) {
         </Icon>
       </Icons>
       <Body>
-        <Title>{post.title}</Title>
+        <Header>
+          <h2>{post.title}</h2>
+          <small>
+            by{" "}
+            <Link to={"/user/" + post.author.username}>
+              {post.author.username}
+            </Link>
+          </small>
+        </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
       </Body>
