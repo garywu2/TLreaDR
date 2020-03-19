@@ -4,6 +4,7 @@ import App from './components/App';
 import Home from './components/Home';
 import SignupPage from './components/SignupPage';
 import SignInPage from './components/SignInPage';
+import CategoryPage from './components/CategoryPage';
 
 const routes = (
   <App>
@@ -11,6 +12,7 @@ const routes = (
       <Route exact path='/' component={Home} />
       <Route path='/sign-up' component={SignupPage} />
       <Route path='/sign-in' component={SignInPage} />
+      <Route path='/category/:category' component={CategoryPage} />
     </Switch>
   </App>
 )
