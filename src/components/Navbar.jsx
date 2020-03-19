@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { Link, useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux'; 
+import { Link, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT_USER } from "../actions/types";
+import { getCategories } from "../actions/categories";
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
@@ -31,7 +32,7 @@ const SignInButton = styled(Link)`
   text-decoration: none;
   cursor: pointer;
   padding: 15px 10px;
-`
+`;
 
 const LogoImage = styled.img`
   height: 50px;
@@ -65,29 +66,52 @@ const SearchBar = styled.input`
 const Search = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
 const Navbar = () => {
   const userAccount = useSelector(state => state.user);
+  const categories = useSelector(state => state.categories);
   const dispatch = useDispatch();
   const history = useHistory();
 
-  // list of a subcategories that users can view
-  const categories = [{"name": "Home", "link": "/category/all"}, {"name": 'News', "link": "/category/news"}, 
-    {"name": "Lifestyle", "link": "/category/lifestyle"}, {"name": 'Gaming', "link": "/category/gaming"}];
+  useEffect(() => {
+    const getAllCategories = async () => {
+      try {
+        dispatch(await getCategories());
+      } catch (e) {
+        error = e;
+      }
+    };
 
-  // map through all the subcategories to display
-  const categoryList = categories.map((category) => 
-    <div key={category.name}>
-      <PageReference to={category.link}>
-        {category.name}
-      </PageReference>
-    </div>
-  )
+    getAllCategories();
+  }, [getCategories]);
+
+  const renderCategories = () => {
+    if (!categories) {
+      return null;
+    }
+    return (
+      <CategoryWrapper>
+        <div key="all">
+          <PageReference to="/category/all">Home</PageReference>
+        </div>
+        {categories.map(category => (
+          <div key={category.name}>
+            <PageReference to={"/category/".concat(category.name)}>
+              {category.name
+                .charAt(0)
+                .toUpperCase()
+                .concat(category.name.slice(1))}
+            </PageReference>
+          </div>
+        ))}
+      </CategoryWrapper>
+    );
+  };
 
   const handleLogout = () => {
-      dispatch({type:LOGOUT_USER});
-      history.push('/');
+    dispatch({ type: LOGOUT_USER });
+    history.push("/");
   };
 
   return (
@@ -95,13 +119,14 @@ const Navbar = () => {
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        {!userAccount ? <SignInButton to="/sign-in">Sign In</SignInButton> : 
-        <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>}
+        {!userAccount ? (
+          <SignInButton to="/sign-in">Sign In</SignInButton>
+        ) : (
+          <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>
+        )}
       </NavbarWrapper>
       <SubheaderWrapper>
-        <CategoryWrapper>
-          {categoryList}
-        </CategoryWrapper>
+        {renderCategories()}
         <Search>
           <FontAwesomeIcon size="2x" icon={faSearch} />
           <SearchBar type="text" placeholder="Search..." />
