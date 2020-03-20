@@ -79,7 +79,11 @@ def get_all_posts():
     return result_posts
 
 
-def get_posts_by_category(queried_category):
+def get_posts_by_category(category):
+    if category == "all":
+        return get_all_posts()
+
+    queried_category = Category.query.filter_by(name=category).first()
     # Calculates 3 days prior to current time
     three_days_ago = datetime.utcnow() - timedelta(days=3)
     # Obtains posts from recent 3 days with category filter (new posts)
@@ -112,17 +116,12 @@ class PostCollection(Resource):
         """
         Gets all uploaded posts
         """
-        if category == "all":
-            return get_all_posts(), 200
-        else:
-            try:
-                queried_category = Category.query.filter_by(name=category).first()
+        try:
+            if category is None:
+                return {"message": "category not found."}, 201
 
-                if queried_category is None:
-                    return {"message": "category not found."}, 201
-
-                return get_posts_by_category(queried_category), 200
-            except Exception as e:
+            return get_posts_by_category(category), 200
+        except Exception as e:
                 return {"message": str(e)}, 500
 
     @api.expect(post_add_parser)
@@ -195,3 +194,15 @@ class PostItem(Resource):
             return {"message": str(e)}, 500
 
         return {'message': 'post has been deleted successfully.'}, 201
+
+@ns.route('/<string:search>')
+class PostSearch(Resource):
+    @ns.marshal_list_with(post_dto, envelope='posts')
+    def get(self, category, search):
+        posts = get_posts_by_category(category)
+        result_posts = []
+        for post in posts:
+            if search in post.title or search in post.body:
+                result_posts.append(post)
+
+        return result_posts
