@@ -21,6 +21,8 @@ post_dto = api.model('post', {
     'pub_date': fields.String(required=True, description='published date'),
     'edited_date': fields.String(description='published date'),
     'image_link': fields.String(description='image link of the post'),
+    'upvotes': fields.Integer(required=True, descrption='upvotes of the post'),
+    'downvotes': fields.Integer(required=True, descrption='downvotes of the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
     'new_flag': fields.Boolean(required=True, description='new flag for the post'),
