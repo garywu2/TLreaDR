@@ -9,6 +9,7 @@ __pycache__
 .venv
 venv/
 server/.env
+post_service/.env
 .idea
 migrations/
 .vscode/
