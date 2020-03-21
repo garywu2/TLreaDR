@@ -2,7 +2,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from datetime import datetime
 
-from . import db
+from post_service.models import db
 
 
 class Post(db.Model):

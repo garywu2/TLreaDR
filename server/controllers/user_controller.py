@@ -38,7 +38,7 @@ user_login_parser.add_argument('password', required=True, type=str, help='passwo
 
 @ns.route('')
 class UserCollection(Resource):
-    @ns.marshal_list_with(user_dto)
+    #@ns.marshal_list_with(user_dto)
     def get(self):
         """
         Gets all registered users

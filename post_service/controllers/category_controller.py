@@ -1,11 +1,10 @@
-import json
 from flask_restplus import Resource, fields, reqparse, marshal
 from datetime import datetime
 import uuid
 
 from server.api.restplus import api
 from server.models import db
-from server.models.category import Category
+from post_service.models.category import Category
 from server.models import event_ref
 
 ns = api.namespace('categories', description='Operations related to categories')

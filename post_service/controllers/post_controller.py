@@ -5,7 +5,7 @@ from flask_restplus import Resource, fields, reqparse, marshal
 from post_service.api.restplus import api
 # from post_service.controllers.user_controller import user_dto
 from post_service.models import db
-# from post_service.models.category import Category
+from post_service.models.category import Category
 from post_service.models.post import Post
 # from post_service.models.user import User
 
@@ -36,59 +36,59 @@ post_edit_parser.add_argument('new_body', nullable=True, type=str, help='new bod
 post_edit_parser.add_argument('new_image_link', nullable=True, type=str, help='new image link', location='json')
 
 
-# def get_author(author_uuid):
-#     return User.query.filter_by(user_uuid=author_uuid).first()
-#
-#
-# @ns.route('/posts')
-# class PostCollection(Resource):
-#     @ns.marshal_list_with(post_dto, envelope='posts')
-#     def get(self, category):
-#         """
-#         Gets all uploaded posts
-#         """
-#         if category == "all":
-#             posts = Post.query.all()
-#             for post in posts:
-#                 user = get_author(post.author_uuid)
-#                 post.author = marshal(user, user_dto)
-#         else:
-#             try:
-#                 queried_category = Category.query.filter_by(name=category).first()
-#
-#                 if queried_category is None:
-#                     return {"message": "category not found."}, 201
-#
-#                 posts = Post.query.filter_by(category_uuid=queried_category.category_uuid).all()
-#                 for post in posts:
-#                     user = get_author(post.author_uuid)
-#                     post.author = marshal(user, user_dto)
-#             except Exception as e:
-#                 return {"message": str(e)}, 500
-#
-#         return posts, 200
-#
-#     @api.expect(post_add_parser)
-#     def post(self, category):
-#         """
-#         Create a new posts
-#         """
-#         args = post_add_parser.parse_args()
-#
-#         queried_category = Category.query.filter_by(name=category).first()
-#
-#         if queried_category is None:
-#             return {"message": "category not found."}, 201
-#
-#         try:
-#             new_post = Post(args['title'], args['body'], queried_category.category_uuid, args['author_uuid'],
-#                             args['image_link'])
-#             db.session.add(new_post)
-#             db.session.commit()
-#         except Exception as e:
-#             return {"message": str(e)}, 500
-#
-#         return {'message': 'post has been created successfully.'}, 201
+def get_author(author_uuid):
+    return User.query.filter_by(user_uuid=author_uuid).first()
+
+
+@ns.route('/posts')
+class PostCollection(Resource):
+    @ns.marshal_list_with(post_dto, envelope='posts')
+    def get(self, category):
+        """
+        Gets all uploaded posts
+        """
+        if category == "all":
+            posts = Post.query.all()
+            for post in posts:
+                user = get_author(post.author_uuid)
+                post.author = marshal(user, user_dto)
+        else:
+            try:
+                queried_category = Category.query.filter_by(name=category).first()
+
+                if queried_category is None:
+                    return {"message": "category not found."}, 201
+
+                posts = Post.query.filter_by(category_uuid=queried_category.category_uuid).all()
+                for post in posts:
+                    user = get_author(post.author_uuid)
+                    post.author = marshal(user, user_dto)
+            except Exception as e:
+                return {"message": str(e)}, 500
+
+        return posts, 200
+
+    @api.expect(post_add_parser)
+    def post(self, category):
+        """
+        Create a new posts
+        """
+        args = post_add_parser.parse_args()
+
+        queried_category = Category.query.filter_by(name=category).first()
+
+        if queried_category is None:
+            return {"message": "category not found."}, 201
+
+        try:
+            new_post = Post(args['title'], args['body'], queried_category.category_uuid, args['author_uuid'],
+                            args['image_link'])
+            db.session.add(new_post)
+            db.session.commit()
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+        return {'message': 'post has been created successfully.'}, 201
 
 
 @ns.route('/<string:post_uuid>')
