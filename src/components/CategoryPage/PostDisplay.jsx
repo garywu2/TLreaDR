@@ -1,9 +1,7 @@
-import React, { useContext } from "react";
-import styled, { ThemeContext } from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import styled from "styled-components";
+import PostExpanded from "./PostExpanded";
+import PostPreview from "./PostPreview";
 
 const Display = styled.div`
   background-color: white;
@@ -58,50 +56,15 @@ const Img = styled.img`
 `;
 
 export default function PostDisplay({ post }) {
-  const theme = useContext(ThemeContext);
+  const [expanded, setExpanded] = useState(false);
 
-  const handleThumbsUp = () => {
-    console.log("handleThumbsUp called");
+  const handleExpand = () => {
+    setExpanded(!expanded);
   };
 
-  const handleThumbsDown = () => {
-    console.log("handleThumbsDown called");
-  };
-
-  const handleClose = () => {
-    console.log("handleClose called");
-  };
-
-  return (
-    <Display theme={theme}>
-      <Icons>
-        <Icon onClick={handleThumbsUp} hoverColor="#2eaa3a">
-          <FontAwesomeIcon size="2x" icon={faThumbsUp}></FontAwesomeIcon>
-        </Icon>
-        <Icon onClick={handleThumbsDown} hoverColor="#e2493b">
-          <FontAwesomeIcon
-            size="2x"
-            flip="horizontal"
-            icon={faThumbsDown}
-          ></FontAwesomeIcon>
-        </Icon>
-      </Icons>
-      <Body>
-        <Header>
-          <h2>{post.title}</h2>
-          <small>
-            by{" "}
-            <Link to={"/user/" + post.author.username}>
-              {post.author.username}
-            </Link>
-          </small>
-        </Header>
-        <Img theme={theme} src={post.image_link}></Img>
-        <p>{post.body}</p>
-      </Body>
-      <Icon onClick={handleClose}>
-        <FontAwesomeIcon size="2x" icon={faTimes}></FontAwesomeIcon>
-      </Icon>
-    </Display>
+  return expanded ? (
+    <PostExpanded post={post} handleExpand={handleExpand} />
+  ) : (
+    <PostPreview post={post} handleExpand={handleExpand} />
   );
 }
