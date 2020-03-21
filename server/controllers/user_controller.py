@@ -1,3 +1,5 @@
+import sys
+
 from flask_restplus import Resource, fields, reqparse, marshal
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
@@ -41,6 +43,9 @@ class UserCollection(Resource):
         """
         Gets all registered users
         """
+        print('This is error output', file=sys.stderr)
+        print('This is standard output', file=sys.stdout)
+        print("hi")
         try:
             results = User.query.all()
             return results, 200

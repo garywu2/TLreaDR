@@ -1,7 +1,8 @@
 from server.models import db
 from server.app import create_app
 
-from server.models import category, comment, post, user
+from server.models import category, comment, user
+from post_service.models import post
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 

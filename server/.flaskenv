@@ -1,3 +1,3 @@
 SQLALCHEMY_TRACK_MODIFICATIONS=False
 FLASK_ENV='development'
-FLASK_APP=server/app.py
+FLASK_APP=app.py
