@@ -3,11 +3,11 @@ from datetime import datetime
 from flask_restplus import Resource, fields, reqparse, marshal
 
 from post_service.api.restplus import api
-# from post_service.controllers.user_controller import user_dto
+from server.controllers.user_controller import user_dto
 from post_service.models import db
 from post_service.models.category import Category
 from post_service.models.post import Post
-# from post_service.models.user import User
+from server.models.user import User
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
@@ -21,7 +21,7 @@ post_dto = api.model('post', {
     'image_link': fields.String(description='image link of the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
-    # 'author': fields.Nested(user_dto)
+    #'author': fields.Nested(user_dto)
 })
 
 post_add_parser = reqparse.RequestParser()
