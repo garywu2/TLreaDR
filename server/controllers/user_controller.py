@@ -43,9 +43,6 @@ class UserCollection(Resource):
         """
         Gets all registered users
         """
-        print('This is error output', file=sys.stderr)
-        print('This is standard output', file=sys.stdout)
-        print("hi")
         try:
             results = User.query.all()
             return results, 200

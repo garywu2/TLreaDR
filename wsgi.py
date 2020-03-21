@@ -17,4 +17,5 @@ if __name__ == '__main__':
         application=application,
         use_reloader=True,
         use_debugger=True,
-        use_evalex=True)
+        use_evalex=True,
+        passthrough_errors=True)
