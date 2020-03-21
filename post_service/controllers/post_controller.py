@@ -1,18 +1,14 @@
 from datetime import datetime
 
+import requests
 from flask_restplus import Resource, fields, reqparse, marshal
 
 from post_service.api.restplus import api
 from post_service.models import db
 from post_service.models.category import Category
 from post_service.models.post import Post
-# TODO remove these later
-from user_service.controllers.user_controller import user_dto
-from user_service.models.user import User
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
-
-# TODO This post controller has ALOT of dependency on the Users table which should be changed after implementing microservices
 
 post_dto = api.model('post', {
     'post_uuid': fields.String(required=True, description='post uuid'),
@@ -22,7 +18,12 @@ post_dto = api.model('post', {
     'image_link': fields.String(description='image link of the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
-    #'author': fields.Nested(user_dto)
+    'author': fields.Nested(api.model('user', {
+            'user_uuid': fields.String(required=True, description='user uuid'),
+            'email': fields.String(required=True, description='user email address'),
+            'username': fields.String(required=True, description='user username'),
+        })
+    )
 })
 
 post_add_parser = reqparse.RequestParser()
@@ -38,8 +39,7 @@ post_edit_parser.add_argument('new_image_link', nullable=True, type=str, help='n
 
 
 def get_author(author_uuid):
-    return User.query.filter_by(user_uuid=author_uuid).first()
-
+    return requests.get('http://localhost:7082/api/users/uuid/' + str(author_uuid)).json()
 
 @ns.route('/posts')
 class PostCollection(Resource):
@@ -52,7 +52,7 @@ class PostCollection(Resource):
             posts = Post.query.all()
             for post in posts:
                 user = get_author(post.author_uuid)
-                post.author = marshal(user, user_dto)
+                post.author = user
         else:
             try:
                 queried_category = Category.query.filter_by(name=category).first()

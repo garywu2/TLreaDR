@@ -21,4 +21,5 @@ if __name__ == '__main__':
         use_reloader=True,
         use_debugger=True,
         use_evalex=True,
-        passthrough_errors=True)
+        passthrough_errors=True,
+        threaded=True)

@@ -81,8 +81,8 @@ class UserCollection(Resource):
             return {"message": str(e)}, 500
 
 
-@ns.route('/<string:username>')
-class UserItem(Resource):
+@ns.route('/username/<string:username>')
+class UserItemByUsername(Resource):
     @ns.response(code=201, model=user_dto, description='Success')
     @ns.response(code=404, description='Not Found')
     def get(self, username):
@@ -190,3 +190,87 @@ class UserLogin(Resource):
 
         except Exception as e:
             return {"message": str(e)}, 404
+
+@ns.route('/uuid/<string:uuid>')
+class UserItemByUUID(Resource):
+    @ns.response(code=201, model=user_dto, description='Success')
+    @ns.response(code=404, description='Not Found')
+    def get(self, uuid):
+        """
+        Gets a specified user
+        """
+        try:
+            queried_user = User.query.filter_by(user_uuid=uuid).first()
+            if queried_user:
+                return marshal(queried_user, user_dto), 200
+            else:
+                return {"message": 'user not found'}, 404
+
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+    @ns.expect(user_edit_parser)
+    def put(self, uuid):
+        """
+        Updates an existing user's information
+        """
+        args = user_edit_parser.parse_args()
+
+        try:
+            user_to_be_edited = User.query.filter_by(user_uuid=uuid).first()
+
+            if user_to_be_edited:
+                if args['new_email']:
+                    user_to_be_edited.email = args['new_email']
+                if args['new_username']:
+                    user_to_be_edited.username = args['new_username']
+                if args['new_password']:
+                    user_to_be_edited.password_hash = generate_password_hash(args['new_password'])
+            else:
+                return {'message': 'user specified not found in database'}, 201
+
+            db.session.commit()
+
+            event_id = uuid.uuid4()
+            data_set = {
+                u'type': u"User",
+                u'operation': u"Update",
+                u'name': user_to_be_edited.username,
+                u'email': user_to_be_edited.email,
+                u'password': user_to_be_edited.password_hash,
+                u'item_id': str(user_to_be_edited.user_uuid),
+                u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+            }
+            event_ref.document(str(event_id)).set(data_set)
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+        return {'message': 'user has been edited successfully.'}, 201
+
+    def delete(self, uuid):
+        """
+        Deletes a user
+        """
+        try:
+            user_to_be_deleted = User.query.filter_by(user_uuid=uuid).first()
+            if user_to_be_deleted:
+                db.session.delete(user_to_be_deleted)
+                db.session.commit()
+
+                event_id = uuid.uuid4()
+                data_set = {
+                    u'type': u"User",
+                    u'operation': u"Delete",
+                    u'name': user_to_be_deleted.username,
+                    u'email': user_to_be_deleted.email,
+                    u'password': user_to_be_deleted.password_hash,
+                    u'item_id': str(user_to_be_deleted.user_uuid),
+                    u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+                }
+                event_ref.document(str(event_id)).set(data_set)
+            else:
+                return {'message': 'user not found.'}, 404
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+        return {'message': 'user has been deleted successfully.'}, 201
