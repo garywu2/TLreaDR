@@ -1,8 +1,9 @@
 from datetime import datetime
-from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 
-from post_service.models import db
+from sqlalchemy.dialects.postgresql import UUID
+
+from comment_service.models import db
 
 
 class Comment(db.Model):
@@ -23,7 +24,6 @@ class Comment(db.Model):
         self.date_submitted = datetime.utcnow()
         self.author_uuid = author_uuid
         self.parent_uuid = parent_uuid
-
 
     def __repr__(self):
         return '<Comment {}>'.format(self.comment_text)

@@ -1,14 +1,13 @@
-import sys
-
-from flask_restplus import Resource, fields, reqparse, marshal
-from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 from datetime import datetime
 
-from server.models import event_ref
-from server.api.restplus import api
-from server.models import db
-from server.models.user import User
+from flask_restplus import Resource, fields, reqparse, marshal
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from user_service.api.restplus import api
+from user_service.models import db
+from user_service.models import event_ref
+from user_service.models.user import User
 
 ns = api.namespace('users', description='Operations related to users')
 
@@ -71,7 +70,7 @@ class UserCollection(Resource):
                 u'name': new_user.username,
                 u'email': new_user.email,
                 u'password': new_user.password_hash,
-                u'item_id':str(new_user.user_uuid),
+                u'item_id': str(new_user.user_uuid),
                 u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
             }
             event_ref.document(str(event_id)).set(data_set)
@@ -80,6 +79,7 @@ class UserCollection(Resource):
 
         except Exception as e:
             return {"message": str(e)}, 500
+
 
 @ns.route('/<string:username>')
 class UserItem(Resource):

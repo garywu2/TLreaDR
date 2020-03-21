@@ -1,6 +1,6 @@
 # '''API test suite'''
 # import sys, os, json
-# sys.path.insert(0, 'server')
+# sys.path.insert(0, 'user_service')
 # sys.path.insert(0, '..')
 # sys.path.insert(0, '.')
 #

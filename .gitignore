@@ -8,8 +8,9 @@ build
 __pycache__
 .venv
 venv/
-server/.env
+user_service/.env
 post_service/.env
+comment_service/.env
 .idea
 migrations/
 .vscode/

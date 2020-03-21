@@ -4,7 +4,7 @@
   "author": "Yale DH Lab",
   "license": "MIT",
   "description": "Minimal boilerplate for a Flask + React application",
-  "main": "server/server.js",
+  "main": "user_service/server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/duhaime/react-boilerplate.git"
@@ -16,7 +16,7 @@
     "production": "npm run build && npm run serve",
     "serve": "python wsgi.py",
     "lint-js": "eslint -c './src/config/.eslintrc.js' src/",
-    "lint-py": "pylint server/app.py",
+    "lint-py": "pylint user_service/app.py",
     "lint": "npm run lint-js && npm run lint-py",
     "jest": "jest",
     "test": "npm run build && npm run lint && npm run jest && pytest",
