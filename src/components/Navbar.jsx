@@ -79,7 +79,7 @@ const Navbar = () => {
       try {
         dispatch(await getCategories());
       } catch (e) {
-        error = e;
+        console.log(e);
       }
     };
 
@@ -88,7 +88,7 @@ const Navbar = () => {
 
   const renderCategories = () => {
     if (!categories) {
-      return null;
+      return <div></div>;
     }
     return (
       <CategoryWrapper>
