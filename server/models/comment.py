@@ -9,36 +9,42 @@ from . import db
 class Comment(db.Model):
     _N = 6
 
-    comment_uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    comment_uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True)
     comment_text = db.Column(db.String())
-    top_level_votes = db.Column(db.Integer, default=0)
-    comment_votes = db.Column(db.Integer, default=0)
-    date_submitted = db.Column(db.DateTime(), default=datetime.utcnow, index=True)
+    comment_upvotes = db.Column(db.Integer, default=0)
+    comment_downvotes = db.Column(db.Integer, default=0)
+    date_submitted = db.Column(db.DateTime(), default=datetime.utcnow)
     date_edited = db.Column(db.DateTime)
     is_edited = db.Column(db.Boolean, default=False)
     is_deleted = db.Column(db.Boolean, default=False)
     author_uuid = db.Column(UUID(as_uuid=True), nullable=False)
     post_uuid = db.Column(UUID(as_uuid=True), nullable=False)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
     path = db.Column(db.Text, index=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
     replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
-    nested_level = db.Column(db.Integer)
 
-    def __init__(self, comment_text, author_uuid, post_uuid):
+    def __init__(self, comment_text, author_uuid, post_uuid, parent_id):
         self.comment_text = comment_text
         self.date_submitted = datetime.utcnow()
         self.author_uuid = author_uuid
         self.post_uuid = post_uuid
-        prefix = self.parent.path + '.' if self.parent else ''
-        self.path = prefix + '{:0{}d}'.format(self.id, self._N)
-        self.nested_level = len(self.path) // self._N - 1
+        self.parent_id = parent_id
 
-    def __repr__(self):
-        return '<Comment {}>'.format(self.comment_text)
+    # def __repr__(self):
+    #     return '<Comment {}>'.format(self.comment_text)
 
-    def change_top_level_vote(self, vote):
-        for _ in Comment.query.filter(Comment.path.like(self.path + '%')):
-            self.top_level_votes = vote
-            db.session.add(self)
+    def save(self):
+        db.session.add(self)
         db.session.commit()
+
+    def make_path(self):
+        parent = Comment.query.filter_by(id=self.parent_id).first()
+        if parent:
+            prefix = parent.path + '.'
+        else:
+            prefix = ''
+        self.path = prefix + '{:0{}d}'.format(self.id, self._N)
+
+    def level(self):
+        return len(self.path) // self._N - 1
