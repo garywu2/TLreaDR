@@ -114,11 +114,13 @@ const Navbar = () => {
     );
   };
 
-  const searchPosts = async (e) => {
-    if (e.key !== 'Enter') {
-      return;
+  const checkForEnter = e => {
+    if(e.key === "Enter") {
+      searchPosts();
     }
+  }
 
+  const searchPosts = async() => {
     try {
       dispatch(await getPostsBySearch(categoryName, searchInput));
       setSearchInput("");
@@ -127,9 +129,9 @@ const Navbar = () => {
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = e => {
     setSearchInput(e.target.value);
-  }
+  };
 
   const handleLogout = () => {
     dispatch({ type: LOGOUT_USER });
@@ -155,7 +157,7 @@ const Navbar = () => {
             type="text"
             onChange={handleInputChange}
             value={searchInput}
-            onKeyDown={searchPosts}
+            onKeyDown={checkForEnter}
             placeholder="Search..."
           />
         </Search>
