@@ -1,12 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT_USER } from "../actions/types";
 import { getCategories } from "../actions/categories";
+import { getPostsBySearch } from "../actions/posts";
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
@@ -71,8 +72,12 @@ const Search = styled.div`
 const Navbar = () => {
   const userAccount = useSelector(state => state.user);
   const categories = useSelector(state => state.categories);
+  const [searchInput, setSearchInput] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
+  const location = useLocation();
+
+  const categoryName = location.pathname.split("/").reverse()[0];
 
   useEffect(() => {
     const getAllCategories = async () => {
@@ -109,6 +114,23 @@ const Navbar = () => {
     );
   };
 
+  const searchPosts = async (e) => {
+    if (e.key !== 'Enter') {
+      return;
+    }
+
+    try {
+      dispatch(await getPostsBySearch(categoryName, searchInput));
+      setSearchInput("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setSearchInput(e.target.value);
+  }
+
   const handleLogout = () => {
     dispatch({ type: LOGOUT_USER });
     history.push("/");
@@ -129,7 +151,13 @@ const Navbar = () => {
         {renderCategories()}
         <Search>
           <FontAwesomeIcon size="2x" icon={faSearch} />
-          <SearchBar type="text" placeholder="Search..." />
+          <SearchBar
+            type="text"
+            onChange={handleInputChange}
+            value={searchInput}
+            onKeyDown={searchPosts}
+            placeholder="Search..."
+          />
         </Search>
       </SubheaderWrapper>
     </React.Fragment>

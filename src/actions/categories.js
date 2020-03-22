@@ -2,7 +2,7 @@ import axios from "axios";
 import config from "../config/client";
 import { FETCH_CATEGORIES } from './types';
 
-export const getCategories = async() => {
+export const getCategories = async () => {
     const response = await axios.get(config.endpoint + "categories");
 
     if(response.status != 200) {
