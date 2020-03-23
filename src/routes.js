@@ -5,6 +5,7 @@ import Home from './components/Home';
 import SignupPage from './components/SignupPage';
 import SignInPage from './components/SignInPage';
 import CategoryPage from './components/CategoryPage';
+import SearchResultsPage from './components/SearchResultsPage';
 
 const routes = (
   <App>
@@ -13,7 +14,7 @@ const routes = (
       <Route path='/sign-up' component={SignupPage} />
       <Route path='/sign-in' component={SignInPage} />
       <Route path='/category/:category' component={CategoryPage} />
-      <Route path='/search/:input' component={CategoryPage} />
+      <Route path='/search/:input' component={SearchResultsPage} />
     </Switch>
   </App>
 )

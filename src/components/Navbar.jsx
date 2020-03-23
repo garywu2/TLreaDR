@@ -7,7 +7,6 @@ import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT_USER } from "../actions/types";
 import { getCategories } from "../actions/categories";
-import { getPostsBySearch } from "../actions/posts";
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
@@ -17,7 +16,7 @@ const NavbarWrapper = styled.div`
   padding: 10px 25px;
 `;
 
-const SignOutButton = styled.a`
+const LoggedInButton = styled.a`
   color: #ffffff;
   font-size: 18px;
   font-family: "Montserrat", "sans-serif";
@@ -26,7 +25,7 @@ const SignOutButton = styled.a`
   padding: 15px 10px;
 `;
 
-const SignInButton = styled(Link)`
+const LoggedOutButton = styled(Link)`
   color: #ffffff;
   font-size: 18px;
   font-family: "Montserrat", "sans-serif";
@@ -58,6 +57,11 @@ const PageReference = styled(Link)`
   text-align: center;
   text-decoration: none;
   font-family: "Arvo", sans-serif;
+`;
+
+const FontAwesomeSearchIcon = styled(FontAwesomeIcon)`
+  font-size: 2em;
+  cursor: pointer;
 `;
 
 const SearchBar = styled.input`
@@ -112,14 +116,13 @@ const Navbar = () => {
   };
 
   const checkForEnter = e => {
-    if(e.key === "Enter") {
+    if (e.key === "Enter") {
       searchPosts();
     }
-  }
+  };
 
-  const searchPosts = async() => {
+  const searchPosts = async () => {
     try {
-      dispatch(await getPostsBySearch(searchInput));    
       history.push(`/search/${searchInput}`);
     } catch (error) {
       console.log(error);
@@ -143,15 +146,18 @@ const Navbar = () => {
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
         {!userAccount ? (
-          <SignInButton to="/sign-in">Sign In</SignInButton>
+          <LoggedOutButton to="/sign-in">Sign In</LoggedOutButton>
         ) : (
-          <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>
+          <div>
+            <LoggedInButton to="/new">New Post</LoggedInButton>
+            <LoggedInButton onClick={handleLogout}>Log Out</LoggedInButton>
+          </div>
         )}
       </NavbarWrapper>
       <SubheaderWrapper>
         {renderCategories()}
         <Search>
-          <FontAwesomeIcon size="2x" icon={faSearch} />
+          <FontAwesomeSearchIcon icon={faSearch} onClick={searchPosts} />
           <SearchBar
             type="text"
             onChange={handleInputChange}
