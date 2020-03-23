@@ -23,6 +23,7 @@ class Comment(db.Model):
     path = db.Column(db.Text, index=True)
     parent_id = db.Column(db.Integer, db.ForeignKey('comment.id'))
     replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
+    comment_level = db.Column(db.Integer, default=0)
 
     def __init__(self, comment_text, author_uuid, post_uuid, parent_id):
         self.comment_text = comment_text
@@ -45,6 +46,7 @@ class Comment(db.Model):
         else:
             prefix = ''
         self.path = prefix + '{:0{}d}'.format(self.id, self._N)
+        self.comment_level = self.level()
 
     def level(self):
         return len(self.path) // self._N - 1
