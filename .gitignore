@@ -9,6 +9,7 @@ __pycache__
 .venv
 venv/
 .env
-env/
 .idea
 migrations/
+.vscode/
+key.json

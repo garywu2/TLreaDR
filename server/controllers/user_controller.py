@@ -1,6 +1,9 @@
 from flask_restplus import Resource, fields, reqparse, marshal
 from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+from datetime import datetime
 
+from server.models import event_ref
 from server.api.restplus import api
 from server.models import db
 from server.models.user import User
@@ -18,9 +21,6 @@ user_add_parser.add_argument('email', required=True, type=str, help='email of us
 user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
 user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
 
-user_delete_parser = reqparse.RequestParser()
-user_delete_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
-
 user_edit_parser = reqparse.RequestParser()
 user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user',
                               location='json')
@@ -34,7 +34,7 @@ user_login_parser.add_argument('username', required=True, type=str, help='userna
 user_login_parser.add_argument('password', required=True, type=str, help='password of user')
 
 
-@ns.route('/')
+@ns.route('')
 class UserCollection(Resource):
     @ns.marshal_list_with(user_dto)
     def get(self):
@@ -43,7 +43,7 @@ class UserCollection(Resource):
         """
         try:
             results = User.query.all()
-            return results
+            return results, 200
         except Exception as e:
             return {"message": str(e)}, 500
 
@@ -58,11 +58,26 @@ class UserCollection(Resource):
             new_user = User(args['username'], args['email'], args['password'])
             db.session.add(new_user)
             db.session.commit()
+
+            # Queries database for the created user and return its UUID
+            created_user = User.query.filter_by(username=args['username']).first()
+
+            event_id = uuid.uuid4()
+            data_set = {
+                u'type': u"User",
+                u'operation': u"Add",
+                u'name': new_user.username,
+                u'email': new_user.email,
+                u'password': new_user.password_hash,
+                u'item_id':str(new_user.user_uuid),
+                u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+            }
+            event_ref.document(str(event_id)).set(data_set)
+
+            return marshal(created_user, user_dto), 200
+
         except Exception as e:
             return {"message": str(e)}, 500
-
-        return {'message': 'user has been created successfully.'}, 201
-
 
 @ns.route('/<string:username>')
 class UserItem(Resource):
@@ -75,7 +90,7 @@ class UserItem(Resource):
         try:
             queried_user = User.query.filter_by(username=username).first()
             if queried_user:
-                return marshal(queried_user, user_dto)
+                return marshal(queried_user, user_dto), 200
             else:
                 return {"message": 'user not found'}, 404
 
@@ -103,23 +118,44 @@ class UserItem(Resource):
                 return {'message': 'user specified not found in database'}, 201
 
             db.session.commit()
+
+            event_id = uuid.uuid4()
+            data_set = {
+                u'type': u"User",
+                u'operation': u"Update",
+                u'name': user_to_be_edited.username,
+                u'email': user_to_be_edited.email,
+                u'password': user_to_be_edited.password_hash,
+                u'item_id': str(user_to_be_edited.user_uuid),
+                u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+            }
+            event_ref.document(str(event_id)).set(data_set)
         except Exception as e:
             return {"message": str(e)}, 500
 
         return {'message': 'user has been edited successfully.'}, 201
 
-    @ns.expect(user_delete_parser)
-    def delete(self):
+    def delete(self, username):
         """
         Deletes a user
         """
-        args = user_delete_parser.parse_args()
-
         try:
-            user_to_be_deleted = User.query.filter_by(username=args['username']).first()
+            user_to_be_deleted = User.query.filter_by(username=username).first()
             if user_to_be_deleted:
                 db.session.delete(user_to_be_deleted)
                 db.session.commit()
+
+                event_id = uuid.uuid4()
+                data_set = {
+                    u'type': u"User",
+                    u'operation': u"Delete",
+                    u'name': user_to_be_deleted.username,
+                    u'email': user_to_be_deleted.email,
+                    u'password': user_to_be_deleted.password_hash,
+                    u'item_id': str(user_to_be_deleted.user_uuid),
+                    u'time': datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")[:-3]
+                }
+                event_ref.document(str(event_id)).set(data_set)
             else:
                 return {'message': 'user not found.'}, 404
         except Exception as e:
@@ -144,11 +180,11 @@ class UserLogin(Resource):
             queried_user = User.query.filter_by(username=args['username']).first()
             if queried_user:
                 if check_password_hash(queried_user.password_hash, args['password']):
-                    return marshal(queried_user, user_dto)
+                    return marshal(queried_user, user_dto), 200
                 else:
-                    return {'message': 'invalid password'}, 404
+                    return {'message': 'authorization error'}, 401
             else:
-                return {'message': 'username not found'}, 404
+                return {'message': 'username not found'}, 401
 
         except Exception as e:
             return {"message": str(e)}, 404

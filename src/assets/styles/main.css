@@ -38,6 +38,11 @@ p {
   color: #131516;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 input {
   outline: none;
   border: none;
@@ -47,7 +52,7 @@ input {
   margin: 3px;
   font-size: 16px;
   padding: 15px 25px;
-  transition: box-shadow 0.05s ease-out;
+  transition: box-shadow 0.15s ease-out;
 }
 
 input.error {

@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { Link, useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { LOGOUT_USER } from "../actions/types";
+import { getCategories } from "../actions/categories";
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
@@ -12,11 +16,22 @@ const NavbarWrapper = styled.div`
   padding: 10px 25px;
 `;
 
-const Button = styled.a`
+const SignOutButton = styled.a`
   color: #ffffff;
   font-size: 18px;
   font-family: "Montserrat", "sans-serif";
   text-decoration: none;
+  cursor: pointer;
+  padding: 15px 10px;
+`;
+
+const SignInButton = styled(Link)`
+  color: #ffffff;
+  font-size: 18px;
+  font-family: "Montserrat", "sans-serif";
+  text-decoration: none;
+  cursor: pointer;
+  padding: 15px 10px;
 `;
 
 const LogoImage = styled.img`
@@ -30,11 +45,13 @@ const SubheaderWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const CategoryButton = styled.div`
-  float: left;
+const CategoryWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 `;
 
-const Anchor = styled.a`
+const PageReference = styled(Link)`
   padding: 14px 16px;
   color: white;
   text-align: center;
@@ -49,34 +66,70 @@ const SearchBar = styled.input`
 const Search = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
 const Navbar = () => {
+  const userAccount = useSelector(state => state.user);
+  const categories = useSelector(state => state.categories);
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  useEffect(() => {
+    const getAllCategories = async () => {
+      try {
+        dispatch(await getCategories());
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    getAllCategories();
+  }, [getCategories]);
+
+  const renderCategories = () => {
+    if (!categories) {
+      return <div></div>;
+    }
+    return (
+      <CategoryWrapper>
+        <div key="all">
+          <PageReference to="/category/all">Home</PageReference>
+        </div>
+        {categories.map(category => (
+          <div key={category.name}>
+            <PageReference to={"/category/".concat(category.name)}>
+              {category.name
+                .charAt(0)
+                .toUpperCase()
+                .concat(category.name.slice(1))}
+            </PageReference>
+          </div>
+        ))}
+      </CategoryWrapper>
+    );
+  };
+
+  const handleLogout = () => {
+    dispatch({ type: LOGOUT_USER });
+    history.push("/");
+  };
+
   return (
     <React.Fragment>
       <NavbarWrapper>
         <div></div>
         <LogoImage src={logo} alt="TLreaDR" />
-        <Button href="/sign-in">Sign In</Button>
+        {!userAccount ? (
+          <SignInButton to="/sign-in">Sign In</SignInButton>
+        ) : (
+          <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>
+        )}
       </NavbarWrapper>
       <SubheaderWrapper>
-        <div>
-          <CategoryButton>
-            <Anchor href="/home">Home</Anchor>
-          </CategoryButton>
-          <CategoryButton>
-            <Anchor href="/News">News</Anchor>
-          </CategoryButton>
-          <CategoryButton>
-            <Anchor href="/Sports">Sports</Anchor>
-          </CategoryButton>
-          <CategoryButton>
-            <Anchor href="/Lifestyle">Lifestyle</Anchor>
-          </CategoryButton>
-        </div>
+        {renderCategories()}
         <Search>
           <FontAwesomeIcon size="2x" icon={faSearch} />
-          <SearchBar type="text" placeholder="Search..."></SearchBar>
+          <SearchBar type="text" placeholder="Search..." />
         </Search>
       </SubheaderWrapper>
     </React.Fragment>

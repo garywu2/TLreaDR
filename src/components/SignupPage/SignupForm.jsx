@@ -11,46 +11,81 @@ const Wrapper = styled.form`
   align-items: stretch;
 `;
 
-const Row = styled.div`
-  display: flex;
-  margin: 15px 0px;
-
-  & > * {
-    flex: 1;
-  }
+const ErrorMessage = styled.div`
+  visibility: ${props => (props.visible ? "visible" : "hidden")};
+  text-align: center;
+  color: #ff2a2a;
 `;
 
-export default function SignupForm({handleSubmit}) {
+/**
+ * Check for all errors in the redux forms
+ * @param {Array[String]} fields The values of form fields
+ * @param {Function} errCondition A callback function that is true is the field has an error
+ */
+const useErrorCheck = (fields, errCondition) => {
+  const errors = [];
+
+  // true if empty
+  fields.forEach(field => errors.push(errCondition(field)));
+  // return errors in the same order
+
+  return errors;
+};
+
+export default function SignupForm({ handleSubmit, hasErrors }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [invalidSubmit, setInvalidSubmit] = useState(false);
   const theme = useContext(ThemeContext);
 
+  const [usernameError, passwordError, emailError] = useErrorCheck(
+    [username, password, email],
+    field => field.length === 0
+  );
+
+  const handleFormSubmit = e => {
+    e.preventDefault();
+    if ([usernameError, passwordError, emailError].includes(true)) {
+      setInvalidSubmit(true);
+    } else {
+      handleSubmit(email, username, password);
+    }
+  };
+
   return (
-    <Wrapper onSubmit={handleSubmit}>
+    <Wrapper onSubmit={handleFormSubmit}>
       <FormInput
-        hasError={false}
         label="Username"
         handleInputChange={setUsername}
         value={username}
         autocomplete="username"
+        hasError={usernameError}
+        triedSubmit={invalidSubmit}
+        errorMessage="Username cannot be blank!"
       />
       <FormInput
-        hasError={false}
         label="Password"
         handleInputChange={setPassword}
         value={password}
         type="password"
-        autocomplete="new-password"
+        autocomplete="current-password"
+        hasError={passwordError}
+        triedSubmit={invalidSubmit}
+        errorMessage="Password cannot be blank!"
       />
-
       <FormInput
-        hasError={false}
         label="Email address"
         handleInputChange={setEmail}
         value={email}
         autocomplete="email"
+        hasError={emailError}
+        triedSubmit={invalidSubmit}
+        errorMessage="Email address cannot be blank!"
       />
+      <ErrorMessage visible={hasErrors}>
+        That username already exists!
+      </ErrorMessage>
       <FormButton theme={theme}>Sign Up</FormButton>
     </Wrapper>
   );
