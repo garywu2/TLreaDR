@@ -13,6 +13,7 @@ const routes = (
       <Route path='/sign-up' component={SignupPage} />
       <Route path='/sign-in' component={SignInPage} />
       <Route path='/category/:category' component={CategoryPage} />
+      <Route path='/search/:input' component={CategoryPage} />
     </Switch>
   </App>
 )

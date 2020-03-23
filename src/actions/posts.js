@@ -14,8 +14,8 @@ export const getPostsByCategory = async categoryName => {
   return { type: FETCH_POSTS, posts };
 };
 
-export const getPostsBySearch = async (categoryName, searchInput) => {
-  const response = await axios.get(`${config.endpoint}${categoryName}/${searchInput}`);
+export const getPostsBySearch = async (searchInput) => {
+  const response = await axios.get(`${config.endpoint}all/${searchInput}`);
 
   if(response.status != 200) {
     throw "getPostsBySearch failed with error code" + response.status;

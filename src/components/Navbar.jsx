@@ -3,7 +3,7 @@ import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT_USER } from "../actions/types";
 import { getCategories } from "../actions/categories";
@@ -75,9 +75,6 @@ const Navbar = () => {
   const [searchInput, setSearchInput] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
-  const location = useLocation();
-
-  const categoryName = location.pathname.split("/").reverse()[0];
 
   useEffect(() => {
     const getAllCategories = async () => {
@@ -122,11 +119,13 @@ const Navbar = () => {
 
   const searchPosts = async() => {
     try {
-      dispatch(await getPostsBySearch(categoryName, searchInput));
-      setSearchInput("");
+      dispatch(await getPostsBySearch(searchInput));    
+      history.push(`/search/${searchInput}`);
     } catch (error) {
       console.log(error);
     }
+
+    setSearchInput("");
   };
 
   const handleInputChange = e => {
