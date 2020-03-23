@@ -67,8 +67,11 @@ class CommentCollection(Resource):
 
         try:
             new_comment = Comment(args['text'], args['author_uuid'], args['post_uuid'], args['parent_id'])
+            # First save is required to save the comment to the db and generate an auto-incremented id
             new_comment.save()
+            # The id of the comment is then used to make the path of the comment
             new_comment.make_path()
+            # The path changes are committed again to the db using a second save
             new_comment.save()
         except Exception as e:
             return {"message": str(e)}, 500
