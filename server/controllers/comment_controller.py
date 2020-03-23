@@ -6,18 +6,21 @@ from server.models.comment import Comment
 
 ns = api.namespace('comments', description='Operations related to comments')
 
-comment_dto = api.model('comment', {
-    'comment_uuid': fields.String(required=True, description='comment uuid'),
-    'id': fields.Integer(required=True, description='comment id'),
-    'comment_text': fields.String(required=True, description='comment text'),
-    'comment_upvotes': fields.String(required=True, description='comment upvotes'),
-    'comment_downvotes': fields.String(required=True, description='comment downvotes'),
-    'author_uuid': fields.String(required=True, description='author uuid'),
-    'post_uuid': fields.String(required=True, description='post uuid'),
-    'path': fields.String(required=True, description='comment path'),
-    'parent_id': fields.Integer(required=True, description='comment parent id')
-})
-comment_dto['nested_comment'] = fields.List(fields.Nested(comment_dto))
+def recursive_comment_mapping(level):
+    comment_dto = {
+        'comment_uuid': fields.String(required=True, description='comment uuid'),
+        'id': fields.Integer(required=True, description='comment id'),
+        'comment_text': fields.String(required=True, description='comment text'),
+        'comment_upvotes': fields.String(required=True, description='comment upvotes'),
+        'comment_downvotes': fields.String(required=True, description='comment downvotes'),
+        'author_uuid': fields.String(required=True, description='author uuid'),
+        'post_uuid': fields.String(required=True, description='post uuid'),
+        'path': fields.String(required=True, description='comment path'),
+        'parent_id': fields.Integer(required=True, description='comment parent id')
+    }
+    if level:
+        comment_dto['nested_comment'] = fields.Nested(recursive_comment_mapping(level-1))
+    return api.model('Comment'+str(level), comment_dto)
 
 comment_parser = reqparse.RequestParser()
 comment_parser.add_argument('text', required=True, type=str, help='comment text', location='json')
@@ -33,7 +36,7 @@ def display_comment(comment):
 
 @ns.route('/')
 class CommentCollection(Resource):
-    @ns.marshal_list_with(comment_dto)
+    @ns.marshal_list_with(recursive_comment_mapping(10))
     def get(self):
         """
         Gets all comments

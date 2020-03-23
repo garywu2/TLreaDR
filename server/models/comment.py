@@ -31,8 +31,8 @@ class Comment(db.Model):
         self.post_uuid = post_uuid
         self.parent_id = parent_id
 
-    # def __repr__(self):
-    #     return '<Comment {}>'.format(self.comment_text)
+    def __repr__(self):
+        return '<Comment {}>'.format(self.comment_text)
 
     def save(self):
         db.session.add(self)
