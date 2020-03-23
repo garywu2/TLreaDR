@@ -1,5 +1,6 @@
 import React, { useState, useContext } from "react";
 import FormInput from "../styled/FormInput";
+import FormDropdown from "../styled/FormDropdown";
 import styled, { ThemeContext } from "styled-components";
 import FormButton from "../styled/FormButton";
 import { useSelector } from "react-redux";
@@ -43,6 +44,12 @@ export default function NewPostForm({
   const [invalidSubmit, setInvalidSubmit] = useState(false);
   const { category, title, body, image_link } = formValues;
   const categories = useSelector(state => state.categories);
+  const categoryOptions = categories
+    ? categories.map(category => ({
+        value: category.name,
+        label: category.name[0].toUpperCase() + category.name.slice(1)
+      }))
+    : [];
 
   const setCategory = category =>
     setFormValues(prevState => ({ ...prevState, category }));
@@ -90,13 +97,10 @@ export default function NewPostForm({
         value={image_link}
         triedSubmit={invalidSubmit}
       />
-      <FormInput
+      <FormDropdown
         label="Category"
         handleInputChange={setCategory}
-        value={category}
-        hasError={categoryError}
-        triedSubmit={invalidSubmit}
-        errorMessage="Category cannot be blank!"
+        options={categoryOptions}
       />
       <ErrorMessage visible={hasErrors}>
         There was an error on the backend.
