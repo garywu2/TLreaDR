@@ -15,7 +15,7 @@ export const getPostsByCategory = async categoryName => {
 };
 
 export const getPostsBySearch = async (searchInput) => {
-  const response = await axios.get(`${config.endpoint}all/${searchInput}`);
+  const response = await axios.get(`${config.endpoint}all/search/${searchInput}`);
 
   if(response.status != 200) {
     throw "getPostsBySearch failed with error code" + response.status;

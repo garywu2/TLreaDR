@@ -207,7 +207,7 @@ class PostItem(Resource):
 
         return {'message': 'post has been deleted successfully.'}, 201
 
-@ns.route('/<string:search>')
+@ns.route('/search/<string:search>')
 class PostSearch(Resource):
     @ns.marshal_list_with(post_dto, envelope='posts')
     def get(self, category, search):
