@@ -11,6 +11,12 @@ from post_service.models.post import Post
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
+user_dto = api.model('user', {
+    'user_uuid': fields.String(required=True, description='user uuid'),
+    'email': fields.String(required=True, description='user email address'),
+    'username': fields.String(required=True, description='user username'),
+})
+
 post_dto = api.model('post', {
     'post_uuid': fields.String(required=True, description='post uuid'),
     'title': fields.String(required=True, description='title of the post'),
@@ -22,15 +28,9 @@ post_dto = api.model('post', {
     'downvotes': fields.Integer(required=True, descrption='downvotes of the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
-    'author': fields.Nested(api.model('user', {
-            'user_uuid': fields.String(required=True, description='user uuid'),
-            'email': fields.String(required=True, description='user email address'),
-            'username': fields.String(required=True, description='user username'),
-        })
-    )
+    'author': fields.Nested(user_dto),
     'new_flag': fields.Boolean(required=True, description='new flag for the post'),
-    'edited_flag': fields.Boolean(required=True, description='new flag for the post'),
-    'author': fields.Nested(user_dto)
+    'edited_flag': fields.Boolean(required=True, description='new flag for the post')
 })
 
 post_add_parser = reqparse.RequestParser()
@@ -115,7 +115,8 @@ def get_posts_by_category(category):
 
 @ns.route('/posts')
 class PostCollection(Resource):
-    @ns.marshal_list_with(post_dto, envelope='posts')
+    @ns.response(code=201, model=user_dto, description='Success')
+    @ns.response(code=404, description='Not Found')
     def get(self, category):
         """
         Gets all uploaded posts
@@ -124,7 +125,7 @@ class PostCollection(Resource):
             if category is None:
                 return {"message": "category not found."}, 201
 
-            return get_posts_by_category(category), 200
+            return marshal(get_posts_by_category(category), post_dto, envelope='posts'), 200
         except Exception as e:
                 return {"message": str(e)}, 500
 
