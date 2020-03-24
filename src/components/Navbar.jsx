@@ -115,7 +115,7 @@ const Navbar = () => {
         {userAccount ? (
           <div>
             <LoggedInButton onClick={handleViewProfile}>Profile</LoggedInButton>
-            <LoggedInButton to="/new">New Post</LoggedInButton>
+            <LoggedInButton onClick={handleNewPostRequest}>New Post</LoggedInButton>
             <LoggedInButton onClick={handleLogout}>Log Out</LoggedInButton>
           </div>
         ) : (
@@ -130,6 +130,10 @@ const Navbar = () => {
   const handleViewProfile = () => {
     history.push(`/${userAccount.username}`);
   };
+
+  const handleNewPostRequest = () => {
+    history.push('/new');
+  }
 
   const handleLogout = () => {
     dispatch({ type: LOGOUT_USER });
