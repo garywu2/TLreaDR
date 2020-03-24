@@ -11,7 +11,6 @@ const usePosts = () => {
 
   const searchInput = location.pathname.split("/").reverse()[0].replace("%20"," ");
 
-
   useEffect(() => {
     const getPosts = async () => {
       try {
