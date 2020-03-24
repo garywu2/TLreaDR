@@ -11,18 +11,28 @@ import { getCategories } from "../actions/categories";
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 10px 25px;
 `;
 
+const NavbarMainChild = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+
+  &:last-child > div {
+    margin-left: auto;
+  }
+`;
+
 const LoggedInButton = styled.a`
   color: #ffffff;
-  font-size: 18px;
+  font-size: 15px;
   font-family: "Montserrat", "sans-serif";
   text-decoration: none;
   cursor: pointer;
   padding: 15px 10px;
+  margin: 3px;
 `;
 
 const LoggedOutButton = styled(Link)`
@@ -115,6 +125,24 @@ const Navbar = () => {
     );
   };
 
+  const renderMenuButtons = () => {
+    return (
+      <NavbarMainChild>
+        {userAccount ? (
+          <div>
+            <LoggedInButton onClick={handleViewProfile}>Profile</LoggedInButton>
+            <LoggedInButton to="/new">New Post</LoggedInButton>
+            <LoggedInButton onClick={handleLogout}>Log Out</LoggedInButton>
+          </div>
+        ) : (
+          <div>
+            <LoggedOutButton to="/sign-in">Sign In</LoggedOutButton>
+          </div>
+        )}
+      </NavbarMainChild>
+    );
+  };
+
   const checkForEnter = e => {
     if (e.key === "Enter") {
       searchPosts();
@@ -135,6 +163,10 @@ const Navbar = () => {
     setSearchInput(e.target.value);
   };
 
+  const handleViewProfile = () => {
+    history.push(`/${userAccount.username}`);
+  };
+
   const handleLogout = () => {
     dispatch({ type: LOGOUT_USER });
     history.push("/");
@@ -143,16 +175,11 @@ const Navbar = () => {
   return (
     <React.Fragment>
       <NavbarWrapper>
-        <div></div>
-        <LogoImage src={logo} alt="TLreaDR" />
-        {!userAccount ? (
-          <LoggedOutButton to="/sign-in">Sign In</LoggedOutButton>
-        ) : (
-          <div>
-            <LoggedInButton to="/new">New Post</LoggedInButton>
-            <LoggedInButton onClick={handleLogout}>Log Out</LoggedInButton>
-          </div>
-        )}
+        <NavbarMainChild></NavbarMainChild>
+        <NavbarMainChild>
+          <LogoImage src={logo} alt="TLreaDR" />
+        </NavbarMainChild>
+        {renderMenuButtons()}
       </NavbarWrapper>
       <SubheaderWrapper>
         {renderCategories()}
