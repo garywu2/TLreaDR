@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT_USER } from "../actions/types";
 import { getCategories } from "../actions/categories";
+import SearchBar from "./SearchBar";
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
@@ -15,7 +14,7 @@ const NavbarWrapper = styled.div`
   padding: 10px 25px;
 `;
 
-const NavbarMainChild = styled.div`
+const NavbarHeaderChild = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
@@ -69,24 +68,9 @@ const PageReference = styled(Link)`
   font-family: "Arvo", sans-serif;
 `;
 
-const FontAwesomeSearchIcon = styled(FontAwesomeIcon)`
-  font-size: 2em;
-  cursor: pointer;
-`;
-
-const SearchBar = styled.input`
-  margin: 10px 20px;
-`;
-
-const Search = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 const Navbar = () => {
   const userAccount = useSelector(state => state.user);
   const categories = useSelector(state => state.categories);
-  const [searchInput, setSearchInput] = useState("");
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -127,7 +111,7 @@ const Navbar = () => {
 
   const renderMenuButtons = () => {
     return (
-      <NavbarMainChild>
+      <NavbarHeaderChild>
         {userAccount ? (
           <div>
             <LoggedInButton onClick={handleViewProfile}>Profile</LoggedInButton>
@@ -139,28 +123,8 @@ const Navbar = () => {
             <LoggedOutButton to="/sign-in">Sign In</LoggedOutButton>
           </div>
         )}
-      </NavbarMainChild>
+      </NavbarHeaderChild>
     );
-  };
-
-  const checkForEnter = e => {
-    if (e.key === "Enter") {
-      searchPosts();
-    }
-  };
-
-  const searchPosts = async () => {
-    try {
-      history.push(`/search/${searchInput}`);
-    } catch (error) {
-      console.log(error);
-    }
-
-    setSearchInput("");
-  };
-
-  const handleInputChange = e => {
-    setSearchInput(e.target.value);
   };
 
   const handleViewProfile = () => {
@@ -175,24 +139,15 @@ const Navbar = () => {
   return (
     <React.Fragment>
       <NavbarWrapper>
-        <NavbarMainChild></NavbarMainChild>
-        <NavbarMainChild>
+        <NavbarHeaderChild></NavbarHeaderChild>
+        <NavbarHeaderChild>
           <LogoImage src={logo} alt="TLreaDR" />
-        </NavbarMainChild>
+        </NavbarHeaderChild>
         {renderMenuButtons()}
       </NavbarWrapper>
       <SubheaderWrapper>
         {renderCategories()}
-        <Search>
-          <FontAwesomeSearchIcon icon={faSearch} onClick={searchPosts} />
-          <SearchBar
-            type="text"
-            onChange={handleInputChange}
-            value={searchInput}
-            onKeyDown={checkForEnter}
-            placeholder="Search..."
-          />
-        </Search>
+        <SearchBar />
       </SubheaderWrapper>
     </React.Fragment>
   );
