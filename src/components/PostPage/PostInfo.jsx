@@ -57,8 +57,7 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
-export default function PostExpanded({ post, handleExpand }) {
-  const [expanded, setExpanded] = useState(false);
+export default function PostInfo({ post, handleExpand }) {
   const theme = useContext(ThemeContext);
 
   const handleThumbsUp = () => {

@@ -6,6 +6,7 @@ import SignupPage from "./components/SignupPage";
 import SignInPage from "./components/SignInPage";
 import CategoryPage from "./components/CategoryPage";
 import NewPostPage from "./components/NewPostPage";
+import PostPage from "./components/PostPage";
 
 const routes = (
   <App>
@@ -14,6 +15,7 @@ const routes = (
       <Route path="/sign-up" component={SignupPage} />
       <Route path="/sign-in" component={SignInPage} />
       <Route path="/category/:category" component={CategoryPage} />
+      <Route path="/post/:post" component={PostPage} />
       <Route path="/new" component={NewPostPage} />
     </Switch>
   </App>

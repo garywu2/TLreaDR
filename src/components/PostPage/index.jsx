@@ -1,17 +1,13 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getPostsByCategory } from "../../actions/posts";
-import PostsList from "./PostsList";
+import { getPostByUuid } from "../../actions/posts";
+import { getCommentsByPostUuid } from "../../actions/comments";
+import PostInfo from "./PostInfo";
 
 // custom hook (I'm trying it out lol)
-const usePosts = () => {
-  const dispatch = useDispatch();
-  const posts = useSelector(state => state.posts);
-  // obtains category from URL
+const usePost = () => {
+  // obtains post uuid from URL
   const location = useLocation();
-
-  const categoryName = location.pathname.split("/").reverse()[0];
 
   let error = null;
 
@@ -28,18 +24,48 @@ const usePosts = () => {
 
     getPosts();
   }, [getPostsByCategory, categoryName, location]);
-
-  return [posts, error];
 };
 
-const CategoryPage = props => {
-  const [posts, error] = usePosts();
+const PostPage = props => {
+  const [post, setPost] = useState(null);
+  const [comments, setComments] = useState(null);
+
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        const postUuid = location.pathname.split("/").reverse()[0];
+        const { post } = await getPostByUuid(postUuid);
+        setPost(post);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    getPost();
+  }, [setPost, getPostByUuid, location]);
+
+  useEffect(() => {
+    const getComments = async () => {
+      if (post) {
+        try {
+          const { comments } = await getCommentsByPostUuid(post.post_uuid);
+          setComments(comments);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    };
+
+    getComments();
+  }, [post, getCommentsByPostUuid, setComments]);
+
+  console.log(post, comments);
 
   return (
     <div>
-      <PostsList posts={posts}></PostsList>
+      {post ? <PostInfo post={post}></PostInfo> : <div>Loading...</div>}
     </div>
   );
 };
 
-export default CategoryPage;
+export default PostPage;
