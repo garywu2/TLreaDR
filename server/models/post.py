@@ -25,6 +25,8 @@ class Post(db.Model):
     upvotes = db.Column(db.Integer, nullable=False, default=0)
     downvotes = db.Column(db.Integer, nullable=False, default=0)
 
+    new_flag = db.Column(db.Boolean, nullable=False, default=True)
+
     edited_flag = db.Column(db.Boolean, nullable=False, default=False)
 
     def __init__(self, title, body, category_uuid, author_uuid, image_link):
@@ -34,6 +36,11 @@ class Post(db.Model):
         self.category_uuid = category_uuid
         self.author_uuid = author_uuid
         self.image_link = image_link
+
+    def invert_new_flag(self):
+        if self.new_flag is True:
+            self.new_flag = False
+        db.session.commit()
 
     def __repr__(self):
         return '<Post {}>'.format(self.title)
