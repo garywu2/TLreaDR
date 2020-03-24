@@ -48,12 +48,11 @@ def get_author(author_uuid):
 
 
 # Nests author information inside the post json
-def nest_author_info(posts):
-    for post in posts:
-        user = get_author(post.author_uuid)
-        post.author = marshal(user, user_dto)
+def nest_author_info(post):
+    user = get_author(post.author_uuid)
+    post.author = marshal(user, user_dto)
 
-    return posts
+    return post
 
 
 def get_all_posts():
@@ -76,7 +75,8 @@ def get_all_posts():
             post.invert_new_flag()
             result_posts.append(post)
 
-    nest_author_info(result_posts)
+    for post in result_posts:
+        nest_author_info(post)
 
     return result_posts
 
@@ -106,7 +106,8 @@ def get_posts_by_category(category):
             post.invert_new_flag()
             result_posts.append(post)
 
-    nest_author_info(result_posts)
+    for post in result_posts:
+        nest_author_info(post)
 
     return result_posts
 
@@ -146,13 +147,22 @@ class PostCollection(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-        return {'message': 'post has been created successfully.'}, 201
+        return marshal(new_post, post_dto), 200
 
 
 @ns.route('/<string:post_uuid>')
 class PostItem(Resource):
+    @ns.marshal_list_with(post_dto)
+    def get(self, post_uuid, category):
+        """
+        Gets a post given its UUID
+        """
+        result_post = Post.query.filter_by(post_uuid=post_uuid).first()
+        nest_author_info(result_post)
+        return result_post
+
     @ns.expect(post_edit_parser)
-    def put(self, category, post_uuid):
+    def put(self, post_uuid, category):
         """
         Updates an existing post's information
         """

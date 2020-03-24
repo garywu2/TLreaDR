@@ -62,9 +62,22 @@ export default function PostDisplay({ post }) {
     setExpanded(!expanded);
   };
 
+  const handleThumbsUp = () => {
+    console.log("handleThumbsUp called");
+  };
+
+  const handleThumbsDown = () => {
+    console.log("handleThumbsDown called");
+  };
+
   return expanded ? (
     <PostExpanded post={post} handleExpand={handleExpand} />
   ) : (
-    <PostPreview post={post} handleExpand={handleExpand} />
+    <PostPreview
+      post={post}
+      handleThumbsUp={handleThumbsUp}
+      handleThumbsDown={handleThumbsDown}
+      handleExpand={handleExpand}
+    />
   );
 }

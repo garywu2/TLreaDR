@@ -57,13 +57,17 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
-export default function PostExpanded({
-  post,
-  handleThumbsUp,
-  handleThumbsDown,
-  handleExpand
-}) {
+export default function PostExpanded({ post, handleExpand }) {
+  const [expanded, setExpanded] = useState(false);
   const theme = useContext(ThemeContext);
+
+  const handleThumbsUp = () => {
+    console.log("handleThumbsUp called");
+  };
+
+  const handleThumbsDown = () => {
+    console.log("handleThumbsDown called");
+  };
 
   return (
     <Display theme={theme}>
