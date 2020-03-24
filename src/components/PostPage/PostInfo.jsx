@@ -57,7 +57,7 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
-export default function PostInfo({ post, handleExpand }) {
+export default function PostInfo({ post }) {
   const theme = useContext(ThemeContext);
 
   const handleThumbsUp = () => {
@@ -96,9 +96,6 @@ export default function PostInfo({ post, handleExpand }) {
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
       </Body>
-      <Icon onClick={handleExpand}>
-        <FontAwesomeIcon size="2x" icon={faCaretUp}></FontAwesomeIcon>
-      </Icon>
     </Display>
   );
 }

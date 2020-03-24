@@ -3,28 +3,12 @@ import { useLocation } from "react-router-dom";
 import { getPostByUuid } from "../../actions/posts";
 import { getCommentsByPostUuid } from "../../actions/comments";
 import PostInfo from "./PostInfo";
+import CommentsList from "./CommentsList";
+import styled from 'styled-components';
 
-// custom hook (I'm trying it out lol)
-const usePost = () => {
-  // obtains post uuid from URL
-  const location = useLocation();
-
-  let error = null;
-
-  // grab posts on mount
-  useEffect(() => {
-    // this pattern is for async functions
-    const getPosts = async () => {
-      try {
-        dispatch(await getPostsByCategory(categoryName));
-      } catch (e) {
-        error = e;
-      }
-    };
-
-    getPosts();
-  }, [getPostsByCategory, categoryName, location]);
-};
+const Wrapper = styled.div`
+  margin: 10px 0px 30px;
+`
 
 const PostPage = props => {
   const [post, setPost] = useState(null);
@@ -62,9 +46,14 @@ const PostPage = props => {
   console.log(post, comments);
 
   return (
-    <div>
+    <Wrapper>
       {post ? <PostInfo post={post}></PostInfo> : <div>Loading...</div>}
-    </div>
+      {comments ? (
+        <CommentsList comments={comments}></CommentsList>
+      ) : (
+        <div>Loading...</div>
+      )}
+    </Wrapper>
   );
 };
 
