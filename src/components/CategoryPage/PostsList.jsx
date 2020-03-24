@@ -13,7 +13,10 @@ export default function PostsList({ posts }) {
   const renderPosts = () => {
     if (!posts) {
       return <div>Loading...</div>;
+    } else if(posts.length == 0) {
+      return <div>No results found.</div>
     }
+    
     return posts.map(post => (
       <PostDisplay key={post.post_uuid} post={post}></PostDisplay>
     ));
