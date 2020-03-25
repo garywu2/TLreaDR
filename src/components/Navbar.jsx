@@ -128,7 +128,7 @@ const Navbar = () => {
   };
 
   const viewProfileButtonClick = () => {
-    history.push(`/${userAccount.username}`);
+    history.push(`/user/${userAccount.username}`);
   };
 
   const newPostButtonClick = () => {

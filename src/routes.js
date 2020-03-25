@@ -7,6 +7,7 @@ import SignInPage from './components/SignInPage';
 import CategoryPage from './components/CategoryPage';
 import SearchResultsPage from './components/SearchResultsPage';
 import NewPostPage from "./components/NewPostPage";
+import ProfilePage from "./components/ProfilePage";
 
 const routes = (
   <App>
@@ -17,6 +18,7 @@ const routes = (
       <Route path='/category/:category' component={CategoryPage} />
       <Route path='/search/:input' component={SearchResultsPage} />
       <Route path="/new" component={NewPostPage} />
+      <Route path="/user/:username" component={ProfilePage} />
     </Switch>
   </App>
 );
