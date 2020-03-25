@@ -11,6 +11,8 @@ venv/
 user_service/.env
 user_service/key.json
 post_service/.env
+service/.env
+service/key.json
 post_service/key.json
 comment_service/.env
 comment_service/key.json

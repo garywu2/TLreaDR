@@ -43,7 +43,7 @@ def nest_comment(comment):
         nest_comment(reply)
 
 
-@ns.route('/')
+@ns.route('')
 class CommentCollection(Resource):
     @ns.marshal_list_with(recursive_comment_mapping(10))
     def get(self):

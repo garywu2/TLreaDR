@@ -46,7 +46,8 @@ post_edit_parser.add_argument('new_image_link', nullable=True, type=str, help='n
 
 
 def get_author(author_uuid):
-    return requests.get('http://localhost:7082/api/users/uuid/' + str(author_uuid)).json()
+    return requests.get('http://user_service:7082/api/users/' + str(author_uuid)).json()
+
 
 # Nests author information inside the post json
 def nest_author_info(post):
@@ -127,7 +128,7 @@ class PostCollection(Resource):
 
             return marshal(get_posts_by_category(category), post_dto, envelope='posts'), 200
         except Exception as e:
-                return {"message": str(e)}, 500
+            return {"message": str(e)}, 500
 
     @api.expect(post_add_parser)
     def post(self, category):
@@ -209,7 +210,8 @@ class PostItem(Resource):
 
         return {'message': 'post has been deleted successfully.'}, 201
 
-@ns.route('/<string:search>')
+
+@ns.route('/search/<string:search>')
 class PostSearch(Resource):
     @ns.marshal_list_with(post_dto, envelope='posts')
     def get(self, category, search):

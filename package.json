@@ -14,7 +14,7 @@
     "build": "webpack --config webpack.config.js --mode=production",
     "compress": "webpack --config webpack.config.js --mode=production",
     "production": "npm run build && npm run serve",
-    "serve": "python wsgi.py",
+    "serve": "docker-compose up",
     "lint-js": "eslint -c './src/config/.eslintrc.js' src/",
     "lint-py": "pylint user_service/app.py",
     "lint": "npm run lint-js && npm run lint-py",

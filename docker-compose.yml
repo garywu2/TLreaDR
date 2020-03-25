@@ -1,0 +1,34 @@
+version: "2.1"
+services:
+  user_service:
+    container_name: user_service
+    build:
+      context: ./user_service
+    ports:
+      - "7083:7082"
+    environment:
+      - DEBUG=True
+  post_service:
+    container_name: post_service
+    build:
+      context: ./post_service
+    ports:
+      - "7084:7082"
+    environment:
+      - DEBUG=True
+  comment_service:
+    container_name: comment_service
+    build:
+      context: ./comment_service
+    ports:
+      - "7085:7082"
+    environment:
+      - DEBUG=True
+  server:
+    container_name: server
+    build:
+      context: ./server
+    ports:
+      - "7082:7082"
+    environment:
+      - DEBUG=True
