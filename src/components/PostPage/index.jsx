@@ -5,12 +5,18 @@ import { getCommentsByPostUuid } from "../../actions/comments";
 import PostInfo from "./PostInfo";
 import CommentsList from "./CommentsList";
 import styled from 'styled-components';
+import { useDispatch, useSelector } from "react-redux";
+import { uploadComment } from "../../actions/comments";
 
 const Wrapper = styled.div`
   margin: 10px 0px 30px;
 `
 
 const PostPage = props => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const user = useSelector(state=>state.user);
+  const userUuid = user? user.user_uuid:null;
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
 
@@ -45,11 +51,15 @@ const PostPage = props => {
 
   console.log(post, comments);
 
+  const postComment = async (comment) => {
+      dispatch(await uploadComment(comment));
+  };
+
   return (
     <Wrapper>
       {post ? <PostInfo post={post}></PostInfo> : <div>Loading...</div>}
       {comments ? (
-        <CommentsList comments={comments}></CommentsList>
+        <CommentsList comments={comments} handleComment={postComment}></CommentsList>
       ) : (
         <div>Loading...</div>
       )}
