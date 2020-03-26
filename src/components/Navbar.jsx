@@ -1,31 +1,40 @@
 import React, { useEffect } from "react";
 import logo from "../assets/TLreaDR-logo.png";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { LOGOUT_USER } from "../actions/types";
 import { getCategories } from "../actions/categories";
+import SearchBar from "./SearchBar";
 
 const NavbarWrapper = styled.div`
   background-color: #ef3e36;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 10px 25px;
 `;
 
-const SignOutButton = styled.a`
+const NavbarHeaderChild = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+
+  &:last-child > div {
+    margin-left: auto;
+  }
+`;
+
+const LoggedInButton = styled.a`
   color: #ffffff;
-  font-size: 18px;
+  font-size: 15px;
   font-family: "Montserrat", "sans-serif";
   text-decoration: none;
   cursor: pointer;
   padding: 15px 10px;
+  margin: 3px;
 `;
 
-const SignInButton = styled(Link)`
+const LoggedOutButton = styled(Link)`
   color: #ffffff;
   font-size: 18px;
   font-family: "Montserrat", "sans-serif";
@@ -57,15 +66,6 @@ const PageReference = styled(Link)`
   text-align: center;
   text-decoration: none;
   font-family: "Arvo", sans-serif;
-`;
-
-const SearchBar = styled.input`
-  margin: 10px 20px;
-`;
-
-const Search = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const Navbar = () => {
@@ -109,6 +109,32 @@ const Navbar = () => {
     );
   };
 
+  const renderMenuButtons = () => {
+    return (
+      <NavbarHeaderChild>
+        {userAccount ? (
+          <div>
+            <LoggedInButton onClick={viewProfileButtonClick}>Profile</LoggedInButton>
+            <LoggedInButton onClick={newPostButtonClick}>New Post</LoggedInButton>
+            <LoggedInButton onClick={handleLogout}>Log Out</LoggedInButton>
+          </div>
+        ) : (
+          <div>
+            <LoggedOutButton to="/sign-in">Sign In</LoggedOutButton>
+          </div>
+        )}
+      </NavbarHeaderChild>
+    );
+  };
+
+  const viewProfileButtonClick = () => {
+    history.push(`/${userAccount.username}`);
+  };
+
+  const newPostButtonClick = () => {
+    history.push('/new');
+  }
+
   const handleLogout = () => {
     dispatch({ type: LOGOUT_USER });
     history.push("/");
@@ -117,20 +143,15 @@ const Navbar = () => {
   return (
     <React.Fragment>
       <NavbarWrapper>
-        <div></div>
-        <LogoImage src={logo} alt="TLreaDR" />
-        {!userAccount ? (
-          <SignInButton to="/sign-in">Sign In</SignInButton>
-        ) : (
-          <SignOutButton onClick={handleLogout}>Log Out</SignOutButton>
-        )}
+        <NavbarHeaderChild></NavbarHeaderChild>
+        <NavbarHeaderChild>
+          <LogoImage src={logo} alt="TLreaDR" />
+        </NavbarHeaderChild>
+        {renderMenuButtons()}
       </NavbarWrapper>
       <SubheaderWrapper>
         {renderCategories()}
-        <Search>
-          <FontAwesomeIcon size="2x" icon={faSearch} />
-          <SearchBar type="text" placeholder="Search..." />
-        </Search>
+        <SearchBar />
       </SubheaderWrapper>
     </React.Fragment>
   );
