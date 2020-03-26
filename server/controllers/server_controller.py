@@ -121,7 +121,7 @@ class CommentsCollection(Resource):
         return requests.post('http://comment_service:7082/api/comments', json=request.json).json()
 
 
-@ns.route('/comments>/<string:comment_uuid>')
+@ns.route('/comments/<string:comment_uuid>')
 class PostItem(Resource):
     @ns.expect(comment_put_model, validate=False)
     def put(self, comment_uuid):
@@ -131,3 +131,9 @@ class PostItem(Resource):
     def delete(self, comment_uuid):
         """ COMMENTS: Deletes a comment """
         return requests.delete('http://comment_service:7082/api/comments/' + comment_uuid).json()
+
+@ns.route('/comments/<string:post_uuid>')
+class PostComment(Resource):
+    def get(self, post_uuid):
+        """ COMMENTS: Gets all comments for a post"""
+        return requests.get('http://comment_service:7082/api/comments/' + post_uuid).json()
