@@ -1,12 +1,8 @@
-# The examples in this file come from the Flask-SQLAlchemy documentation
-# For more information take a look at:
-# http://flask-sqlalchemy.pocoo.org/2.1/quickstart/#simple-relationships
-
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from datetime import datetime
 
-from . import db
+from post_service.models import db
 
 
 class Post(db.Model):

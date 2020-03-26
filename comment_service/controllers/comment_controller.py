@@ -2,9 +2,9 @@ from datetime import datetime
 
 from flask_restplus import Resource, fields, reqparse
 
-from server.api.restplus import api
-from server.models import db
-from server.models.comment import Comment
+from comment_service.api.restplus import api
+from comment_service.models import db
+from comment_service.models.comment import Comment
 
 ns = api.namespace('comments', description='Operations related to comments')
 
@@ -43,7 +43,7 @@ def nest_comment(comment):
         nest_comment(reply)
 
 
-@ns.route('/')
+@ns.route('')
 class CommentCollection(Resource):
     @ns.marshal_list_with(recursive_comment_mapping(10))
     def get(self):
