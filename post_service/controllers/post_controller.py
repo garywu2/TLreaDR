@@ -1,18 +1,21 @@
 from datetime import datetime, timedelta
 
+import requests
 from flask_restplus import Resource, fields, reqparse, marshal
 from sqlalchemy import desc
 
-from server.api.restplus import api
-from server.controllers.user_controller import user_dto
-from server.models import db
-from server.models.category import Category
-from server.models.post import Post
-from server.models.user import User
+from post_service.api.restplus import api
+from post_service.models import db
+from post_service.models.category import Category
+from post_service.models.post import Post
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
-# TODO This post controller has ALOT of dependency on the Users table which should be changed after implementing microservices
+user_dto = api.model('user', {
+    'user_uuid': fields.String(required=True, description='user uuid'),
+    'email': fields.String(required=True, description='user email address'),
+    'username': fields.String(required=True, description='user username'),
+})
 
 post_dto = api.model('post', {
     'post_uuid': fields.String(required=True, description='post uuid'),
@@ -25,9 +28,9 @@ post_dto = api.model('post', {
     'downvotes': fields.Integer(required=True, descrption='downvotes of the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
+    'author': fields.Nested(user_dto),
     'new_flag': fields.Boolean(required=True, description='new flag for the post'),
-    'edited_flag': fields.Boolean(required=True, description='new flag for the post'),
-    'author': fields.Nested(user_dto)
+    'edited_flag': fields.Boolean(required=True, description='new flag for the post')
 })
 
 post_add_parser = reqparse.RequestParser()
@@ -42,9 +45,8 @@ post_edit_parser.add_argument('new_body', nullable=True, type=str, help='new bod
 post_edit_parser.add_argument('new_image_link', nullable=True, type=str, help='new image link', location='json')
 
 
-# TODO Dependent on User model
 def get_author(author_uuid):
-    return User.query.filter_by(user_uuid=author_uuid).first()
+    return requests.get('http://user_service:7082/api/users/' + str(author_uuid)).json()
 
 
 # Nests author information inside the post json
@@ -114,7 +116,8 @@ def get_posts_by_category(category):
 
 @ns.route('/posts')
 class PostCollection(Resource):
-    @ns.marshal_list_with(post_dto, envelope='posts')
+    @ns.response(code=201, model=user_dto, description='Success')
+    @ns.response(code=404, description='Not Found')
     def get(self, category):
         """
         Gets all uploaded posts
@@ -123,9 +126,9 @@ class PostCollection(Resource):
             if category is None:
                 return {"message": "category not found."}, 201
 
-            return get_posts_by_category(category), 200
+            return marshal(get_posts_by_category(category), post_dto, envelope='posts'), 200
         except Exception as e:
-                return {"message": str(e)}, 500
+            return {"message": str(e)}, 500
 
     @api.expect(post_add_parser)
     def post(self, category):
@@ -206,6 +209,7 @@ class PostItem(Resource):
             return {"message": str(e)}, 500
 
         return {'message': 'post has been deleted successfully.'}, 201
+
 
 @ns.route('/search/<string:search>')
 class PostSearch(Resource):

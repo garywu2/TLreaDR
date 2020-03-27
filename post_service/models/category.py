@@ -1,4 +1,4 @@
-from . import db
+from post_service.models import db
 
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
