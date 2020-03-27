@@ -43,7 +43,7 @@ a {
   color: inherit;
 }
 
-input {
+input, textarea {
   outline: none;
   border: none;
   box-shadow: 0 0 0 1px lightgray;
@@ -55,11 +55,15 @@ input {
   transition: box-shadow 0.15s ease-out;
 }
 
-input.error {
+textarea {
+  resize: none;
+}
+
+input.error, textarea.error {
   box-shadow: 0 0 0 1px red;
 }
 
-input:focus {
+input:focus, textarea:focus {
   box-shadow: 0 0 0 3px skyblue;
 }
 
