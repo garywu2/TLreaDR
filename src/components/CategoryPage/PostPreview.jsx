@@ -3,6 +3,7 @@ import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import convertDate from "../../utils/convertDate";
 
 const Display = styled.div`
   background-color: white;
@@ -69,12 +70,16 @@ export default function PostPreview({ post, handleExpand }) {
             <Link to={"/user/" + post.author.username}>
               {post.author.username}
             </Link>{" "}
-            on {post.pub_date.slice(0, 10).replace(/-/g, "/")}
+            on {convertDate(post.pub_date)}
           </small>
         </Header>
       </Body>
       <Icon>
-        <FontAwesomeIcon onClick={handleExpand} size="2x" icon={faCaretDown}></FontAwesomeIcon>
+        <FontAwesomeIcon
+          onClick={handleExpand}
+          size="2x"
+          icon={faCaretDown}
+        ></FontAwesomeIcon>
       </Icon>
     </Display>
   );

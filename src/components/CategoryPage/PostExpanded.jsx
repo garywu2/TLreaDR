@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import convertDate from "../../utils/convertDate";
 
 const Display = styled.div`
   background-color: white;
@@ -106,7 +107,7 @@ export default function PostExpanded({
             <Link to={"/user/" + post.author.username}>
               {post.author.username}
             </Link>{" "}
-            on {post.pub_date.slice(0, 10).replace(/-/g, "/")}
+            on {convertDate(post.pub_date)}
           </small>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
