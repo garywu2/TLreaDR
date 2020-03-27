@@ -6,11 +6,7 @@ import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 
 const Wrapper = styled.div`
   background-color: #e9e9e9;
-  display: flex;
-`;
-
-const Main = styled.div`
-  flex: 1;
+  border-radius: 8px;
 `;
 
 const Body = styled.div`
@@ -33,7 +29,7 @@ const Text = styled.p`
 `;
 
 const BottomBar = styled.div`
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: #c9c9c9;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -60,13 +56,13 @@ const Icon = styled.div`
 const BottomBarButton = styled.button`
   padding: 4px 8px;
   color: ${({ theme }) => (theme ? theme.secondaryTextColor : "#fff")};
-  background-color: rgba(0, 0, 0, 0);
+  background-color: #c9c9c9;
   transition: background-color 0.1s linear;
   cursor: pointer;
   border: ${({ theme }) => (theme ? theme.darkerColor : "#c21a11")};
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: #898989;
   }
 `;
 
@@ -85,7 +81,6 @@ export default function Comment({ comment, handleReplyClick }) {
 
   return (
     <Wrapper>
-      <Main>
         <Body>
           <Header>Placeholder on 2020-03-26</Header>
           {/* <Header>
@@ -115,7 +110,6 @@ export default function Comment({ comment, handleReplyClick }) {
             </Icon>
           </Icons>
         </BottomBar>
-      </Main>
     </Wrapper>
   );
 }

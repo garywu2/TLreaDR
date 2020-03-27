@@ -12,6 +12,7 @@ const Display = styled.div`
   align-items: stretch;
   color: ${({ theme }) => (theme ? theme.primaryTextColor : "#131516")};
   box-shadow: 5px 7px 0px rgba(0, 0, 0, 0.25);
+  margin: 20px 0px;
 `;
 
 export default function CommentThread({ comment, handleCommentSubmit }) {
