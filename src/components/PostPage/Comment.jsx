@@ -81,24 +81,19 @@ export default function Comment({ comment, handleReplyClick }) {
     console.log("handleThumbsUp called");
   };
 
-  // placeholders before API response changes
-  comment.author = { username: "Placeholder" };
-  comment.pub_date = "2020-03-26";
-
-  console.log(comment);
-
   const commentScore = comment.comment_upvotes - comment.comment_downvotes;
 
   return (
     <Wrapper>
       <Main>
         <Body>
-          <Header>
+          <Header>Placeholder on 2020-03-26</Header>
+          {/* <Header>
             <Link to={"/user/" + comment.author.username}>
               {comment.author.username}
             </Link>{" "}
             on {comment.pub_date}
-          </Header>
+          </Header> */}
           <Text>{comment.comment_text}</Text>
         </Body>
         <BottomBar>

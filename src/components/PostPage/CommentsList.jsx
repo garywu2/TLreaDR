@@ -9,6 +9,7 @@ const Title = styled.h2`
 `;
 
 export default function CommentsList({ comments, handleCommentSubmit }) {
+  console.log(comments);
 
   return (
     <div>
