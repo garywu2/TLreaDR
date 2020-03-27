@@ -26,23 +26,26 @@ const Bar = styled.div`
 export default function NestedComment({
   comment,
   isRoot,
-  handleCommentSubmit
+  handleCommentSubmit,
+  parentList
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const newParentList = [...parentList, comment.id];
 
   const handleReplyClick = () => {
     setShowReplyForm(!showReplyForm);
   };
 
-  const handleReplySubmit = commentText => {
-    const parentId = comment.id;
-    // add parent uuid (this comment)
-    handleCommentSubmit(commentText, parentId);
+  const handleReplySubmit = async (commentText) => {
+    await handleCommentSubmit(commentText, newParentList);
+    // wait for comment to be posted
+    setShowReplyForm(!showReplyForm);
   };
 
   const renderChildrenComments = () => {
     return comment.nested_comment.map(com => (
       <NestedComment
+        parentList={newParentList}
         key={com.comment_uuid}
         comment={com}
         isRoot={false}

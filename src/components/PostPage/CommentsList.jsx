@@ -9,13 +9,11 @@ const Title = styled.h2`
 `;
 
 export default function CommentsList({ comments, handleCommentSubmit }) {
-  console.log(comments);
-
   return (
     <div>
       <Title>Post a comment</Title>
       <CommentForm
-        handleSubmit={handleCommentSubmit}
+        handleSubmit={(commentText) => handleCommentSubmit(commentText, [])}
         placeholder="Write a comment here..."
       ></CommentForm>
       {comments ? (

@@ -34,5 +34,5 @@ export const postComment = async (
     throw "comment failed with error code " + response.status;
   }
 
-  return { type: "POST_COMMENT", response: response.data };
+  return { type: "POST_COMMENT", comment: response.data };
 };

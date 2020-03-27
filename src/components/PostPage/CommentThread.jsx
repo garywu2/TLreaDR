@@ -18,7 +18,7 @@ const Display = styled.div`
 export default function CommentThread({ comment, handleCommentSubmit }) {
   return (
     <Display>
-      <NestedComment comment={comment} handleCommentSubmit={handleCommentSubmit} isRoot={true}></NestedComment>
+      <NestedComment parentList={[]} comment={comment} handleCommentSubmit={handleCommentSubmit} isRoot={true}></NestedComment>
     </Display>
   );
 }
