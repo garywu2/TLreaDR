@@ -67,7 +67,6 @@ const Points = styled.div`
 `;
 
 const Title = styled.h2`
-  cursor: pointer;
   text-decoration: none;
   color: inherit;
 `;
@@ -99,9 +98,13 @@ export default function PostExpanded({
       </Icons>
       <Body>
         <Header>
-          <Link to={`/post/${post.post_uuid}`}>
+          {post.post_uuid ? (
+            <Link to={`/post/${post.post_uuid}`}>
+              <Title>{post.title}</Title>
+            </Link>
+          ) : (
             <Title>{post.title}</Title>
-          </Link>
+          )}
           <small>
             by{" "}
             <Link to={"/user/" + post.author.username}>
