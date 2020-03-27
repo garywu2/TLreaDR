@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask_restplus import Resource, fields, reqparse
+from flask_restplus import Resource, fields, reqparse, marshal
 
 from comment_service.api.restplus import api
 from comment_service.models import db
@@ -76,7 +76,7 @@ class CommentCollection(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-        return {'message': 'comment has been created successfully.'}, 201
+        return marshal(new_comment, recursive_comment_mapping(0)), 201
 
 
 @ns.route('/<string:comment_uuid>')
