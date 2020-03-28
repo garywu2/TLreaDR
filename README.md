@@ -42,6 +42,20 @@ SECRET_KEY='the secret key you generated in step 2'
 SQLALCHEMY_DATABASE_URI='postgresql://{username}:{password}@{JDBC_URL}/postgres
 ```
 
+### Configuring Docker Microservices
+
+*  Download docker for your platform and check if it is correctly installed using:
+
+```
+docker --version
+``` 
+
+* Build docker containers
+
+```
+docker-compose up --build
+```
+
 ## Quickstart
 
 To run both the server and client, you can run the following command:
@@ -50,7 +64,11 @@ To run both the server and client, you can run the following command:
 npm run dev
 ```
 
-This will run the server on port 7082 and the client on 7081
+This will run the the client on 7081 and the server's microservices will run on:
+
+* User service: 7082
+* Post service: 7083
+* Comment service: 7084
 
 ## Tests
 

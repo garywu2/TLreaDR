@@ -14,7 +14,7 @@ const SignInPage = () => {
     try {
       dispatch(await loginUser(username, password));
       // redirect
-      history.push("/");
+      history.push("/category/all");
     } catch (error) {
       // error stuff
       setHasErrors(true);

@@ -56,3 +56,8 @@ export const uploadPost = async (
   const { post_uuid } = response.data;
   return { type: "UPLOAD_POST", postUuid: post_uuid };
 };
+
+export const getPostByUuid = async post_uuid => {
+  const response = await axios.get(`${config.endpoint}all/${post_uuid}`);
+  return { type: "GET_POST", post: response.data };
+};
