@@ -7,11 +7,8 @@ import SignInPage from './components/SignInPage';
 import CategoryPage from './components/CategoryPage';
 import SearchResultsPage from './components/SearchResultsPage';
 import NewPostPage from "./components/NewPostPage";
-<<<<<<< HEAD
 import ProfilePage from "./components/ProfilePage";
-=======
 import PostPage from "./components/PostPage";
->>>>>>> master
 
 const routes = (
   <App>
