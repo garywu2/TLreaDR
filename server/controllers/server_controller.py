@@ -98,7 +98,8 @@ class PostSearch(Resource):
 class UserPosts(Resource):
     def get(self, category, user_uuid):
         """ POSTS: Gets all posts by user """
-        return requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid).json()
+        response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid)
+        return response.json(), response.status_code
 
 
 # Category (Post Service) Redirects
@@ -164,11 +165,13 @@ class PostItem(Resource):
 class PostComment(Resource):
     def get(self, post_uuid):
         """ COMMENTS: Gets all comments for a post """
-        return requests.get('http://comment_service:7082/api/comments/post/' + post_uuid).json()
+        response = requests.get('http://comment_service:7082/api/comments/post/' + post_uuid)
+        return response.json(), response.status_code
 
 
 @ns.route('/comments/user/<string:user_uuid>')
 class UserComments(Resource):
     def get(self, user_uuid):
         """ COMMENTS: Gets all comments for a user """
-        return requests.get('http://comment_service:7082/api/comments/user/' + user_uuid).json()
+        response = requests.get('http://comment_service:7082/api/comments/user/' + user_uuid)
+        return response.json(), response.status_code
