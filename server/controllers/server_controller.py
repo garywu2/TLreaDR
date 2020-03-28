@@ -55,9 +55,10 @@ class UserLogin(Resource):
 
 @ns.route('/<string:category>/posts')
 class PostCollection(Resource):
+    @ns.expect(post_get_parser)
     def get(self, category):
         """ POSTS: Gets all posts """
-        response = requests.get('http://post_service:7082/api/' + category + '/posts')
+        response = requests.get('http://post_service:7082/api/' + category + '/posts', params=post_get_parser.parse_args())
         return response.json(), response.status_code
 
     @ns.expect(post_model, validate=False)
@@ -69,9 +70,10 @@ class PostCollection(Resource):
 
 @ns.route('/<string:category>/<string:post_uuid>')
 class PostItem(Resource):
+    @ns.expect(post_get_parser)
     def get(self, category, post_uuid):
         """ POSTS: Gets a specified post by post_uuid """
-        response = requests.get('http://post_service:7082/api/' + category + '/' + post_uuid)
+        response = requests.get('http://post_service:7082/api/' + category + '/' + post_uuid, params=post_get_parser.parse_args())
         return response.json(), response.status_code
 
     @ns.expect(post_put_model, validate=False)
@@ -88,17 +90,43 @@ class PostItem(Resource):
 
 @ns.route('/<string:category>/search/<string:search>')
 class PostSearch(Resource):
+    @ns.expect(post_get_parser)
     def get(self, category, search):
         """ POSTS: Searches for posts """
-        response = requests.get('http://post_service:7082/api/' + category + '/search/' + search)
+        response = requests.get('http://post_service:7082/api/' + category + '/search/' + search, params=post_get_parser.parse_args())
         return response.json(), response.status_code
 
 
 @ns.route('/<string:category>/posts/<string:user_uuid>')
 class UserPosts(Resource):
+    @ns.expect(post_get_parser)
     def get(self, category, user_uuid):
         """ POSTS: Gets all posts by user """
-        response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid)
+        response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid, params=post_get_parser.parse_args())
+        return response.json(), response.status_code
+
+
+@ns.route('/<string:category>/<string:post_uuid>/vote')
+class PostVote(Resource):
+    @ns.expect(vote_post_model)
+    def post(self, category, post_uuid):
+        """ POST: Creates a vote on a post """
+        response = requests.post('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
+                                 json=request.json)
+        return response.json(), response.status_code
+
+    @ns.expect(vote_put_model)
+    def put(self, category, post_uuid):
+        """ POST: Updates a vote on a post """
+        response = requests.put('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
+                                json=request.json)
+        return response.json(), response.status_code
+
+    @ns.expect(vote_delete_model)
+    def delete(self, category, post_uuid):
+        """ POST: Deletes a vote on a post """
+        response = requests.delete('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
+                                json=request.json)
         return response.json(), response.status_code
 
 
@@ -161,11 +189,11 @@ class PostItem(Resource):
         return response.json(), response.status_code
 
 
-@ns.route('/comments/post/<string:post_uuid>')
+@ns.route('/comments/<string:post_uuid>')
 class PostComment(Resource):
     def get(self, post_uuid):
         """ COMMENTS: Gets all comments for a post """
-        response = requests.get('http://comment_service:7082/api/comments/post/' + post_uuid)
+        response = requests.get('http://comment_service:7082/api/comments/' + post_uuid)
         return response.json(), response.status_code
 
 

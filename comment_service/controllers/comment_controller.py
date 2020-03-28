@@ -126,7 +126,7 @@ class CommentItem(Resource):
         return {'message': 'comment has been deleted successfully.'}, 201
 
 
-@ns.route('/post/<string:post_uuid>')
+@ns.route('/<string:post_uuid>')
 class PostComment(Resource):
     @ns.marshal_list_with(recursive_comment_mapping(10))
     def get(self, post_uuid):

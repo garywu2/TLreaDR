@@ -38,5 +38,25 @@ class Post(db.Model):
             self.new_flag = False
         db.session.commit()
 
+    def assign_vote(self, vote_type, update):
+        if update:
+            if vote_type == 1:
+                self.downvotes -= 1
+                self.upvotes += 1
+            elif vote_type == -1:
+                self.downvotes += 1
+                self.upvotes -= 1
+        else:
+            if vote_type == 1:
+                self.upvotes += 1
+            elif vote_type == -1:
+                self.downvotes += 1
+
+    def delete_vote(self, vote_type):
+        if vote_type == 1:
+            self.upvotes -= 1
+        elif vote_type == -1:
+            self.downvotes -= 1
+
     def __repr__(self):
         return '<Post {}>'.format(self.title)
