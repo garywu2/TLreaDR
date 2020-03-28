@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask_restplus import Resource, fields, reqparse, marshal
+from sqlalchemy import desc
 
 from comment_service.api.restplus import api
 from comment_service.models import db
@@ -16,6 +17,8 @@ def recursive_comment_mapping(level):
         'comment_text': fields.String(required=True, description='comment text'),
         'comment_upvotes': fields.String(required=True, description='comment upvotes'),
         'comment_downvotes': fields.String(required=True, description='comment downvotes'),
+        'date_submitted': fields.String(required=True, description='submission date'),
+        'date_edited': fields.String(required=True, description='edit date'),
         'author_uuid': fields.String(required=True, description='author uuid'),
         'post_uuid': fields.String(required=True, description='post uuid'),
         'path': fields.String(required=True, description='comment path'),
@@ -123,7 +126,7 @@ class CommentItem(Resource):
         return {'message': 'comment has been deleted successfully.'}, 201
 
 
-@ns.route('/<string:post_uuid>')
+@ns.route('/post/<string:post_uuid>')
 class PostComment(Resource):
     @ns.marshal_list_with(recursive_comment_mapping(10))
     def get(self, post_uuid):
@@ -134,9 +137,28 @@ class PostComment(Resource):
             comments = Comment.query \
                 .filter_by(parent_id=None) \
                 .filter_by(post_uuid=post_uuid) \
-                .order_by(Comment.path).all()
+                .order_by(desc(Comment.date_submitted)).all()
+
             for comment in comments:
                 nest_comment(comment)
+
+            return comments
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+
+@ns.route('/user/<string:user_uuid>')
+class UserComments(Resource):
+    @ns.marshal_list_with(recursive_comment_mapping(0))
+    def get(self, user_uuid):
+        """
+        Gets all comments for user specified
+        """
+        try:
+            comments = Comment.query \
+                .filter_by(author_uuid=user_uuid) \
+                .order_by(desc(Comment.date_submitted)).all()
+
             return comments
         except Exception as e:
             return {"message": str(e)}, 500
