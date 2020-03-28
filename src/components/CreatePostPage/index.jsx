@@ -1,20 +1,19 @@
 import React, { useState } from "react";
-import SignInForm from "./SignInForm";
+import CreatePostForm from "./CreatePostForm";
 import { useDispatch } from "react-redux";
-import { loginUser } from "../../actions/users";
 import { useHistory } from "react-router-dom";
 
-const SignInPage = () => {
+const CreatePostPage = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [hasErrors, setHasErrors] = useState(false);
 
   // later write code to post to API
-  const handleSignin = async (username, password) => {
+  const CreatePostForm = async (title, description) => {
     try {
-      dispatch(await loginUser(username, password));
+      dispatch(await createPost(title, description));
       // redirect
-      history.push("/category/all");
+      history.push("/");
     } catch (error) {
       // error stuff
       setHasErrors(true);
@@ -24,9 +23,9 @@ const SignInPage = () => {
 
   return (
     <div>
-      <SignInForm handleSubmit={handleSignin} hasErrors={hasErrors}></SignInForm>
+      <CreatePostForm handleSubmit={handleSignin}></CreatePostForm>
     </div>
   );
 };
 
-export default SignInPage;
+export default CreatePostForm;

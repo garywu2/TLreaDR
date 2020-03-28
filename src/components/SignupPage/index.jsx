@@ -14,7 +14,7 @@ const SignupPage = () => {
     try {
       dispatch(await addUser(email, username, password));
       // redirect
-      history.push("/");
+      history.push("/category/all");
     } catch (error) {
       console.log(error);
       setHasErrors(true);

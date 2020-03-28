@@ -7,14 +7,16 @@ import SignInPage from './components/SignInPage';
 import CategoryPage from './components/CategoryPage';
 import SearchResultsPage from './components/SearchResultsPage';
 import NewPostPage from "./components/NewPostPage";
+import PostPage from "./components/PostPage";
 
 const routes = (
   <App>
     <Switch>
-      <Route exact path='/' component={Home} />
-      <Route path='/sign-up' component={SignupPage} />
-      <Route path='/sign-in' component={SignInPage} />
-      <Route path='/category/:category' component={CategoryPage} />
+      <Route exact path="/" component={Home} />
+      <Route path="/sign-up" component={SignupPage} />
+      <Route path="/sign-in" component={SignInPage} />
+      <Route path="/category/:category" component={CategoryPage} />
+      <Route path="/post/:post" component={PostPage} />
       <Route path='/search/:input' component={SearchResultsPage} />
       <Route path="/new" component={NewPostPage} />
     </Switch>

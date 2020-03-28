@@ -4,3 +4,5 @@ export const LOGOUT_USER = "LOGOUT_USER";
 export const CLEAR_POSTS = "CLEAR_POSTS";
 export const FETCH_POSTS = "FETCH_POSTS";
 export const FETCH_CATEGORIES = "FETCH_CATEGORIES";
+export const FETCH_COMMENTS = "FETCH_COMMENTS";
+export const UPLOAD_COMMENTS = "UPLOAD_COMMENTS";
