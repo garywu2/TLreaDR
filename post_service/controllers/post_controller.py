@@ -222,3 +222,16 @@ class PostSearch(Resource):
                 result_posts.append(post)
 
         return result_posts
+
+
+@ns.route('/posts/<string:user_uuid>')
+class UserPosts(Resource):
+    @ns.marshal_list_with(post_dto, envelope='posts')
+    def get(self, category, user_uuid):
+        result_posts = Post.query.filter_by(author_uuid=user_uuid) \
+                            .order_by(desc(Post.pub_date)).all()
+
+        for post in result_posts:
+            nest_author_info(post)
+
+        return result_posts
