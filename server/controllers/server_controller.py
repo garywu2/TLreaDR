@@ -13,28 +13,33 @@ ns = api.namespace('api', description='Operations related to server routes')
 class UserCollection(Resource):
     def get(self):
         """ USERS: Gets all users """
-        return requests.get('http://user_service:7082/api/users').json()
+        response = requests.get('http://user_service:7082/api/users')
+        return response.json(), response.status_code
 
     @ns.expect(user_model, validate=False)
     def post(self):
         """ USERS: Creates a new user """
-        return requests.post('http://user_service:7082/api/users', json=request.json).json()
+        response = requests.post('http://user_service:7082/api/users', json=request.json)
+        return response.json(), response.status_code
 
 
 @ns.route('/users/<string:uuid>')
 class UserItem(Resource):
     def get(self, uuid):
         """ USERS: Gets a specified user by uuid """
-        return requests.get('http://user_service:7082/api/users/' + uuid).json()
+        response = requests.get('http://user_service:7082/api/users/' + uuid)
+        return response.json(), response.status_code
 
     @ns.expect(user_put_model, validate=False)
     def put(self, uuid):
         """ USERS: Updates a user """
-        return requests.put('http://user_service:7082/api/users/' + uuid, json=request.json).json()
+        response = requests.put('http://user_service:7082/api/users/' + uuid, json=request.json)
+        return response.json(), response.status_code
 
     def delete(self, uuid):
         """ USERS: Deletes a user """
-        return requests.delete('http://user_service:7082/api/users/' + uuid).json()
+        response = requests.delete('http://user_service:7082/api/users/' + uuid)
+        return response.json(), response.status_code
 
 
 @ns.route('/users/login')
@@ -42,7 +47,8 @@ class UserLogin(Resource):
     @ns.expect(user_model, validate=False)
     def post(self):
         """ USERS: Login for user """
-        return requests.get('http://user_service:7082/api/users/login', params=request.json).json()
+        response = requests.get('http://user_service:7082/api/users/login', params=request.json)
+        return response.json(), response.status_code
 
 
 # Post Service Redirects
@@ -51,42 +57,49 @@ class UserLogin(Resource):
 class PostCollection(Resource):
     def get(self, category):
         """ POSTS: Gets all posts """
-        return requests.get('http://post_service:7082/api/' + category + '/posts').json()
+        response = requests.get('http://post_service:7082/api/' + category + '/posts')
+        return response.json(), response.status_code
 
     @ns.expect(post_model, validate=False)
     def post(self, category):
         """ POSTS: Creates a new post """
-        return requests.post('http://post_service:7082/api/' + category + '/posts', json=request.json).json()
+        response = requests.post('http://post_service:7082/api/' + category + '/posts', json=request.json)
+        return response.json(), response.status_code
 
 
 @ns.route('/<string:category>/<string:post_uuid>')
 class PostItem(Resource):
     def get(self, category, post_uuid):
         """ POSTS: Gets a specified post by post_uuid """
-        return requests.get('http://post_service:7082/api/' + category + '/' + post_uuid).json()
+        response = requests.get('http://post_service:7082/api/' + category + '/' + post_uuid)
+        return response.json(), response.status_code
 
     @ns.expect(post_put_model, validate=False)
     def put(self, category, post_uuid):
         """ POSTS: Updates a post """
-        return requests.put('http://post_service:7082/api/' + category + '/' + post_uuid, json=request.json).json()
+        response = requests.put('http://post_service:7082/api/' + category + '/' + post_uuid, json=request.json)
+        return response.json(), response.status_code
 
     def delete(self, category, post_uuid):
         """ POSTS: Deletes a post """
-        return requests.delete('http://post_service:7082/api/' + category + '/' + post_uuid).json()
+        response = requests.delete('http://post_service:7082/api/' + category + '/' + post_uuid)
+        return response.json(), response.status_code
 
 
 @ns.route('/<string:category>/search/<string:search>')
 class PostSearch(Resource):
     def get(self, category, search):
         """ POSTS: Searches for posts """
-        return requests.get('http://post_service:7082/api/' + category + '/search/' + search).json()
+        response = requests.get('http://post_service:7082/api/' + category + '/search/' + search)
+        return response.json(), response.status_code
 
 
 @ns.route('/<string:category>/posts/<string:user_uuid>')
 class UserPosts(Resource):
     def get(self, category, user_uuid):
         """ POSTS: Gets all posts by user """
-        return requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid).json()
+        response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid)
+        return response.json(), response.status_code
 
 
 # Category (Post Service) Redirects
@@ -95,23 +108,27 @@ class UserPosts(Resource):
 class CategoryCollection(Resource):
     def get(self):
         """ CATEGORIES: Gets all categories """
-        return requests.get('http://post_service:7082/api/categories').json()
+        response = requests.get('http://post_service:7082/api/categories')
+        return response.json(), response.status_code
 
     @ns.expect(category_model)
     def post(self):
         """ CATEGORIES: Creates a new category """
-        return requests.post('http://post_service:7082/api/categories', json=request.json).json()
+        response = requests.post('http://post_service:7082/api/categories', json=request.json)
+        return response.json(), response.status_code
 
 
 @ns.route('/categories/<string:category>')
 class CategoryItem(Resource):
     def get(self, category):
         """ CATEGORIES: Gets a specified category by name """
-        return requests.get('http://post_service:7082/api/categories/' + category).json()
+        response = requests.get('http://post_service:7082/api/categories/' + category)
+        return response.json(), response.status_code
 
     def delete(self, category):
         """ CATEGORIES: Deletes a category """
-        return requests.delete('http://post_service:7082/api/categories/' + category).json()
+        response = requests.delete('http://post_service:7082/api/categories/' + category)
+        return response.json(), response.status_code
 
 
 # Comment Service Redirects
@@ -120,12 +137,14 @@ class CategoryItem(Resource):
 class CommentsCollection(Resource):
     def get(self):
         """ COMMENTS: Gets all comments """
-        return requests.get('http://comment_service:7082/api/comments').json()
+        response = requests.get('http://comment_service:7082/api/comments')
+        return response.json(), response.status_code
 
     @ns.expect(comment_model)
     def post(self):
         """ COMMENTS: Creates a new comment """
-        return requests.post('http://comment_service:7082/api/comments', json=request.json).json()
+        response = requests.post('http://comment_service:7082/api/comments', json=request.json)
+        return response.json(), response.status_code
 
 
 @ns.route('/comments/<string:comment_uuid>')
@@ -133,22 +152,26 @@ class PostItem(Resource):
     @ns.expect(comment_put_model, validate=False)
     def put(self, comment_uuid):
         """ COMMENTS: Updates a comment """
-        return requests.put('http://comment_service:7082/api/comments/' + comment_uuid, json=request.json).json()
+        response = requests.put('http://comment_service:7082/api/comments/' + comment_uuid, json=request.json)
+        return response.json(), response.status_code
 
     def delete(self, comment_uuid):
         """ COMMENTS: Deletes a comment """
-        return requests.delete('http://comment_service:7082/api/comments/' + comment_uuid).json()
+        response = requests.delete('http://comment_service:7082/api/comments/' + comment_uuid)
+        return response.json(), response.status_code
 
 
 @ns.route('/comments/post/<string:post_uuid>')
 class PostComment(Resource):
     def get(self, post_uuid):
         """ COMMENTS: Gets all comments for a post """
-        return requests.get('http://comment_service:7082/api/comments/post/' + post_uuid).json()
+        response = requests.get('http://comment_service:7082/api/comments/post/' + post_uuid)
+        return response.json(), response.status_code
 
 
 @ns.route('/comments/user/<string:user_uuid>')
 class UserComments(Resource):
     def get(self, user_uuid):
         """ COMMENTS: Gets all comments for a user """
-        return requests.get('http://comment_service:7082/api/comments/user/' + user_uuid).json()
+        response = requests.get('http://comment_service:7082/api/comments/user/' + user_uuid)
+        return response.json(), response.status_code
