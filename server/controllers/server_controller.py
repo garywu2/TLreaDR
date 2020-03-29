@@ -45,9 +45,9 @@ class UserItem(Resource):
 @ns.route('/users/login')
 class UserLogin(Resource):
     @ns.expect(user_model, validate=False)
-    def post(self):
+    def get(self):
         """ USERS: Login for user """
-        response = requests.get('http://user_service:7082/api/users/login', params=request.json)
+        response = requests.get('http://user_service:7082/api/users/login', params=request.args)
         return response.json(), response.status_code
 
 
