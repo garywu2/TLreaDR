@@ -1,6 +1,7 @@
-from sqlalchemy.dialects.postgresql import UUID
-from uuid import uuid4
 from datetime import datetime
+from uuid import uuid4
+
+from sqlalchemy.dialects.postgresql import UUID
 
 from post_service.models import db
 

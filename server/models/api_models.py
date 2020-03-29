@@ -29,9 +29,6 @@ post_put_model = api.model('Post', {
     "new_image_link": fields.String(description='new image link to picture'),
 })
 
-post_get_parser = reqparse.RequestParser()
-post_get_parser.add_argument('requested_user_uuid', required=False, type=str, help='user that requested get')
-
 category_model = api.model('Category', {
     "name": fields.String(description='category name')
 })
