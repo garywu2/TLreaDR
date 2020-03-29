@@ -20,7 +20,7 @@ const routes = (
       <Route path="/post/:post" component={PostPage} />
       <Route path='/search/:input' component={SearchResultsPage} />
       <Route path="/new" component={NewPostPage} />
-      <Route path="/user/:username" component={ProfilePage} />
+      <Route path="/user/:uuid" component={ProfilePage} />
     </Switch>
   </App>
 );
