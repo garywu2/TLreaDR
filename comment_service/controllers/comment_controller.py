@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import requests
 from flask_restplus import Resource, fields, reqparse, marshal
 from sqlalchemy import desc
 

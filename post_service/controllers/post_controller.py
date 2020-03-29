@@ -26,28 +26,15 @@ post_dto = api.model('post', {
     'pub_date': fields.String(required=True, description='published date'),
     'edited_date': fields.String(description='published date'),
     'image_link': fields.String(description='image link of the post'),
-    'upvotes': fields.Integer(required=True, descrption='upvotes of the post'),
-    'downvotes': fields.Integer(required=True, descrption='downvotes of the post'),
+    'votes': fields.Integer(required=True, descrption='votes of the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
-    'author': fields.Nested(user_dto),
+    'author_uuid': fields.String(required=True, description='uuid of author'),
+    'author_username': fields.String(required=True, description='username of author'),
     'new_flag': fields.Boolean(required=True, description='new flag for the post'),
     'edited_flag': fields.Boolean(required=True, description='new flag for the post'),
     'vote_type': fields.Integer(required=False, description='status of user vote')
 })
-
-
-def get_author(author_uuid):
-    return requests.get('http://user_service:7082/api/users/' + str(author_uuid)).json()
-
-
-# Nests author information inside the post json
-def nest_author_info(post):
-    user = get_author(post.author_uuid)
-    post.author = marshal(user, user_dto)
-
-    return post
-
 
 def get_posts_by_category(category, user_uuid):
     post_query = Post.query
@@ -56,7 +43,6 @@ def get_posts_by_category(category, user_uuid):
         queried_category = Category.query.filter_by(name=category).first()
         post_query = post_query.filter_by(category_uuid=queried_category.category_uuid)
 
-    filteredPostVote = Postvote.query.filter_by(user_uuid=user_uuid).subquery()
     # Calculates 3 days prior to current time
     three_days_ago = datetime.utcnow() - timedelta(days=3)
     # Obtains posts from recent 3 days with category filter (new posts)
@@ -75,7 +61,6 @@ def get_posts_by_category(category, user_uuid):
             post.invert_new_flag()
 
     for post in result_posts:
-        nest_author_info(post)
         get_post_vote(post, user_uuid)
 
     return result_posts
@@ -101,7 +86,7 @@ class PostCollection(Resource):
         """
         args = post_get_parser.parse_args()
         try:
-            if not Category.query.filter_by(name=category).first():
+            if category != 'all' and Category.query.filter_by(name=category).first() is None:
                 return {"message": "category not found."}, 404
 
             posts = get_posts_by_category(category, args['user_uuid'])
@@ -143,7 +128,6 @@ class PostItem(Resource):
         args = post_get_parser.parse_args()
 
         result_post = Post.query.filter_by(post_uuid=post_uuid).first()
-        nest_author_info(result_post)
         if args['user_uuid']:
             get_post_vote(result_post, args['user_uuid'])
         else:
@@ -259,7 +243,7 @@ class PostVote(Resource):
             new_post_vote = Postvote(post_uuid, args['user_uuid'], args['vote_type'])
             post_voted_on = Post.query.filter_by(post_uuid=post_uuid).first()
 
-            post_voted_on.assign_vote(args['vote_type'], False)
+            post_voted_on.assign_vote(args['vote_type'])
 
             db.session.add(new_post_vote)
             db.session.commit()
@@ -287,7 +271,7 @@ class PostVote(Resource):
                 if vote_to_be_edited.vote_type == new_vote_type:
                     return {'message': 'cannot vote twice on the same post'}, 404
                 vote_to_be_edited.vote_type = new_vote_type
-                post_to_be_edited.assign_vote(new_vote_type, True)
+                post_to_be_edited.assign_vote(new_vote_type)
             else:
                 return {'message': 'vote or post not found.'}, 404
 
