@@ -192,7 +192,7 @@ class PostSearch(Resource):
         """
         args = post_get_parser.parse_args()
 
-        posts = get_posts_by_category(category)
+        posts = get_posts_by_category(category, args['user_uuid'])
         result_posts = []
         for post in posts:
             if search in post.title or search in post.body:
@@ -221,7 +221,6 @@ class UserPosts(Resource):
             .order_by(desc(Post.pub_date)).all()
 
         for post in result_posts:
-            nest_author_info(post)
             if args['user_uuid']:
                 get_post_vote(post, args['user_uuid'])
             else:
