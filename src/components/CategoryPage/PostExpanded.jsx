@@ -79,15 +79,13 @@ export default function PostExpanded({
 }) {
   const theme = useContext(ThemeContext);
 
-  const points = post.upvotes - post.downvotes;
-
   return (
     <Display theme={theme}>
       <Icons>
         <Icon onClick={handleThumbsUp} hoverColor="#2eaa3a">
           <FontAwesomeIcon size="2x" icon={faThumbsUp}></FontAwesomeIcon>
         </Icon>
-        <Points points={points}>{points}</Points>
+        <Points points={post.votes}>{post.votes}</Points>
         <Icon onClick={handleThumbsDown} hoverColor="#e2493b">
           <FontAwesomeIcon
             size="2x"
@@ -107,8 +105,8 @@ export default function PostExpanded({
           )}
           <small>
             by{" "}
-            <Link to={"/user/" + post.author.username}>
-              {post.author.username}
+            <Link to={"/user/" + post.author_username}>
+              {post.author_username}
             </Link>{" "}
             on {convertDate(post.pub_date)}
           </small>

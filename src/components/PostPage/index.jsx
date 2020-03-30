@@ -15,7 +15,6 @@ const Wrapper = styled.div`
 const PostPage = props => {
   const location = useLocation();
   const user = useSelector(state => state.user);
-  const userUuid = user ? user.user_uuid : null;
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
 

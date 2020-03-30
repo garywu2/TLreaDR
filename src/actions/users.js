@@ -18,12 +18,10 @@ export const addUser = async (email, username, password) => {
 };
 
 export const loginUser = async (username, password) => {
-  const params = { username, password };
+  const body = { username, password };
 
   // register user to database
-  const response = await axios.get(config.endpoint + "users/login", {
-    params
-  });
+  const response = await axios.post(config.endpoint + "users/login", body);
 
   if(response.status !== 200) {
     throw "Login failed with error code " + response.status;
