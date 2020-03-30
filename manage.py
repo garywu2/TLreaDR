@@ -1,5 +1,5 @@
-from user_service.models import db
-from user_service.app import create_app
+from post_service.models import db
+from post_service.app import create_app
 
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand

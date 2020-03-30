@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
+import requests
 from sqlalchemy.dialects.postgresql import UUID
 
 from . import db
@@ -18,6 +19,7 @@ class Comment(db.Model):
     is_edited = db.Column(db.Boolean, default=False)
     is_deleted = db.Column(db.Boolean, default=False)
     author_uuid = db.Column(UUID(as_uuid=True), nullable=False)
+    author_username = db.Column(db.String(), nullable=True)
     post_uuid = db.Column(UUID(as_uuid=True), nullable=False)
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True)
     path = db.Column(db.Text, index=True)
@@ -31,6 +33,9 @@ class Comment(db.Model):
         self.author_uuid = author_uuid
         self.post_uuid = post_uuid
         self.parent_id = parent_id
+        # Request made to user_service to obtain author's username
+        response = requests.get('http://user_service:7082/api/users/' + str(author_uuid)).json()
+        self.author_username = response['username']
 
     def __repr__(self):
         return '<Comment {}>'.format(self.comment_text)
