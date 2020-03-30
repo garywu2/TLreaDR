@@ -35,7 +35,7 @@ const BottomBar = styled.div`
   justify-content: space-between;
 `;
 
-const Icons = styled.div`
+const RightSide = styled.div`
   display: flex;
   padding: 0 10px;
   align-items: center;
@@ -93,22 +93,8 @@ export default function Comment({ comment, handleReplyClick }) {
         </Body>
         <BottomBar>
           <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
-          <Icons>
-            <Points points={commentScore}>
-              {commentScore > 0 && "+"}
-              {commentScore}
-            </Points>
-            <Icon onClick={handleThumbsUp} hoverColor="#2eaa3a">
-              <FontAwesomeIcon size="lg" icon={faThumbsUp}></FontAwesomeIcon>
-            </Icon>
-            <Icon onClick={handleThumbsDown} hoverColor="#e2493b">
-              <FontAwesomeIcon
-                size="lg"
-                flip="horizontal"
-                icon={faThumbsDown}
-              ></FontAwesomeIcon>
-            </Icon>
-          </Icons>
+          <RightSide>
+          </RightSide>
         </BottomBar>
     </Wrapper>
   );
