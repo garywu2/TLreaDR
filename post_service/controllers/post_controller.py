@@ -47,11 +47,11 @@ def get_posts_by_category(category, user_uuid):
     three_days_ago = datetime.utcnow() - timedelta(days=3)
     # Obtains posts from recent 3 days with category filter (new posts)
     new_ordered_posts = post_query.filter(Post.pub_date > three_days_ago) \
-        .order_by(desc(Post.upvotes - Post.downvotes), desc(Post.pub_date))
+        .order_by(desc(Post.votes), desc(Post.pub_date))
 
     # Obtains posts from prior to recent 3 days with category filter (old posts)
     not_new_ordered_posts = post_query.filter(Post.pub_date <= three_days_ago) \
-        .order_by(desc(Post.upvotes - Post.downvotes), desc(Post.pub_date))
+        .order_by(desc(Post.votes), desc(Post.pub_date))
 
     # Appends the old posts to the new posts
     result_posts = new_ordered_posts.all()
