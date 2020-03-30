@@ -9,13 +9,13 @@ const Header = styled.h2`
 `;
 
 export default function PostPreview({ formValues }) {
-  const [fakeUpvotes, setFakeUpvotes] = useState(0);
+  const [fakeVotes, setFakeVotes] = useState(0);
   const [fakeDownvotes, setFakeDownvotes] = useState(0);
 
   const userAccount = useSelector(state => state.user);
 
-  const handleThumbsUp = () => setFakeUpvotes(fakeUpvotes + 1);
-  const handleThumbsDown = () => setFakeDownvotes(fakeDownvotes + 1);
+  const handleThumbsUp = () => setFakeVotes(fakeVotes + 1);
+  const handleThumbsDown = () => setFakeVotes(fakeDownvotes - 1);
 
   const title = formValues.title.length ? formValues.title : "Your title here";
   const body = formValues.body.length ? formValues.body : "Your TL;DR here";
@@ -33,8 +33,7 @@ export default function PostPreview({ formValues }) {
     title,
     body,
     pub_date: date,
-    upvotes: fakeUpvotes,
-    downvotes: fakeDownvotes,
+    votes: fakeVotes,
     image_link,
     author: userAccount
   };

@@ -1,11 +1,13 @@
 from datetime import datetime
 
+import requests
 from flask_restplus import Resource, fields, reqparse, marshal
 from sqlalchemy import desc
 
 from comment_service.api.restplus import api
 from comment_service.models import db
 from comment_service.models.comment import Comment
+from comment_service.parsers.comment_parsers import *
 
 ns = api.namespace('comments', description='Operations related to comments')
 
@@ -27,16 +29,6 @@ def recursive_comment_mapping(level):
     if level:
         comment_dto['nested_comment'] = fields.Nested(recursive_comment_mapping(level - 1))
     return api.model('Comment' + str(level), comment_dto)
-
-
-comment_parser = reqparse.RequestParser()
-comment_parser.add_argument('text', required=True, type=str, help='comment text', location='json')
-comment_parser.add_argument('author_uuid', required=True, type=str, help='comment author uuid', location='json')
-comment_parser.add_argument('post_uuid', required=True, type=str, help='comment post uuid', location='json')
-comment_parser.add_argument('parent_id', type=str, help='comment parent id', location='json')
-
-comment_edit_parser = reqparse.RequestParser()
-comment_edit_parser.add_argument('new_text', required=True, type=str, help='new title of post', location='json')
 
 
 def nest_comment(comment):
@@ -126,7 +118,7 @@ class CommentItem(Resource):
         return {'message': 'comment has been deleted successfully.'}, 201
 
 
-@ns.route('/post/<string:post_uuid>')
+@ns.route('/<string:post_uuid>')
 class PostComment(Resource):
     @ns.marshal_list_with(recursive_comment_mapping(10))
     def get(self, post_uuid):
