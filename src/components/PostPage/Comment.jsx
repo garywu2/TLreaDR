@@ -15,16 +15,6 @@ const Body = styled.div`
   padding: 10px;
 `;
 
-const Points = styled.div`
-  color: ${({ points }) =>
-    points < 0 ? "red" : points === 0 ? "black" : "green"};
-  text-align: center;
-  margin-right: 10px;
-  font-weight: bold;
-  font-family: Arvo, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-`;
-
 const Header = styled.div``;
 
 const Text = styled.p`
@@ -36,6 +26,7 @@ const BottomBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 2rem;
 `;
 
 const RightSide = styled.div`
@@ -101,14 +92,20 @@ export default function Comment({
         <Text>{commentText}</Text>
       </Body>
       <BottomBar>
-        <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
-        {user && user.user_uuid === comment.author_uuid && (
-          <RightSide>
-            <BottomBarButton onClick={handleEditClick}>Edit</BottomBarButton>
-            <BottomBarButton onClick={handleDeleteClick}>
-              Delete
-            </BottomBarButton>
-          </RightSide>
+        {!comment.is_deleted && (
+          <React.Fragment>
+            <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
+            {user && user.user_uuid === comment.author_uuid && (
+              <RightSide>
+                <BottomBarButton onClick={handleEditClick}>
+                  Edit
+                </BottomBarButton>
+                <BottomBarButton onClick={handleDeleteClick}>
+                  Delete
+                </BottomBarButton>
+              </RightSide>
+            )}
+          </React.Fragment>
         )}
       </BottomBar>
     </Wrapper>

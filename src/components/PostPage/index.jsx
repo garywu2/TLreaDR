@@ -189,7 +189,7 @@ const PostPage = props => {
     setComments(newComments);
   };
 
-  const deleteCommentInTree = (commentText, parentList) => {
+  const deleteCommentInTree = (parentList) => {
     // recursively find place to put comment
     // shallow copy comments
     const newComments = [...comments];
