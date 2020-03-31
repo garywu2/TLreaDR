@@ -113,7 +113,7 @@ export default function PostExpanded({
           )}
           <small>
             by{" "}
-            <Link to={"/user/" + post.author_username}>
+            <Link to={"/user/" + post.author_uuid}>
               {post.author_username}
             </Link>{" "}
             on {convertDate(post.pub_date)}
