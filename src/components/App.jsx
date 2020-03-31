@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import ls from "local-storage";
 import { useDispatch } from "react-redux";
-import { LOGIN_USER } from "../actions/types";
+import { LOGIN_USER, LOGOUT_USER } from "../actions/types";
 import Navbar from "./Navbar";
 
 export default props => {
