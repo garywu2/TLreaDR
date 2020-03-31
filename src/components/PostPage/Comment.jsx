@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 import convertDate from "../../utils/convertDate";
 import { useSelector } from "react-redux";
 
@@ -67,8 +65,6 @@ export default function Comment({
   handleReplyClick
 }) {
   const user = useSelector(state => state.user);
-
-  console.log(comment);
 
   const commentText = comment.is_deleted ? "[deleted]" : comment.comment_text;
 

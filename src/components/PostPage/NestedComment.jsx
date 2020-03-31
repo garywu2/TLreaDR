@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
-import FormButton from "../styled/FormButton";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const Display = styled.div`
   display: flex;
@@ -39,10 +40,17 @@ export default function NestedComment({
   const [showEditForm, setShowEditForm] = useState(false);
   // add this comment's id to the parent list
   const newParentList = [...parentList, comment.id];
+  const user = useSelector(state => state.user);
+  const history = useHistory();
 
   const handleReplyClick = () => {
-    setShowReplyForm(!showReplyForm);
-    setShowEditForm(false);
+    if (user) {
+      setShowReplyForm(!showReplyForm);
+      setShowEditForm(false);
+    }
+    else {
+      history.push("/sign-in");
+    }
   };
 
   const handleEditClick = () => {
