@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
+import convertDate from "../../utils/convertDate";
 
 const Wrapper = styled.div`
   background-color: #e9e9e9;
@@ -78,18 +79,15 @@ export default function Comment({ comment, handleReplyClick }) {
 
   console.log(comment);
 
-  const commentScore = comment.comment_upvotes - comment.comment_downvotes;
-
   return (
     <Wrapper>
       <Body>
-        <Header>Placeholder on 2020-03-26</Header>
-        {/* <Header>
-            <Link to={"/user/" + comment.author.username}>
-              {comment.author.username}
-            </Link>{" "}
-            on {comment.pub_date}
-          </Header> */}
+        <Header>
+          <Link to={"/user/" + comment.author_username}>
+            {comment.author_username}
+          </Link>{" "}
+          on {convertDate(comment.date_submitted)}
+        </Header>
         <Text>{comment.comment_text}</Text>
       </Body>
       <BottomBar>
