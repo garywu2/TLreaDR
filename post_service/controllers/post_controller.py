@@ -267,7 +267,7 @@ class PostVote(Resource):
                 if vote_to_be_edited.vote_type == new_vote_type:
                     return {'message': 'cannot vote twice on the same post'}, 404
                 vote_to_be_edited.vote_type = new_vote_type
-                post_to_be_edited.assign_vote(new_vote_type)
+                post_to_be_edited.assign_vote(2 * new_vote_type)
             else:
                 return {'message': 'vote or post not found.'}, 404
 
