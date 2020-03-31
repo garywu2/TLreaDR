@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config/client";
-import { FETCH_POSTS, CLEAR_POSTS } from "./types";
+import { FETCH_POSTS, CLEAR_POSTS, UPVOTE } from "./types";
 
 export const getPostsByCategory = async (categoryName, userUuid) => {
   let response;
@@ -72,13 +72,8 @@ export const getPostByUuid = async post_uuid => {
   return { type: "GET_POST", post: response.data };
 };
 
-export const handleUpvote = async (
-  postUuid,
-  categoryName,
-  userUuid,
-  voteStatus
-) => {
-  body = { user_uuid: userUuid };
+export const upvotePost = async (postUuid, userUuid, voteStatus) => {
+  const body = {};
 
   // decide which HTTP request to make
   // if no upvotes, make a POST request
@@ -87,20 +82,33 @@ export const handleUpvote = async (
   let axiosReqFunc;
   switch (voteStatus) {
     case null:
-      func = axios.get;
+      axiosReqFunc = axios.post;
+      body.vote_type = 1;
+      body.user_uuid = userUuid;
       break;
     case 1:
-      func = axios.delete;
+      axiosReqFunc = axios.delete;
+      body.data = { user_uuid: userUuid };
+      break;
     case -1:
-      func = axios.put;
+      axiosReqFunc = axios.put;
+      body.user_uuid = userUuid;
+      body.new_vote_type = 1;
+      break;
+    default:
+      console.log("invalid vote_type: " + vote_type);
+      return;
   }
 
+  // de-upvote if already upvoted, otherwise upvote
+  const newVoteStatus = voteStatus === 1 ? null : 1;
+
   const response = await axiosReqFunc(
-    `${config.endpoint}${categoryName}/${postUuid}/vote`,
+    `${config.endpoint}all/${postUuid}/vote`,
     body
   );
 
-  if (response.status !== 200) {
+  if (response.status !== 201) {
     console.log(response);
     throw "upvote request failed with error code " +
       response.status +
@@ -108,5 +116,5 @@ export const handleUpvote = async (
       response.data.message;
   }
 
-  return { type: "UPVOTE" };
+  return { type: UPVOTE, voteStatus: newVoteStatus, postUuid };
 };
