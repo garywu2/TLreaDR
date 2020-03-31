@@ -22,6 +22,7 @@ def recursive_comment_mapping(level):
         'date_submitted': fields.String(required=True, description='submission date'),
         'date_edited': fields.String(required=True, description='edit date'),
         'author_uuid': fields.String(required=True, description='author uuid'),
+        'author_username': fields.String(required=True, description='author uuid'),
         'post_uuid': fields.String(required=True, description='post uuid'),
         'path': fields.String(required=True, description='comment path'),
         'parent_id': fields.Integer(required=True, description='comment parent id')
