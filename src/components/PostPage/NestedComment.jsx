@@ -32,10 +32,12 @@ export default function NestedComment({
   isRoot,
   handleCommentSubmit,
   handleEditSubmit,
+  handleDelete,
   parentList
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  // add this comment's id to the parent list
   const newParentList = [...parentList, comment.id];
 
   const handleReplyClick = () => {
@@ -49,7 +51,7 @@ export default function NestedComment({
   };
 
   const handleDeleteClick = () => {
-    console.log("delete clicked");
+    handleDelete(comment.comment_uuid, newParentList);
   };
 
   const handleReplySubmit = async commentText => {
@@ -72,7 +74,8 @@ export default function NestedComment({
         comment={com}
         isRoot={false}
         handleCommentSubmit={handleCommentSubmit}
-        handleEditFormSubmit={handleEditFormSubmit}
+        handleEditSubmit={handleEditSubmit}
+        handleDelete={handleDelete}
       ></NestedComment>
     ));
   };

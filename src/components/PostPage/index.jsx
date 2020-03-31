@@ -4,7 +4,8 @@ import { getPostByUuid } from "../../actions/posts";
 import {
   getCommentsByPostUuid,
   postComment,
-  editComment
+  editComment,
+  deleteComment
 } from "../../actions/comments";
 import PostInfo from "./PostInfo";
 import CommentsList from "./CommentsList";
@@ -149,7 +150,6 @@ const PostPage = props => {
 
     // shallow copy comments
     const newComments = [...comments];
-    // nested_comment to conform to rest of nested comments
     let parent = findTargetComment(newComments, parentList);
 
     parent.nested_comment.push(newComment);
@@ -182,10 +182,20 @@ const PostPage = props => {
     // recursively find place to put comment
     // shallow copy comments
     const newComments = [...comments];
-    // nested_comment to conform to rest of nested comments
     let comment = findTargetComment(newComments, parentList);
 
     comment.comment_text = commentText;
+
+    setComments(newComments);
+  };
+
+  const deleteCommentInTree = (commentText, parentList) => {
+    // recursively find place to put comment
+    // shallow copy comments
+    const newComments = [...comments];
+    let comment = findTargetComment(newComments, parentList);
+
+    comment.is_deleted = true;
 
     setComments(newComments);
   };
@@ -195,6 +205,16 @@ const PostPage = props => {
       await editComment(commentText, commentUuid);
       // parentList to traverse - no commentUuid needed
       editCommentInTree(commentText, parentList);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDeleteComment = async (commentUuid, parentList) => {
+    try {
+      await deleteComment(commentUuid);
+      // parentList to traverse - no commentUuid needed
+      deleteCommentInTree(parentList);
     } catch (e) {
       console.log(e);
     }
@@ -212,6 +232,7 @@ const PostPage = props => {
           comments={comments}
           handleCommentSubmit={handleCommentSubmit}
           handleEditSubmit={handleEditSubmit}
+          handleDelete={handleDeleteComment}
         ></CommentsList>
       ) : (
         <div>Loading...</div>

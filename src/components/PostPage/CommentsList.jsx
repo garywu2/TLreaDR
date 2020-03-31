@@ -11,7 +11,8 @@ const Title = styled.h2`
 export default function CommentsList({
   comments,
   handleCommentSubmit,
-  handleEditSubmit
+  handleEditSubmit,
+  handleDelete
 }) {
   return (
     <div>
@@ -28,6 +29,7 @@ export default function CommentsList({
               key={comment.comment_uuid}
               handleCommentSubmit={handleCommentSubmit}
               handleEditSubmit={handleEditSubmit}
+              handleDelete={handleDelete}
               comment={comment}
             ></CommentThread>
           ))}

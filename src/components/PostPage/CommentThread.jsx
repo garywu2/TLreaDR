@@ -18,7 +18,8 @@ const Display = styled.div`
 export default function CommentThread({
   comment,
   handleCommentSubmit,
-  handleEditSubmit
+  handleEditSubmit,
+  handleDelete
 }) {
   return (
     <Display>
@@ -27,6 +28,7 @@ export default function CommentThread({
         comment={comment}
         handleCommentSubmit={handleCommentSubmit}
         handleEditSubmit={handleEditSubmit}
+        handleDelete={handleDelete}
         isRoot={true}
       ></NestedComment>
     </Display>

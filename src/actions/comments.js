@@ -57,7 +57,7 @@ export const deleteComment = async (commentUuid) => {
     config.endpoint + "comments/" + commentUuid
   );
 
-  if (response.status !== 200) {
+  if (response.status !== 201) {
     throw "comment failed with error code " + response.status;
   }
 

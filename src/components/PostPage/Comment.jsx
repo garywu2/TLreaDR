@@ -79,23 +79,35 @@ export default function Comment({
 
   console.log(comment);
 
+  const commentText = comment.is_deleted ? "[deleted]" : comment.comment_text;
+
+  const renderUsername = () => {
+    if (comment.is_deleted) {
+      return "[deleted]";
+    }
+    return (
+      <Link to={"/user/" + comment.author_username}>
+        {comment.author_username}
+      </Link>
+    );
+  };
+
   return (
     <Wrapper>
       <Body>
         <Header>
-          <Link to={"/user/" + comment.author_username}>
-            {comment.author_username}
-          </Link>{" "}
-          on {convertDate(comment.date_submitted)}
+          {renderUsername()} on {convertDate(comment.date_submitted)}
         </Header>
-        <Text>{comment.comment_text}</Text>
+        <Text>{commentText}</Text>
       </Body>
       <BottomBar>
         <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
         {user && user.user_uuid === comment.author_uuid && (
           <RightSide>
             <BottomBarButton onClick={handleEditClick}>Edit</BottomBarButton>
-            <BottomBarButton onClick={handleDeleteClick}>Delete</BottomBarButton>
+            <BottomBarButton onClick={handleDeleteClick}>
+              Delete
+            </BottomBarButton>
           </RightSide>
         )}
       </BottomBar>
