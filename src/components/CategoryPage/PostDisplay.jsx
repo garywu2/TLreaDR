@@ -4,7 +4,7 @@ import PostExpanded from "./PostExpanded";
 import PostPreview from "./PostPreview";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { upvotePost } from "../../actions/posts";
+import { upvotePost, downvotePost } from "../../actions/posts";
 
 const Display = styled.div`
   background-color: white;
@@ -79,9 +79,11 @@ export default function PostDisplay({ post }) {
     }
   };
 
-  const handleThumbsDown = () => {
+  const handleThumbsDown = async () => {
     if (user) {
-      console.log("handleThumbsDown called");
+      dispatch(
+        await downvotePost(post.post_uuid, user.user_uuid, post.vote_type)
+      );
     } else {
       history.push("/sign-in");
     }

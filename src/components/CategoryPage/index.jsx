@@ -24,7 +24,6 @@ const usePosts = () => {
       try {
         // if user is null, not logged in - pass null to action
         const userUuid = user ? user.user_uuid : null;
-        console.log(userUuid);
         dispatch(await getPostsByCategory(categoryName, userUuid));
       } catch (e) {
         error = e;
