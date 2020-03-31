@@ -67,6 +67,10 @@ export const uploadPost = async (
   return { type: "UPLOAD_POST", postUuid: post_uuid };
 };
 
+export const clearPosts = () => {
+  return { type: CLEAR_POSTS };
+};
+
 export const getPostByUuid = async (postUuid, userUuid) => {
   let response;
   // if user is null, i.e., not logged in, don't pass params

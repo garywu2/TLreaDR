@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { getPostsByCategory, upvotePost } from "../../actions/posts";
+import { getPostsByCategory, upvotePost, clearPosts } from "../../actions/posts";
 import PostsList from "./PostsList";
 
 // custom hook (I'm trying it out lol)
@@ -33,6 +33,10 @@ const usePosts = () => {
     if (userLoaded) {
       getPosts();
     }
+
+    return () => {
+      dispatch(clearPosts());
+    };
   }, [userLoaded, user, getPostsByCategory, categoryName, location]);
 
   return [posts, error];
