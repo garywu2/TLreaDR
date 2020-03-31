@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
-import styled, { ThemeContext } from "styled-components";
+import React from "react";
+import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
+import convertDate from "../../utils/convertDate";
 
 const Wrapper = styled.div`
   background-color: #e9e9e9;
@@ -14,7 +15,8 @@ const Body = styled.div`
 `;
 
 const Points = styled.div`
-  color: ${({ points }) => (points < 0 ? "red" : points === 0 ? "black" : "green")};
+  color: ${({ points }) =>
+    points < 0 ? "red" : points === 0 ? "black" : "green"};
   text-align: center;
   margin-right: 10px;
   font-weight: bold;
@@ -67,8 +69,6 @@ const BottomBarButton = styled.button`
 `;
 
 export default function Comment({ comment, handleReplyClick }) {
-  const theme = useContext(ThemeContext);
-
   const handleThumbsDown = () => {
     console.log("handleThumbsDown called");
   };
@@ -77,25 +77,23 @@ export default function Comment({ comment, handleReplyClick }) {
     console.log("handleThumbsUp called");
   };
 
-  const commentScore = comment.comment_upvotes - comment.comment_downvotes;
+  console.log(comment);
 
   return (
     <Wrapper>
-        <Body>
-          <Header>Placeholder on 2020-03-26</Header>
-          {/* <Header>
-            <Link to={"/user/" + comment.author.username}>
-              {comment.author.username}
-            </Link>{" "}
-            on {comment.pub_date}
-          </Header> */}
-          <Text>{comment.comment_text}</Text>
-        </Body>
-        <BottomBar>
-          <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
-          <RightSide>
-          </RightSide>
-        </BottomBar>
+      <Body>
+        <Header>
+          <Link to={"/user/" + comment.author_username}>
+            {comment.author_username}
+          </Link>{" "}
+          on {convertDate(comment.date_submitted)}
+        </Header>
+        <Text>{comment.comment_text}</Text>
+      </Body>
+      <BottomBar>
+        <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
+        <RightSide></RightSide>
+      </BottomBar>
     </Wrapper>
   );
 }

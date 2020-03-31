@@ -7,6 +7,7 @@ import CommentsList from "./CommentsList";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { postComment } from "../../actions/comments";
+import { UPVOTE, DOWNVOTE } from "../../actions/types";
 
 const Wrapper = styled.div`
   margin: 10px 0px 30px;
@@ -15,6 +16,7 @@ const Wrapper = styled.div`
 const PostPage = props => {
   const location = useLocation();
   const user = useSelector(state => state.user);
+  const userLoaded = useSelector(state => state.loaded.userLoaded);
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState(null);
 
@@ -22,15 +24,18 @@ const PostPage = props => {
     const getPost = async () => {
       try {
         const postUuid = location.pathname.split("/").reverse()[0];
-        const { post } = await getPostByUuid(postUuid);
+        const userUuid = user ? user.user_uuid : null;
+        const { post } = await getPostByUuid(postUuid, userUuid);
         setPost(post);
       } catch (e) {
         console.log(e);
       }
     };
 
-    getPost();
-  }, [setPost, getPostByUuid, location]);
+    if (userLoaded) {
+      getPost();
+    }
+  }, [userLoaded, setPost, getPostByUuid, location]);
 
   useEffect(() => {
     const getComments = async () => {
@@ -46,6 +51,74 @@ const PostPage = props => {
 
     getComments();
   }, [post, getCommentsByPostUuid, setComments]);
+
+  // pesudo-reducer for updating the post
+  const votePost = action => {
+    switch (action.type) {
+      case UPVOTE: {
+        let newVotes, newVoteType;
+        switch (action.oldVoteStatus) {
+          case 1:
+            // undo upvote
+            newVotes = post.votes - 1;
+            newVoteType = null;
+            break;
+          case -1:
+            // turn downvote into upvote - plus 2
+            newVotes = post.votes + 2;
+            newVoteType = 1;
+            break;
+          case null:
+            // turn nothing into upvote - plus 1
+            newVotes = post.votes + 1;
+            newVoteType = 1;
+            break;
+          default:
+            console.log("Bad logic: oldVoteStatus is ", action.oldVoteStatus);
+        }
+
+        const updatedPost = {
+          ...post,
+          vote_type: newVoteType,
+          // remove if de-upvoting, add if upvoting
+          votes: newVotes
+        };
+
+        return setPost(updatedPost);
+      }
+      case DOWNVOTE: {
+        let newVotes, newVoteType;
+        switch (action.oldVoteStatus) {
+          case -1:
+            // undo downvote
+            newVotes = post.votes + 1;
+            newVoteType = null;
+            break;
+          case 1:
+            // turn upvote into downvote - minus 2
+            newVotes = post.votes - 2;
+            newVoteType = -1;
+            break;
+          case null:
+            // turn nothing into downvote - minus 1
+            newVotes = post.votes - 1;
+            newVoteType = -1;
+            break;
+          default:
+            console.log("Bad logic: oldVoteStatus is ", action.oldVoteStatus);
+        }
+
+        const updatedPost = {
+          ...post,
+          vote_type: newVoteType,
+          // remove (add) if de-downvote, sutract if downvoting
+          votes: newVotes
+        };
+
+        return setPost(updatedPost);
+      }
+    }
+  };
 
   const insertComment = (newComment, parentList) => {
     // recursively find place to put comment
@@ -91,7 +164,11 @@ const PostPage = props => {
 
   return (
     <Wrapper>
-      {post ? <PostInfo post={post}></PostInfo> : <div>Loading...</div>}
+      {post ? (
+        <PostInfo post={post} votePost={votePost}></PostInfo>
+      ) : (
+        <div>Loading...</div>
+      )}
       {comments ? (
         <CommentsList
           comments={comments}
