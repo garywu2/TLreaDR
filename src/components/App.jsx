@@ -12,6 +12,9 @@ export default props => {
     const userFromLocalStorage = ls.get("user");
     if (userFromLocalStorage) {
       dispatch({ type: LOGIN_USER, user: userFromLocalStorage });
+    } else {
+      // here to dispatch to loaded reducer - otherwise redundant
+      dispatch({ type: LOGOUT_USER });
     }
   }, [dispatch]);
 

@@ -9,6 +9,7 @@ const usePosts = () => {
   const dispatch = useDispatch();
   const posts = useSelector(state => state.posts);
   const user = useSelector(state => state.user);
+  const { userLoaded } = useSelector(state => state.loaded);
   // obtains category from URL
   const location = useLocation();
 
@@ -30,8 +31,10 @@ const usePosts = () => {
       }
     };
 
-    getPosts();
-  }, [user, getPostsByCategory, categoryName, location]);
+    if (userLoaded) {
+      getPosts();
+    }
+  }, [userLoaded, user, getPostsByCategory, categoryName, location]);
 
   return [posts, error];
 };
