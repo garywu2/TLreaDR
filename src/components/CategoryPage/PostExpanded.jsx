@@ -23,7 +23,7 @@ const Icons = styled.div`
 `;
 
 const Icon = styled.div`
-  color: #828282;
+  color: ${({ hoverColor, enabled }) => (enabled ? hoverColor : "#828282")};
   cursor: pointer;
 
   & :hover {
@@ -82,11 +82,19 @@ export default function PostExpanded({
   return (
     <Display theme={theme}>
       <Icons>
-        <Icon onClick={handleThumbsUp} hoverColor="#2eaa3a">
+        <Icon
+          onClick={handleThumbsUp}
+          hoverColor="#2eaa3a"
+          enabled={post.vote_type === 1}
+        >
           <FontAwesomeIcon size="2x" icon={faThumbsUp}></FontAwesomeIcon>
         </Icon>
         <Points points={post.votes}>{post.votes}</Points>
-        <Icon onClick={handleThumbsDown} hoverColor="#e2493b">
+        <Icon
+          onClick={handleThumbsDown}
+          hoverColor="#e2493b"
+          enabled={post.vote_type === -1}
+        >
           <FontAwesomeIcon
             size="2x"
             flip="horizontal"

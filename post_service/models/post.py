@@ -14,6 +14,7 @@ class Post(db.Model):
     pub_date = db.Column(db.DateTime, nullable=False)
     edited_date = db.Column(db.DateTime, default=None)
     image_link = db.Column(db.String(1000))
+    article_link = db.Column(db.String(1000))
 
     category_uuid = db.Column(UUID(as_uuid=True), db.ForeignKey('category.category_uuid'), nullable=False)
     category = db.relationship('Category', backref=db.backref('posts', lazy='dynamic'))
@@ -27,13 +28,14 @@ class Post(db.Model):
 
     edited_flag = db.Column(db.Boolean, nullable=False, default=False)
 
-    def __init__(self, title, body, category_uuid, author_uuid, image_link):
+    def __init__(self, title, body, category_uuid, author_uuid, image_link, article_link):
         self.title = title
         self.body = body
         self.pub_date = datetime.utcnow()
         self.category_uuid = category_uuid
         self.author_uuid = author_uuid
         self.image_link = image_link
+        self.article_link = article_link
         # Request made to user_service to obtain author's username
         response = requests.get('http://user_service:7082/api/users/' + str(author_uuid)).json()
         self.author_username = response['username']

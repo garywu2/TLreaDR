@@ -13,12 +13,6 @@ from post_service.parsers.post_parsers import *
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
 
-user_dto = api.model('user', {
-    'user_uuid': fields.String(required=True, description='user uuid'),
-    'email': fields.String(required=True, description='user email address'),
-    'username': fields.String(required=True, description='user username'),
-})
-
 post_dto = api.model('post', {
     'post_uuid': fields.String(required=True, description='post uuid'),
     'title': fields.String(required=True, description='title of the post'),
@@ -26,6 +20,7 @@ post_dto = api.model('post', {
     'pub_date': fields.String(required=True, description='published date'),
     'edited_date': fields.String(description='published date'),
     'image_link': fields.String(description='image link of the post'),
+    'article_link': fields.String(description='article link of the post'),
     'votes': fields.Integer(required=True, descrption='votes of the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
@@ -77,7 +72,7 @@ def get_post_vote(post, user_uuid):
 
 @ns.route('/posts')
 class PostCollection(Resource):
-    @ns.response(code=201, model=user_dto, description='Success')
+    @ns.response(code=200, description='Success')
     @ns.response(code=404, description='Not Found')
     @ns.expect(post_get_parser)
     def get(self, category):
@@ -108,7 +103,7 @@ class PostCollection(Resource):
 
         try:
             new_post = Post(args['title'], args['body'], queried_category.category_uuid, args['author_uuid'],
-                            args['image_link'])
+                            args['image_link'], args['article_link'])
             db.session.add(new_post)
             db.session.commit()
         except Exception as e:
@@ -152,6 +147,8 @@ class PostItem(Resource):
                     post_to_be_edited.body = args['new_body']
                 if args['new_image_link']:
                     post_to_be_edited.image_link = args['new_image_link']
+                if args['new_article_link']:
+                    post_to_be_edited.article_link = args['new_article_link']
 
                 post_to_be_edited.edited_date = datetime.utcnow()
                 post_to_be_edited.edited_flag = True
@@ -270,7 +267,7 @@ class PostVote(Resource):
                 if vote_to_be_edited.vote_type == new_vote_type:
                     return {'message': 'cannot vote twice on the same post'}, 404
                 vote_to_be_edited.vote_type = new_vote_type
-                post_to_be_edited.assign_vote(new_vote_type)
+                post_to_be_edited.assign_vote(2 * new_vote_type)
             else:
                 return {'message': 'vote or post not found.'}, 404
 

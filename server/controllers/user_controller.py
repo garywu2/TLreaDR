@@ -3,6 +3,7 @@ from flask import request
 from flask_restplus import Resource
 
 from server.models.api_models import *
+from server.parsers.server_parsers import *
 
 ns = api.namespace('users', description='Operations related to users routes')
 
@@ -42,7 +43,7 @@ class UserItem(Resource):
 
 @ns.route('/login')
 class UserLogin(Resource):
-    @ns.expect(user_model, validate=False)
+    @ns.expect(user_login_parser, validate=False)
     def get(self):
         """ Login for user """
         response = requests.get('http://user_service:7082/api/users/login', params=request.args)

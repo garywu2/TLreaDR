@@ -2,8 +2,10 @@ import React, { useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
+import { upvotePost, downvotePost } from "../../actions/posts";
+import { useSelector } from "react-redux";
 
 const Display = styled.div`
   background-color: white;
@@ -31,9 +33,8 @@ const Points = styled.div`
 `;
 
 const Icon = styled.div`
-  color: #828282;
+  color: ${({ hoverColor, enabled }) => (enabled ? hoverColor : "#828282")};
   cursor: pointer;
-  margin-bottom: 10px;
 
   & :hover {
     color: ${({ hoverColor }) => hoverColor || "#131516"};
@@ -66,25 +67,47 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
-export default function PostInfo({ post }) {
+export default function PostInfo({ post, votePost }) {
   const theme = useContext(ThemeContext);
+  const history = useHistory();
+  const user = useSelector(state => state.user);
 
-  const handleThumbsUp = () => {
-    console.log("handleThumbsUp called");
+  const handleThumbsUp = async () => {
+    if (user) {
+      votePost(
+        await upvotePost(post.post_uuid, user.user_uuid, post.vote_type)
+      );
+    } else {
+      history.push("/sign-in");
+    }
   };
 
-  const handleThumbsDown = () => {
-    console.log("handleThumbsDown called");
+  const handleThumbsDown = async () => {
+    if (user) {
+      votePost(
+        await downvotePost(post.post_uuid, user.user_uuid, post.vote_type)
+      );
+    } else {
+      history.push("/sign-in");
+    }
   };
 
   return (
     <Display theme={theme}>
       <Icons>
-        <Icon onClick={handleThumbsUp} hoverColor="#2eaa3a">
+        <Icon
+          onClick={handleThumbsUp}
+          hoverColor="#2eaa3a"
+          enabled={post.vote_type === 1}
+        >
           <FontAwesomeIcon size="2x" icon={faThumbsUp}></FontAwesomeIcon>
         </Icon>
         <Points points={post.votes}>{post.votes}</Points>
-        <Icon onClick={handleThumbsDown} hoverColor="#e2493b">
+        <Icon
+          onClick={handleThumbsDown}
+          hoverColor="#e2493b"
+          enabled={post.vote_type === -1}
+        >
           <FontAwesomeIcon
             size="2x"
             flip="horizontal"
