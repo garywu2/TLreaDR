@@ -23,6 +23,10 @@ const Bar = styled.div`
   border-radius: 2px;
 `;
 
+const ReplyHeader = styled.h3`
+  margin-top: 10px;
+`;
+
 export default function NestedComment({
   comment,
   isRoot,
@@ -30,16 +34,31 @@ export default function NestedComment({
   parentList
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const newParentList = [...parentList, comment.id];
 
   const handleReplyClick = () => {
     setShowReplyForm(!showReplyForm);
+    setShowEditForm(false);
   };
 
-  const handleReplySubmit = async (commentText) => {
+  const handleEditClick = () => {
+    setShowReplyForm(false);
+    setShowEditForm(!showEditForm);
+  };
+
+  const handleDeleteClick = () => {
+    console.log("delete clicked");
+  };
+
+  const handleReplySubmit = async commentText => {
     await handleCommentSubmit(commentText, newParentList);
     // wait for comment to be posted
     setShowReplyForm(!showReplyForm);
+  };
+
+  const handleEditSubmit = async commentText => {
+    console.log("edit submitted");
   };
 
   const renderChildrenComments = () => {
@@ -54,15 +73,27 @@ export default function NestedComment({
     ));
   };
 
-  const renderReplyForm = () => {
+  const renderReplyForm = () => (
     // comment form handlesubmit only passes in comment text as argument
-    return (
+    <React.Fragment>
+      <ReplyHeader>Reply to comment</ReplyHeader>
       <CommentForm
         handleSubmit={handleReplySubmit}
         placeholder="Type your reply here..."
       ></CommentForm>
-    );
-  };
+    </React.Fragment>
+  );
+
+  const renderEditForm = () => (
+    <React.Fragment>
+      <ReplyHeader>Edit comment</ReplyHeader>
+      <CommentForm
+        handleSubmit={handleEditSubmit}
+        value={comment.comment_text}
+      ></CommentForm>
+    </React.Fragment>
+  );
+  console.log(showEditForm);
 
   return (
     <Display>
@@ -71,7 +102,11 @@ export default function NestedComment({
         <Comment
           comment={comment}
           handleReplyClick={handleReplyClick}
+          handleEditClick={handleEditClick}
+          handleDeleteClick={handleDeleteClick}
+          handleEditSubmit={handleEditSubmit}
         ></Comment>
+        {showEditForm && renderEditForm()}
         {showReplyForm && renderReplyForm()}
         {renderChildrenComments()}
       </Thread>

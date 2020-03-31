@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 import convertDate from "../../utils/convertDate";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   background-color: #e9e9e9;
@@ -68,14 +69,13 @@ const BottomBarButton = styled.button`
   }
 `;
 
-export default function Comment({ comment, handleReplyClick }) {
-  const handleThumbsDown = () => {
-    console.log("handleThumbsDown called");
-  };
-
-  const handleThumbsUp = () => {
-    console.log("handleThumbsUp called");
-  };
+export default function Comment({
+  comment,
+  handleEditClick,
+  handleDeleteClick,
+  handleReplyClick
+}) {
+  const user = useSelector(state => state.user);
 
   console.log(comment);
 
@@ -92,7 +92,12 @@ export default function Comment({ comment, handleReplyClick }) {
       </Body>
       <BottomBar>
         <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
-        <RightSide></RightSide>
+        {user && user.user_uuid === comment.author_uuid && (
+          <RightSide>
+            <BottomBarButton onClick={handleEditClick}>Edit</BottomBarButton>
+            <BottomBarButton onClick={handleDeleteClick}>Delete</BottomBarButton>
+          </RightSide>
+        )}
       </BottomBar>
     </Wrapper>
   );

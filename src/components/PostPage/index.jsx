@@ -120,6 +120,20 @@ const PostPage = props => {
     }
   };
 
+  const findTargetComment = (commentTree, parentList) => {
+    // original response is an array - make fake root node
+    // nested_comment to conform to rest of nested comments
+    let comment = { nested_comment: commentTree };
+
+    while (parentList.length) {
+      const commentId = parentList.shift();
+
+      comment = comment.nested_comment.find(comment => comment.id === commentId);
+    }
+
+    return comment;
+  };
+
   const insertComment = (newComment, parentList) => {
     // recursively find place to put comment
 
@@ -129,13 +143,8 @@ const PostPage = props => {
     // shallow copy comments
     const newComments = [...comments];
     // nested_comment to conform to rest of nested comments
-    let parent = { nested_comment: newComments };
+    let parent = findTargetComment(newComments, parentList);
 
-    while (parentList.length) {
-      const commentId = parentList.shift();
-
-      parent = parent.nested_comment.find(comment => comment.id === commentId);
-    }
     parent.nested_comment.push(newComment);
 
     setComments(newComments);

@@ -15,13 +15,14 @@ const SubmitButton = styled(FormButton)`
   padding: 10px;
 `;
 
-export default function CommentForm({ handleSubmit, ...inputProps }) {
-  const [comment, setComment] = useState("");
+export default function CommentForm({ handleSubmit, value, ...inputProps }) {
+  const [comment, setComment] = useState(value ? value : "");
   const theme = useContext(ThemeContext);
 
   const handleCommentSubmit = e => {
     e.preventDefault();
     handleSubmit(comment);
+    setComment("");
   }
 
   return (

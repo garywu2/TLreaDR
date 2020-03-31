@@ -30,7 +30,7 @@ export const postComment = async (
   // put comment into database
   const response = await axios.post(config.endpoint + "comments", body);
 
-  if (response.status !== 200) {
+  if (response.status !== 201) {
     throw "comment failed with error code " + response.status;
   }
 
