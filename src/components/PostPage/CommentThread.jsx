@@ -15,10 +15,20 @@ const Display = styled.div`
   margin: 20px 0px;
 `;
 
-export default function CommentThread({ comment, handleCommentSubmit }) {
+export default function CommentThread({
+  comment,
+  handleCommentSubmit,
+  handleEditSubmit
+}) {
   return (
     <Display>
-      <NestedComment parentList={[]} comment={comment} handleCommentSubmit={handleCommentSubmit} isRoot={true}></NestedComment>
+      <NestedComment
+        parentList={[]}
+        comment={comment}
+        handleCommentSubmit={handleCommentSubmit}
+        handleEditSubmit={handleEditSubmit}
+        isRoot={true}
+      ></NestedComment>
     </Display>
   );
 }

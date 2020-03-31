@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { getPostByUuid } from "../../actions/posts";
-import { getCommentsByPostUuid } from "../../actions/comments";
+import {
+  getCommentsByPostUuid,
+  postComment,
+  editComment
+} from "../../actions/comments";
 import PostInfo from "./PostInfo";
 import CommentsList from "./CommentsList";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { postComment } from "../../actions/comments";
 import { UPVOTE, DOWNVOTE } from "../../actions/types";
 
 const Wrapper = styled.div`
@@ -126,9 +129,13 @@ const PostPage = props => {
     let comment = { nested_comment: commentTree };
 
     while (parentList.length) {
+      console.log(parentList);
+
       const commentId = parentList.shift();
 
-      comment = comment.nested_comment.find(comment => comment.id === commentId);
+      comment = comment.nested_comment.find(
+        comment => comment.id === commentId
+      );
     }
 
     return comment;
@@ -171,6 +178,28 @@ const PostPage = props => {
     }
   };
 
+  const editCommentInTree = (commentText, parentList) => {
+    // recursively find place to put comment
+    // shallow copy comments
+    const newComments = [...comments];
+    // nested_comment to conform to rest of nested comments
+    let comment = findTargetComment(newComments, parentList);
+
+    comment.comment_text = commentText;
+
+    setComments(newComments);
+  };
+
+  const handleEditSubmit = async (commentUuid, commentText, parentList) => {
+    try {
+      await editComment(commentText, commentUuid);
+      // parentList to traverse - no commentUuid needed
+      editCommentInTree(commentText, parentList);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Wrapper>
       {post ? (
@@ -182,6 +211,7 @@ const PostPage = props => {
         <CommentsList
           comments={comments}
           handleCommentSubmit={handleCommentSubmit}
+          handleEditSubmit={handleEditSubmit}
         ></CommentsList>
       ) : (
         <div>Loading...</div>

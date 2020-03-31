@@ -8,12 +8,16 @@ const Title = styled.h2`
   margin: 10px 0px;
 `;
 
-export default function CommentsList({ comments, handleCommentSubmit }) {
+export default function CommentsList({
+  comments,
+  handleCommentSubmit,
+  handleEditSubmit
+}) {
   return (
     <div>
       <Title>Post a comment</Title>
       <CommentForm
-        handleSubmit={(commentText) => handleCommentSubmit(commentText, [])}
+        handleSubmit={commentText => handleCommentSubmit(commentText, [])}
         placeholder="Write a comment here..."
       ></CommentForm>
       {comments ? (
@@ -23,6 +27,7 @@ export default function CommentsList({ comments, handleCommentSubmit }) {
             <CommentThread
               key={comment.comment_uuid}
               handleCommentSubmit={handleCommentSubmit}
+              handleEditSubmit={handleEditSubmit}
               comment={comment}
             ></CommentThread>
           ))}

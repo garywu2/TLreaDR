@@ -31,6 +31,7 @@ export default function NestedComment({
   comment,
   isRoot,
   handleCommentSubmit,
+  handleEditSubmit,
   parentList
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
@@ -57,8 +58,10 @@ export default function NestedComment({
     setShowReplyForm(!showReplyForm);
   };
 
-  const handleEditSubmit = async commentText => {
-    console.log("edit submitted");
+  const handleEditFormSubmit = async commentText => {
+    await handleEditSubmit(comment.comment_uuid, commentText, newParentList);
+    // wait for comment to be posted
+    setShowEditForm(!showEditForm);
   };
 
   const renderChildrenComments = () => {
@@ -69,6 +72,7 @@ export default function NestedComment({
         comment={com}
         isRoot={false}
         handleCommentSubmit={handleCommentSubmit}
+        handleEditFormSubmit={handleEditFormSubmit}
       ></NestedComment>
     ));
   };
@@ -88,12 +92,11 @@ export default function NestedComment({
     <React.Fragment>
       <ReplyHeader>Edit comment</ReplyHeader>
       <CommentForm
-        handleSubmit={handleEditSubmit}
+        handleSubmit={handleEditFormSubmit}
         value={comment.comment_text}
       ></CommentForm>
     </React.Fragment>
   );
-  console.log(showEditForm);
 
   return (
     <Display>

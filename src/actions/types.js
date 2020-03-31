@@ -7,4 +7,6 @@ export const UPVOTE = "UPVOTE";
 export const DOWNVOTE = "DOWNVOTE";
 export const FETCH_CATEGORIES = "FETCH_CATEGORIES";
 export const FETCH_COMMENTS = "FETCH_COMMENTS";
-export const UPLOAD_COMMENTS = "UPLOAD_COMMENTS";
+export const POST_COMMENT = "POST_COMMENT";
+export const EDIT_COMMENT = "EDIT_COMMENT";
+export const DELETE_COMMENT = "DELETE_COMMENT";
