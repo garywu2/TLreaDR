@@ -67,8 +67,8 @@ export default function PostPreview({ post, handleExpand }) {
           </Link>
           <small>
             by{" "}
-            <Link to={"/user/" + post.author.user_uuid}>
-              {post.author.username}
+            <Link to={"/user/" + post.author_uuid}>
+              {post.author_username}
             </Link>{" "}
             on {convertDate(post.pub_date)}
           </small>

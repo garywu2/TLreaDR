@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import convertDate from "../../utils/convertDate";
 
-const PostPreviewWrapper = styled.div`
+const PostPreviewWrapper = styled(Link)`
   background-color: #f5edf3;
   margin-bottom: 20px;
   display: flex;
@@ -28,7 +29,7 @@ const PreviewBody = styled.div`
   margin: 10px;
 `;
 
-const PreviewBodyTitle = styled(Link)`
+const PreviewBodyTitle = styled.div`
   font-size: 25px;
   font-family: "Arvo", "sans-serif";
   margin-bottom: 10px;
@@ -42,15 +43,13 @@ const PreviewBodySupplementary = styled.div`
 
 const PostPreview = ({ post }) => {
   return (
-    <PostPreviewWrapper>
+    <PostPreviewWrapper to={"/post/".concat(post.post_uuid)}>
       <Bar />
       <Img src={post.image_link} />
       <PreviewBody>
-        <PreviewBodyTitle to={"/post/".concat(post.post_uuid)}>
-          {post.title}
-        </PreviewBodyTitle>
+        <PreviewBodyTitle>{post.title}</PreviewBodyTitle>
         <PreviewBodySupplementary>
-          Posted by {post.author.username}
+          Posted by {post.author_username} on {convertDate(post.pub_date)}
         </PreviewBodySupplementary>
       </PreviewBody>
     </PostPreviewWrapper>

@@ -2,9 +2,11 @@ import React, { useEffect, useState, useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { useLocation } from "react-router";
 import { getPostsByUserUuid } from "../../actions/posts";
-import { useDispatch, useSelector } from "react-redux";
+import { getCommentsByUserUuid } from "../../actions/comments";
+import { getUserFromUserUuid } from "../../actions/users";
 import PostsPreviewList from "./PostsPreviewList";
 import CommentsPreviewList from "./CommentsPreviewList";
+
 
 const Display = styled.div`
   background-color: white;
@@ -41,25 +43,52 @@ const Wrapper = styled.div`
 `;
 
 const ProfilePage = () => {
+  const [user, setUser] = useState(null);
   const [selectedPost, setSelectedPost] = useState(true);
-  const posts = useSelector(state => state.posts);
+  const [posts, setPosts] = useState(null);
+  const [comments, setComments] = useState(null);
   const theme = useContext(ThemeContext);
   const location = useLocation();
-  const dispatch = useDispatch();
 
   const user_uuid = location.pathname.split("/").reverse()[0];
 
   useEffect(() => {
-    const getPosts = async () => {
+    const getUsername = async () => {
       try {
-        dispatch(await getPostsByUserUuid(user_uuid));
+        const { user } = await getUserFromUserUuid(user_uuid);
+        setUser(user);
       } catch (e) {
         console.log(e);
       }
     };
 
+    const getComments = async () => {
+      try {
+        const { comments } = await getCommentsByUserUuid(user_uuid);
+        setComments(comments);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    const getPosts = async () => {
+      try {
+        const { posts } = await getPostsByUserUuid(user_uuid);
+        setPosts(posts);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    getUsername();
     getPosts();
-  }, [getPostsByUserUuid, user_uuid]);
+    getComments();
+  }, [
+    getPostsByUserUuid,
+    getCommentsByUserUuid,
+    getUserFromUserUuid,
+    user_uuid
+  ]);
 
   const renderButtonsAndPosts = () => {
     if (selectedPost) {
@@ -99,7 +128,7 @@ const ProfilePage = () => {
               Comments
             </ProfileButton>
           </ButtonWrapper>
-          <CommentsPreviewList />
+          <CommentsPreviewList comments={comments} username={user.username} />
         </div>
       );
     }
@@ -117,7 +146,7 @@ const ProfilePage = () => {
     <Wrapper>
       <Display theme={theme}>
         <Header>
-          <h2>{user_uuid}</h2>
+          <h2>{user ? user.username : <div>Loading...</div>}</h2>
         </Header>
         {renderButtonsAndPosts()}
       </Display>
