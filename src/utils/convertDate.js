@@ -1,5 +1,4 @@
 export default function convertDate(flaskDate) {
-  console.log(flaskDate);
   // convert time to AM/PM
   let time = flaskDate.slice(11, 16);
   // convert to number and check if greater than 12
