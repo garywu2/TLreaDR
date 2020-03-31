@@ -21,6 +21,8 @@ def recursive_comment_mapping(level):
         'comment_downvotes': fields.String(required=True, description='comment downvotes'),
         'date_submitted': fields.String(required=True, description='submission date'),
         'date_edited': fields.String(required=True, description='edit date'),
+        'is_edited': fields.Boolean(required=True, description='true if comment has been edited'),
+        'is_deleted': fields.Boolean(required=True, description='true if comment has been deleted'),
         'author_uuid': fields.String(required=True, description='author uuid'),
         'author_username': fields.String(required=True, description='author uuid'),
         'post_uuid': fields.String(required=True, description='post uuid'),

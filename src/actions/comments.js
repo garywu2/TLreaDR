@@ -63,3 +63,13 @@ export const deleteComment = async (commentUuid) => {
 
   return { type: DELETE_COMMENT };
 };
+
+export const getCommentsByUserUuid = async user_uuid => {
+  const response = await axios.get(`${config.endpoint}comments/user/${user_uuid}`);
+
+  if (response.status != 200) {
+    throw "getCommentsByUserUuid failed with error code " + response.status;
+  }
+
+  return { type: FETCH_COMMENTS, comments: response.data };
+}

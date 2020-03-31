@@ -120,7 +120,7 @@ export default function PostInfo({ post, votePost }) {
           <h2>{post.title}</h2>
           <small>
             by{" "}
-            <Link to={"/user/" + post.author_username}>
+            <Link to={"/user/" + post.author_uuid}>
               {post.author_username}
             </Link>{" "}
             on {convertDate(post.pub_date)}
