@@ -188,6 +188,8 @@ const PostPage = props => {
     let comment = findTargetComment(newComments, parentList);
 
     comment.comment_text = commentText;
+    comment.is_edited = true;
+    comment.date_edited = new Date().toISOString();
 
     setComments(newComments);
   };

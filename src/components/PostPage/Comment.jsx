@@ -73,9 +73,7 @@ export default function Comment({
       return "[deleted]";
     }
     return (
-      <Link to={"/user/" + comment.author_uuid}>
-        {comment.author_username}
-      </Link>
+      <Link to={"/user/" + comment.author_uuid}>{comment.author_username}</Link>
     );
   };
 
@@ -83,7 +81,11 @@ export default function Comment({
     <Wrapper>
       <Body>
         <Header>
-          {renderUsername()} on {convertDate(comment.date_submitted)}
+          {renderUsername()} on{" "}
+          {convertDate(comment.date_submitted) +
+            (comment.is_edited
+              ? " [Edited on " + convertDate(comment.date_edited) + "]"
+              : "")}
         </Header>
         <Text>{commentText}</Text>
       </Body>
