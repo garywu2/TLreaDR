@@ -12,7 +12,6 @@ const PostPreviewWrapper = styled(Link)`
 
 const Bar = styled.div`
   width: 8px;
-  height: auto;
   background-color: gray;
   margin-right: 6px;
   border-radius: 2px;
@@ -20,6 +19,7 @@ const Bar = styled.div`
 
 const Img = styled.img`
   width: 100px;
+  height: auto;
   border-radius: 10px;
   margin: 10px;
 `;
