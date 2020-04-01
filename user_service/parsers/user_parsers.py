@@ -4,6 +4,7 @@ user_add_parser = reqparse.RequestParser()
 user_add_parser.add_argument('email', required=True, type=str, help='email of user', location='json')
 user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
 user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
+user_add_parser.add_argument('is_admin', required=True, type=bool, help='password of user', location='json')
 
 user_edit_parser = reqparse.RequestParser()
 user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user', location='json')
