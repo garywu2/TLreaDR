@@ -130,8 +130,6 @@ const PostPage = props => {
     let comment = { nested_comment: commentTree };
 
     while (parentList.length) {
-      console.log(parentList);
-
       const commentId = parentList.shift();
 
       comment = comment.nested_comment.find(
@@ -152,7 +150,12 @@ const PostPage = props => {
     const newComments = [...comments];
     let parent = findTargetComment(newComments, parentList);
 
-    parent.nested_comment.push(newComment);
+    // if root comment, push to top
+    if (parentList.length === 0) {
+      parent.nested_comment.splice(0, 0, newComment);
+    } else {
+      parent.nested_comment.push(newComment);
+    }
 
     setComments(newComments);
   };
@@ -189,7 +192,7 @@ const PostPage = props => {
     setComments(newComments);
   };
 
-  const deleteCommentInTree = (parentList) => {
+  const deleteCommentInTree = parentList => {
     // recursively find place to put comment
     // shallow copy comments
     const newComments = [...comments];
