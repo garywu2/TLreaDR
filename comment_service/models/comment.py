@@ -6,7 +6,6 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from . import db
 
-
 class Comment(db.Model):
     _N = 6
 

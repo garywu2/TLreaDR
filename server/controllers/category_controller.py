@@ -2,6 +2,7 @@ import requests
 from flask import request
 from flask_restplus import Resource
 
+from server.models.event import Event
 from server.models.api_models import *
 
 ns = api.namespace('categories', description='Operations related to category routes')
