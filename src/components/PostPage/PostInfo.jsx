@@ -67,6 +67,22 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
+const Footer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+`;
+
+const Button = styled.div`
+  cursor: pointer;
+  color: #828282;
+  margin-right: 20px;
+
+  & :hover {
+    color: ${({ hoverColor }) => hoverColor || "#000000"};
+  }
+`;
+
 export default function PostInfo({ post, votePost }) {
   const theme = useContext(ThemeContext);
   const history = useHistory();
@@ -120,14 +136,22 @@ export default function PostInfo({ post, votePost }) {
           <h2>{post.title}</h2>
           <small>
             by{" "}
-            <Link to={"/user/" + post.author_uuid}>
-              {post.author_username}
-            </Link>{" "}
+            <Link to={"/user/" + post.author_uuid}>{post.author_username}</Link>{" "}
             on {convertDate(post.pub_date)}
           </small>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
+        {user && user.user_uuid === post.author_uuid && (
+          <Footer>
+            <Button hoverColor="#62b0d1">
+              <div>Edit</div>
+            </Button>
+            <Button hoverColor="#e2493b">
+              <div>Delete</div>
+            </Button>
+          </Footer>
+        )}
       </Body>
     </Display>
   );
