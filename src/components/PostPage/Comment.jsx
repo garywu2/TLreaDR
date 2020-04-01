@@ -83,7 +83,7 @@ export default function Comment({ comment, handleReplyClick }) {
     <Wrapper>
       <Body>
         <Header>
-          <Link to={"/user/" + comment.author_username}>
+          <Link to={"/user/" + comment.author_uuid}>
             {comment.author_username}
           </Link>{" "}
           on {convertDate(comment.date_submitted)}
