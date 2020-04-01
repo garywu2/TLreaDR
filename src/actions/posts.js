@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config/client";
-import { FETCH_POSTS, CLEAR_POSTS, UPVOTE, DOWNVOTE } from "./types";
+import { FETCH_POSTS, CLEAR_POSTS, UPVOTE, DOWNVOTE, EDIT_POST } from "./types";
 
 export const getPostsByCategory = async (categoryName, userUuid) => {
   let response;
@@ -66,6 +66,41 @@ export const uploadPost = async (
   const { post_uuid } = response.data;
   return { type: "UPLOAD_POST", postUuid: post_uuid };
 };
+
+export const editPost = async (
+  category,
+  post_uuid,
+  new_title,
+  new_body,
+  new_image_link
+) => {
+  const reqBody = {
+    new_title,
+    new_body,
+    new_image_link
+  };
+
+  const response = await axios.put(
+    `${config.endpoint}${category.toLowerCase()}/${post_uuid}`,
+    reqBody
+  );
+
+  if (response.status !== 200) {
+    console.log(response);
+    throw "editPost failed with error code " +
+      response.status +
+      ": " +
+      response.data.message;
+  }
+};
+
+export const deletePost = async (post_uuid) => {
+  const response = await axios.delete(`${config.endpoint}all/${post_uuid}`);
+
+  if (response.status !== 200) {
+    throw "deletePost failed with the error code " + response.status;
+  }
+}
 
 export const clearPosts = () => {
   return { type: CLEAR_POSTS };

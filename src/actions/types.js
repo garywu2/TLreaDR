@@ -9,3 +9,4 @@ export const FETCH_CATEGORIES = "FETCH_CATEGORIES";
 export const FETCH_COMMENTS = "FETCH_COMMENTS";
 export const UPLOAD_COMMENTS = "UPLOAD_COMMENTS";
 export const FETCH_USER = "FETCH_USER";
+export const EDIT_POST = "EDIT_POST";

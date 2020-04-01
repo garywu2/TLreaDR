@@ -73,17 +73,27 @@ const Footer = styled.div`
   margin-top: 20px;
 `;
 
-const Button = styled.div`
+const EditButton = styled(Link)`
   cursor: pointer;
   color: #828282;
   margin-right: 20px;
 
   & :hover {
-    color: ${({ hoverColor }) => hoverColor || "#000000"};
+    color: ${({ hovercolor }) => hovercolor || "#000000"};
   }
 `;
 
-export default function PostInfo({ post, votePost }) {
+const DeleteButton = styled.div`
+  cursor: pointer;
+  color: #828282;
+  margin-right: 20px;
+
+  & :hover {
+    color: ${({ hovercolor }) => hovercolor || "#000000"};
+  }
+`;
+
+export default function PostInfo({ post, votePost, handleDeleteClick }) {
   const theme = useContext(ThemeContext);
   const history = useHistory();
   const user = useSelector(state => state.user);
@@ -144,12 +154,12 @@ export default function PostInfo({ post, votePost }) {
         <p>{post.body}</p>
         {user && user.user_uuid === post.author_uuid && (
           <Footer>
-            <Button hoverColor="#62b0d1">
+            <EditButton hovercolor="#62b0d1" to={post.post_uuid.concat("/edit")}>
               <div>Edit</div>
-            </Button>
-            <Button hoverColor="#e2493b">
+            </EditButton>
+            <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
               <div>Delete</div>
-            </Button>
+            </DeleteButton>
           </Footer>
         )}
       </Body>

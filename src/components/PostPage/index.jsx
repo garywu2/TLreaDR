@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { getPostByUuid } from "../../actions/posts";
+import { getPostByUuid, deletePost } from "../../actions/posts";
 import { getCommentsByPostUuid } from "../../actions/comments";
 import PostInfo from "./PostInfo";
 import CommentsList from "./CommentsList";
@@ -162,10 +162,18 @@ const PostPage = props => {
     }
   };
 
+  const handleDeletePost = async () => {
+    try {
+      await deletePost(post.post_uuid);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <Wrapper>
       {post ? (
-        <PostInfo post={post} votePost={votePost}></PostInfo>
+        <PostInfo post={post} votePost={votePost} handleDeleteClick={handleDeletePost}></PostInfo>
       ) : (
         <div>Loading...</div>
       )}
