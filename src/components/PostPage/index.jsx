@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import { getPostByUuid, deletePost } from "../../actions/posts";
 import { getCommentsByPostUuid } from "../../actions/comments";
 import PostInfo from "./PostInfo";
@@ -18,7 +18,9 @@ const PostPage = props => {
   const user = useSelector(state => state.user);
   const userLoaded = useSelector(state => state.loaded.userLoaded);
   const [post, setPost] = useState(null);
+  const [hasErrors, setHasErrors] = useState(false);
   const [comments, setComments] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
     const getPost = async () => {
@@ -165,15 +167,22 @@ const PostPage = props => {
   const handleDeletePost = async () => {
     try {
       await deletePost(post.post_uuid);
+      history.push("/");
     } catch (e) {
       console.log(e);
+      setHasErrors(true);
     }
   };
 
   return (
     <Wrapper>
       {post ? (
-        <PostInfo post={post} votePost={votePost} handleDeleteClick={handleDeletePost}></PostInfo>
+        <PostInfo
+          post={post}
+          votePost={votePost}
+          handleDeleteClick={handleDeletePost}
+          hasErrors={hasErrors}
+        ></PostInfo>
       ) : (
         <div>Loading...</div>
       )}

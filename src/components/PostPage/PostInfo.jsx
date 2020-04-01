@@ -93,7 +93,18 @@ const DeleteButton = styled.div`
   }
 `;
 
-export default function PostInfo({ post, votePost, handleDeleteClick }) {
+const ErrorMessage = styled.div`
+  visibility: ${props => (props.visible ? "visible" : "hidden")};
+  text-align: center;
+  color: #ff2a2a;
+`;
+
+export default function PostInfo({
+  post,
+  votePost,
+  handleDeleteClick,
+  hasErrors
+}) {
   const theme = useContext(ThemeContext);
   const history = useHistory();
   const user = useSelector(state => state.user);
@@ -154,7 +165,10 @@ export default function PostInfo({ post, votePost, handleDeleteClick }) {
         <p>{post.body}</p>
         {user && user.user_uuid === post.author_uuid && (
           <Footer>
-            <EditButton hovercolor="#62b0d1" to={post.post_uuid.concat("/edit")}>
+            <EditButton
+              hovercolor="#62b0d1"
+              to={post.post_uuid.concat("/edit")}
+            >
               <div>Edit</div>
             </EditButton>
             <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
@@ -162,6 +176,9 @@ export default function PostInfo({ post, votePost, handleDeleteClick }) {
             </DeleteButton>
           </Footer>
         )}
+        <ErrorMessage visible={hasErrors}>
+          There was an error on the backend.
+        </ErrorMessage>
       </Body>
     </Display>
   );

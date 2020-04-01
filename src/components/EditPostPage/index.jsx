@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import EditPostForm from "./EditPostForm";
 import PostPreview from "../NewPostPage/PostPreview";
-import { editPost } from "../../actions/posts";
+import { editPost, getPostByUuid } from "../../actions/posts";
 import { useHistory, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const EditPostPage = () => {
   const history = useHistory();
   const [hasErrors, setHasErrors] = useState(false);
+  const [postAuthor, setPostAuthor] = useState(null);
+  const user = useSelector(state => state.user);
   const location = useLocation();
 
   const post_uuid = location.pathname.split("/")[2];
@@ -17,6 +20,26 @@ const EditPostPage = () => {
     body: "",
     image_link: ""
   });
+
+  useEffect(() => {
+    const getPostInformation = async () => {
+      try {
+        const user_uuid = user ? user.user_uuid : null;
+        const { post } = await getPostByUuid(post_uuid, user_uuid);
+        setPostAuthor(post.author_uuid);
+        setFormValues({
+          category: "",
+          title: post.title,
+          body: post.body,
+          image_link: post.image_link
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    getPostInformation();
+  }, [getPostByUuid, post_uuid]);
 
   const handleEdit = async () => {
     const { category, title, body, image_link } = formValues;
@@ -44,7 +67,7 @@ const EditPostPage = () => {
     );
   };
 
-  return <div>{renderForm()}</div>;
+  return <div>{user && user.user_uuid == postAuthor && renderForm()}</div>;
 };
 
 export default EditPostPage;

@@ -38,7 +38,7 @@ export default function EditPostForm({
   formValues,
   setFormValues,
   handleSubmit,
-  hasErrors,
+  hasErrors
 }) {
   const theme = useContext(ThemeContext);
   const [invalidSubmit, setInvalidSubmit] = useState(false);
