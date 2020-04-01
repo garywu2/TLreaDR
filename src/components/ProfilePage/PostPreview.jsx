@@ -12,6 +12,7 @@ const PostPreviewWrapper = styled(Link)`
 
 const Bar = styled.div`
   width: 8px;
+  height: auto;
   background-color: gray;
   margin-right: 6px;
   border-radius: 2px;
