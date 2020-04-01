@@ -7,7 +7,7 @@ const PostPreviewWrapper = styled(Link)`
   background-color: #f5edf3;
   margin-bottom: 20px;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
 `;
 
 const Bar = styled.div`
@@ -18,6 +18,8 @@ const Bar = styled.div`
 `;
 
 const Img = styled.img`
+  display: flex;
+  align-items: flex-start;
   width: 100px;
   height: auto;
   border-radius: 10px;
