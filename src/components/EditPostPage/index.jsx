@@ -28,7 +28,7 @@ const EditPostPage = () => {
         const { post } = await getPostByUuid(post_uuid, user_uuid);
         setPostAuthor(post.author_uuid);
         setFormValues({
-          category: "",
+          category: post.category,
           title: post.title,
           body: post.body,
           image_link: post.image_link

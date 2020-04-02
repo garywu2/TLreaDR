@@ -101,6 +101,13 @@ export default function EditPostForm({
         label="Category"
         handleInputChange={setCategory}
         options={categoryOptions}
+        value={{
+          label: category
+            .charAt(0)
+            .toUpperCase()
+            .concat(category.slice(1)),
+          value: category
+        }}
       />
       <ErrorMessage visible={hasErrors}>
         There was an error on the backend.
