@@ -35,7 +35,7 @@ class PostItem(Resource):
         return response.json(), response.status_code
 
 
-@ns.route('/<string:post_uuid>')
+@ns.route('/post/<string:post_uuid>')
 class PostComment(Resource):
     def get(self, post_uuid):
         """ Gets all comments for a post """
