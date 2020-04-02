@@ -1,9 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
-import requests
 from flask_restplus import Resource, fields, marshal
-from sqlalchemy import desc
 
+import post_service.managers.post_manager as post_manager
 from post_service.api.restplus import api
 from post_service.models import db
 from post_service.models.category import Category
@@ -31,44 +30,6 @@ post_dto = api.model('post', {
     'vote_type': fields.Integer(required=False, description='status of user vote')
 })
 
-def get_posts_by_category(category, user_uuid):
-    post_query = Post.query
-
-    if category != 'all':
-        queried_category = Category.query.filter_by(name=category).first()
-        post_query = post_query.filter_by(category_uuid=queried_category.category_uuid)
-
-    # Calculates 3 days prior to current time
-    three_days_ago = datetime.utcnow() - timedelta(days=3)
-    # Obtains posts from recent 3 days with category filter (new posts)
-    new_ordered_posts = post_query.filter(Post.pub_date > three_days_ago) \
-        .order_by(desc(Post.votes), desc(Post.pub_date))
-
-    # Obtains posts from prior to recent 3 days with category filter (old posts)
-    not_new_ordered_posts = post_query.filter(Post.pub_date <= three_days_ago) \
-        .order_by(desc(Post.votes), desc(Post.pub_date))
-
-    # Appends the old posts to the new posts
-    result_posts = new_ordered_posts.all()
-    for post in not_new_ordered_posts.all():
-        result_posts.append(post)
-        if post is not None:
-            post.invert_new_flag()
-
-    for post in result_posts:
-        get_post_vote(post, user_uuid)
-
-    return result_posts
-
-
-def get_post_vote(post, user_uuid):
-    vote = Postvote.query.filter_by(post_uuid=post.post_uuid) \
-        .filter_by(user_uuid=user_uuid).first()
-    if vote:
-        post.vote_type = vote.vote_type
-    else:
-        post.vote_type = None
-
 
 @ns.route('/posts')
 class PostCollection(Resource):
@@ -84,7 +45,7 @@ class PostCollection(Resource):
             if category != 'all' and Category.query.filter_by(name=category).first() is None:
                 return {"message": "category not found."}, 404
 
-            posts = get_posts_by_category(category, args['user_uuid'])
+            posts = post_manager.get_posts_by_category(category, args['user_uuid'])
             return marshal(posts, post_dto, envelope='posts'), 200
         except Exception as e:
             return {"message": str(e)}, 500
@@ -121,14 +82,8 @@ class PostItem(Resource):
         Gets a post given its UUID
         """
         args = post_get_parser.parse_args()
-
-        result_post = Post.query.filter_by(post_uuid=post_uuid).first()
-        if args['user_uuid']:
-            get_post_vote(result_post, args['user_uuid'])
-        else:
-            result_post.user_requested_vote = None
-
-        return result_post
+        result_post = post_manager.get_post_by_post_uuid(post_uuid, args['user_uuid'])
+        return result_post, 200
 
     @ns.expect(post_edit_parser)
     def put(self, post_uuid, category):
@@ -189,17 +144,11 @@ class PostSearch(Resource):
         """
         args = post_get_parser.parse_args()
 
-        posts = get_posts_by_category(category, args['user_uuid'])
+        posts = post_manager.get_posts_by_category(category, args['user_uuid'])
         result_posts = []
         for post in posts:
             if search in post.title or search in post.body:
                 result_posts.append(post)
-
-        for post in result_posts:
-            if args['user_uuid']:
-                get_post_vote(post, args['user_uuid'])
-            else:
-                post.user_requested_vote = None
 
         return result_posts
 
@@ -207,22 +156,11 @@ class PostSearch(Resource):
 @ns.route('/posts/<string:user_uuid>')
 class UserPosts(Resource):
     @ns.marshal_list_with(post_dto, envelope='posts')
-    @ns.expect(post_get_parser)
     def get(self, category, user_uuid):
         """
         Returns posts of the specified user
         """
-        args = post_get_parser.parse_args()
-
-        result_posts = Post.query.filter_by(author_uuid=user_uuid) \
-            .order_by(desc(Post.pub_date)).all()
-
-        for post in result_posts:
-            if args['user_uuid']:
-                get_post_vote(post, args['user_uuid'])
-            else:
-                post.user_requested_vote = None
-
+        result_posts = post_manager.get_posts_by_user_uuid(user_uuid)
         return result_posts
 
 
