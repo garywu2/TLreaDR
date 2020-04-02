@@ -41,12 +41,14 @@ export const uploadPost = async (
   title,
   body,
   imageLink,
+  articleLink,
   authorUuid
 ) => {
   const reqBody = {
     title,
     body,
     image_link: imageLink,
+    article_link: articleLink,
     author_uuid: authorUuid
   };
 

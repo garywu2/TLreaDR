@@ -71,6 +71,11 @@ const Title = styled.h2`
   color: inherit;
 `;
 
+const ArticleLink = styled.div`
+  margin: 15px 0px 15px 0px;
+  color: ${({ theme }) => theme.primaryColor};
+`;
+
 export default function PostExpanded({
   post,
   handleThumbsUp,
@@ -78,6 +83,20 @@ export default function PostExpanded({
   handleExpand
 }) {
   const theme = useContext(ThemeContext);
+
+  const renderArticleButton = () => {
+    return (
+      <div>
+        {post.article_link && (
+          <ArticleLink theme={theme}>
+            <a target="_blank" href={post.article_link}>
+              Article Link
+            </a>
+          </ArticleLink>
+        )}
+      </div>
+    );
+  };
 
   return (
     <Display theme={theme}>
@@ -113,14 +132,13 @@ export default function PostExpanded({
           )}
           <small>
             by{" "}
-            <Link to={"/user/" + post.author_uuid}>
-              {post.author_username}
-            </Link>{" "}
+            <Link to={"/user/" + post.author_uuid}>{post.author_username}</Link>{" "}
             on {convertDate(post.pub_date)}
           </small>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
+        {renderArticleButton()}
       </Body>
       <Icon onClick={handleExpand}>
         <FontAwesomeIcon size="2x" icon={faCaretUp}></FontAwesomeIcon>

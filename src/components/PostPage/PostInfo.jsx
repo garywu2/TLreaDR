@@ -67,6 +67,11 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
+const ArticleLink = styled.div`
+  margin: 15px 0px 15px 0px;
+  color: ${({ theme }) => theme.primaryColor};
+`;
+
 export default function PostInfo({ post, votePost }) {
   const theme = useContext(ThemeContext);
   const history = useHistory();
@@ -90,6 +95,20 @@ export default function PostInfo({ post, votePost }) {
     } else {
       history.push("/sign-in");
     }
+  };
+
+  const renderArticleButton = () => {
+    return (
+      <div>
+        {post.article_link && (
+          <ArticleLink theme={theme}>
+            <a target="_blank" href={post.article_link}>
+              Article Link
+            </a>
+          </ArticleLink>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -120,14 +139,13 @@ export default function PostInfo({ post, votePost }) {
           <h2>{post.title}</h2>
           <small>
             by{" "}
-            <Link to={"/user/" + post.author_uuid}>
-              {post.author_username}
-            </Link>{" "}
+            <Link to={"/user/" + post.author_uuid}>{post.author_username}</Link>{" "}
             on {convertDate(post.pub_date)}
           </small>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
+        {renderArticleButton()}
       </Body>
     </Display>
   );
