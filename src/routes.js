@@ -9,6 +9,7 @@ import SearchResultsPage from './components/SearchResultsPage';
 import NewPostPage from "./components/NewPostPage";
 import ProfilePage from "./components/ProfilePage";
 import PostPage from "./components/PostPage";
+import EditPostPage from "./components/EditPostPage";
 
 const routes = (
   <App>
@@ -17,6 +18,7 @@ const routes = (
       <Route path="/sign-up" component={SignupPage} />
       <Route path="/sign-in" component={SignInPage} />
       <Route path="/category/:category" component={CategoryPage} />
+      <Route path="/post/:post/edit" component={EditPostPage} />
       <Route path="/post/:post" component={PostPage} />
       <Route path='/search/:input' component={SearchResultsPage} />
       <Route path="/new" component={NewPostPage} />
