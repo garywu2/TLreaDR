@@ -46,6 +46,6 @@ class Post(db.Model):
 
     def delete_vote(self, vote_type):
         self.votes -= vote_type
-    #
-    # def __repr__(self):
-    #     return '<Post {}>'.format(self.title)
+
+    def __repr__(self):
+        return '<Post {}>'.format(self.title)

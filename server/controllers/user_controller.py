@@ -2,7 +2,7 @@ import requests
 from flask import request
 from flask_restplus import Resource
 
-from server.models.api_models import *
+from server.api.models import *
 from server.parsers.server_parsers import *
 
 ns = api.namespace('users', description='Operations related to users routes')
