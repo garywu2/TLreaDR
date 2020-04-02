@@ -56,6 +56,9 @@ const Header = styled.div`
     ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   padding-bottom: 10px;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Img = styled.img`
@@ -155,16 +158,23 @@ export default function PostInfo({
       </Icons>
       <Body>
         <Header>
-          <h2>{post.title}</h2>
-          <small>
-            by{" "}
-            <Link to={"/user/" + post.author_uuid}>{post.author_username}</Link>{" "}
-            on{" "}
-            {convertDate(post.pub_date) +
-              (post.edited_flag
-                ? " [Edited on " + convertDate(post.edited_date) + "]"
-                : "")}
-          </small>
+          <div>
+            <h2>{post.title}</h2>
+            <small>
+              by{" "}
+              <Link to={"/user/" + post.author_uuid}>
+                {post.author_username}
+              </Link>{" "}
+              on{" "}
+              {convertDate(post.pub_date) +
+                (post.edited_flag
+                  ? " [Edited on " + convertDate(post.edited_date) + "]"
+                  : "")}
+            </small>
+          </div>
+          <div>
+            <Label>New</Label>
+          </div>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>

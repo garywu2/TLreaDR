@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
+import Label from "../styled/Label";
 
 const Display = styled.div`
   background-color: white;
@@ -40,6 +41,8 @@ const Header = styled.div`
     ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   padding-bottom: 10px;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Img = styled.img`
@@ -62,6 +65,7 @@ export default function PostPreview({ post, handleExpand }) {
       <Img theme={theme} src={post.image_link}></Img>
       <Body>
         <Header>
+          {post.new_flag && <Label>New</Label>}
           <Link to={`/post/${post.post_uuid}`}>
             <Title>{post.title}</Title>
           </Link>

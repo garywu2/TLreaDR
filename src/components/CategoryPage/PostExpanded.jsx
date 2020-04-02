@@ -46,6 +46,9 @@ const Header = styled.div`
     ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   padding-bottom: 10px;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Img = styled.img`
@@ -105,18 +108,25 @@ export default function PostExpanded({
       </Icons>
       <Body>
         <Header>
-          {post.post_uuid ? (
-            <Link to={`/post/${post.post_uuid}`}>
+          <div>
+            {post.post_uuid ? (
+              <Link to={`/post/${post.post_uuid}`}>
+                <Title>{post.title}</Title>
+              </Link>
+            ) : (
               <Title>{post.title}</Title>
-            </Link>
-          ) : (
-            <Title>{post.title}</Title>
-          )}
-          <small>
-            by{" "}
-            <Link to={"/user/" + post.author_uuid}>{post.author_username}</Link>{" "}
-            on {convertDate(post.pub_date)}
-          </small>
+            )}
+            <small>
+              by{" "}
+              <Link to={"/user/" + post.author_uuid}>
+                {post.author_username}
+              </Link>{" "}
+              on {convertDate(post.pub_date)}
+            </small>
+          </div>
+          <div>
+            <Label>New</Label>
+          </div>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
