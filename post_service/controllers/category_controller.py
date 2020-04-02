@@ -45,7 +45,7 @@ class CategoryCollection(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-        return {'message': 'category has been created successfully.'}, 201
+        return marshal(new_category, category_dto), 200
 
 
 @ns.route('/<string:category>')
