@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config/client";
-import { FETCH_POSTS, CLEAR_POSTS, UPVOTE, DOWNVOTE, EDIT_POST, GET_POST, UPLOAD_POST } from "./types";
+import { FETCH_POSTS, CLEAR_POSTS, UPVOTE, DOWNVOTE, EDIT_POST, GET_POST, UPLOAD_POST, DELETE_POST } from "./types";
 
 export const getPostsByCategory = async (categoryName, userUuid) => {
   let response;
