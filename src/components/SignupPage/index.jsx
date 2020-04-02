@@ -10,9 +10,9 @@ const SignupPage = () => {
   const [hasErrors, setHasErrors] = useState(false);
 
   // later write code to post to API
-  const handleSignup = async (email, username, password) => {
+  const handleSignup = async (email, username, password, isAdmin) => {
     try {
-      dispatch(await addUser(email, username, password));
+      dispatch(await addUser(email, username, password, isAdmin));
       // redirect
       history.push("/category/all");
     } catch (error) {

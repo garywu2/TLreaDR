@@ -2,6 +2,8 @@ import React, { useState, useContext } from "react";
 import FormInput from "../styled/FormInput";
 import styled, { ThemeContext } from "styled-components";
 import FormButton from "../styled/FormButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSquare, faCheckSquare } from "@fortawesome/free-regular-svg-icons";
 
 const Wrapper = styled.form`
   background-color: white;
@@ -15,6 +17,15 @@ const ErrorMessage = styled.div`
   visibility: ${props => (props.visible ? "visible" : "hidden")};
   text-align: center;
   color: #ff2a2a;
+`;
+
+const Icon = styled.span`
+  margin-right: 10px;
+`;
+
+const AdminMessage = styled.span`
+  cursor: pointer;
+  color: ${({ theme }) => theme.primaryTextColor};
 `;
 
 /**
@@ -36,21 +47,32 @@ export default function SignupForm({ handleSubmit, hasErrors }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [adminKey, setAdminKey] = useState("");
   const [invalidSubmit, setInvalidSubmit] = useState(false);
   const theme = useContext(ThemeContext);
+  const [showAdminField, setShowAdminField] = useState(false);
 
   const [usernameError, passwordError, emailError] = useErrorCheck(
     [username, password, email],
     field => field.length === 0
   );
 
+  const adminError = showAdminField && adminKey !== "plsmakemeadmin";
+
   const handleFormSubmit = e => {
     e.preventDefault();
-    if ([usernameError, passwordError, emailError].includes(true)) {
+    if ([usernameError, passwordError, emailError, adminError].includes(true)) {
       setInvalidSubmit(true);
     } else {
-      handleSubmit(email, username, password);
+      // if showing admin field and passes error, then user is admin
+      let isAdmin = showAdminField;
+
+      handleSubmit(email, username, password, isAdmin);
     }
+  };
+
+  const handleAdminClick = () => {
+    setShowAdminField(!showAdminField);
   };
 
   return (
@@ -83,6 +105,27 @@ export default function SignupForm({ handleSubmit, hasErrors }) {
         triedSubmit={invalidSubmit}
         errorMessage="Email address cannot be blank!"
       />
+      <div>
+          <AdminMessage theme={theme} onClick={handleAdminClick}>
+            <Icon>
+              <FontAwesomeIcon
+                icon={showAdminField ? faCheckSquare : faSquare}
+                size="lg"
+              ></FontAwesomeIcon>
+            </Icon>
+            Sign up for an admin account
+          </AdminMessage>
+      </div>
+      {showAdminField && (
+        <FormInput
+          label="Admin key"
+          handleInputChange={setAdminKey}
+          value={adminKey}
+          hasError={adminError}
+          triedSubmit={invalidSubmit}
+          errorMessage={"Invalid admin key."}
+        />
+      )}
       <ErrorMessage visible={hasErrors}>
         That username already exists!
       </ErrorMessage>

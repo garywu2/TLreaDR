@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import requests
 from flask_restplus import marshal
 from sqlalchemy import desc
 from sqlalchemy.orm import aliased
@@ -75,6 +76,7 @@ def get_post_by_post_uuid(post_uuid, user_uuid):
 
     return result[0]
 
+
 def add_post(category, args):
     queried_category = Category.query.filter_by(name=category).first()
     if queried_category is None:
@@ -109,15 +111,55 @@ def edit_post(post_uuid, args):
     db.session.commit()
 
 
+def delete_post(post_uuid):
+    post_to_be_deleted = Post.query.filter_by(post_uuid=post_uuid).first()
+    if post_to_be_deleted:
+        # Delete all comments related to post
+        response = requests.delete('http://comment_service:7082/api/comments/post/' + str(post_uuid))
+        if response.status_code != 200:
+            return {'message': 'error deleting posts comments'}, response.status_code
+
+        # Delete all votes related to post
+        votes_to_be_deleted = Postvote.query.filter_by(post_uuid=post_uuid).all()
+        for vote in votes_to_be_deleted:
+            db.session.delete(vote)
+        db.session.delete(post_to_be_deleted)
+        db.session.commit()
+        return {'message': 'post has been deleted successfully.'}, 200
+    return {'message': 'post not found.'}, 404
+
+
 def add_post_vote(post_uuid, args):
+    """
+    Adds a vote on a post by a user to the post vote table.
+
+    If a post has -20 or less votes the post will be removed.
+
+    :param post_uuid: the post uuid of the post being voted on
+    :param args: the arguments provided in the HTTP request
+    """
     new_post_vote = Postvote(post_uuid, args['user_uuid'], args['vote_type'])
     post_voted_on = Post.query.filter_by(post_uuid=post_uuid).first()
     post_voted_on.assign_vote(args['vote_type'])
-    db.session.add(new_post_vote)
+
+    if post_voted_on.votes <= -20:
+        db.session.delete(post_voted_on)
+        db.session.commit()
+    else:
+        db.session.add(new_post_vote)
+
     db.session.commit()
 
 
 def edit_post_vote(post_uuid, args):
+    """
+    Edits a user's vote on a post.
+
+    If a post has -20 or less votes the post will be removed.
+
+    :param post_uuid: the post uuid of the post being voted on
+    :param args: the arguments provided in the HTTP request
+    """
     user_uuid = args['user_uuid']
     new_vote_type = args['new_vote_type']
     post_to_be_edited = Post.query.filter_by(post_uuid=post_uuid).first()
@@ -129,9 +171,12 @@ def edit_post_vote(post_uuid, args):
             return {'message': 'cannot vote twice on the same post'}, 404
         vote_to_be_edited.vote_type = new_vote_type
         post_to_be_edited.assign_vote(2 * new_vote_type)
+        if post_to_be_edited.votes <= -20:
+            db.session.delete(post_to_be_edited)
+        else:
+            db.session.add(post_to_be_edited)
         db.session.commit()
         return {'message': 'vote has been edited successfully.'}, 201
-
     return {'message': 'vote or post not found.'}, 404
 
 

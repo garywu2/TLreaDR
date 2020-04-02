@@ -2,8 +2,8 @@ import axios from "axios";
 import config from "../config/client";
 import {FETCH_USERS, LOGIN_USER, FETCH_USER} from "./types";
 
-export const addUser = async (email, username, password) => {
-  const body = { email, username, password };
+export const addUser = async (email, username, password, isAdmin) => {
+  const body = { email, username, password, is_admin: +isAdmin };
 
   // register user to database
   const response = await axios.post(config.endpoint + "users", { ...body });

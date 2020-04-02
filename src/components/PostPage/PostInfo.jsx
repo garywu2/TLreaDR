@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
@@ -6,6 +6,7 @@ import { Link, useHistory } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
 import { upvotePost, downvotePost } from "../../actions/posts";
 import { useSelector } from "react-redux";
+import Label from "../styled/Label";
 
 const Display = styled.div`
   background-color: white;
@@ -55,6 +56,9 @@ const Header = styled.div`
     ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   padding-bottom: 10px;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Img = styled.img`
@@ -67,7 +71,44 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
-export default function PostInfo({ post, votePost }) {
+const Footer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+`;
+
+const EditButton = styled(Link)`
+  cursor: pointer;
+  color: #828282;
+  margin-right: 20px;
+
+  & :hover {
+    color: ${({ hovercolor }) => hovercolor || "#000000"};
+  }
+`;
+
+const DeleteButton = styled.div`
+  cursor: pointer;
+  color: #828282;
+  margin-right: 20px;
+
+  & :hover {
+    color: ${({ hovercolor }) => hovercolor || "#000000"};
+  }
+`;
+
+const ErrorMessage = styled.div`
+  visibility: ${props => (props.visible ? "visible" : "hidden")};
+  text-align: center;
+  color: #ff2a2a;
+`;
+
+export default function PostInfo({
+  post,
+  votePost,
+  handleDeleteClick,
+  hasErrors
+}) {
   const theme = useContext(ThemeContext);
   const history = useHistory();
   const user = useSelector(state => state.user);
@@ -117,17 +158,42 @@ export default function PostInfo({ post, votePost }) {
       </Icons>
       <Body>
         <Header>
-          <h2>{post.title}</h2>
-          <small>
-            by{" "}
-            <Link to={"/user/" + post.author_uuid}>
-              {post.author_username}
-            </Link>{" "}
-            on {convertDate(post.pub_date)}
-          </small>
+          <div>
+            <h2>{post.title}</h2>
+            <small>
+              by{" "}
+              <Link to={"/user/" + post.author_uuid}>
+                {post.author_username}
+              </Link>{" "}
+              on{" "}
+              {convertDate(post.pub_date) +
+                (post.edited_flag
+                  ? " [Edited on " + convertDate(post.edited_date) + "]"
+                  : "")}
+            </small>
+          </div>
+          <div>
+            <Label>New</Label>
+          </div>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
+        {user && user.user_uuid === post.author_uuid && (
+          <Footer>
+            <EditButton
+              hovercolor="#62b0d1"
+              to={post.post_uuid.concat("/edit")}
+            >
+              <div>Edit</div>
+            </EditButton>
+            <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
+              <div>Delete</div>
+            </DeleteButton>
+          </Footer>
+        )}
+        <ErrorMessage visible={hasErrors}>
+          There was an error on the backend.
+        </ErrorMessage>
       </Body>
     </Display>
   );

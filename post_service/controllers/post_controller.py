@@ -3,9 +3,7 @@ from flask_restplus import Resource, marshal
 import post_service.managers.post_manager as post_manager
 from post_service.api.models import post_dto
 from post_service.api.restplus import api
-from post_service.models import db
 from post_service.models.category import Category
-from post_service.models.post import Post
 from post_service.parsers.post_parsers import *
 
 ns = api.namespace('posts', description='Operations related to posts', path="/<string:category>")
@@ -71,12 +69,8 @@ class PostItem(Resource):
         Deletes a post
         """
         try:
-            post_to_be_deleted = Post.query.filter_by(post_uuid=post_uuid).first()
-            if post_to_be_deleted:
-                db.session.delete(post_to_be_deleted)
-                db.session.commit()
-                return {'message': 'post has been deleted successfully.'}, 201
-            return {'message': 'post not found.'}, 404
+            message = post_manager.delete_post(post_uuid)
+            return message
         except Exception as e:
             return {"message": str(e)}, 500
 
@@ -143,5 +137,3 @@ class PostVote(Resource):
             return {'message': 'vote has been deleted successfully.'}, 201
         except Exception as e:
             return {"message": str(e)}, 500
-
-
