@@ -158,7 +158,11 @@ export default function PostInfo({
           <small>
             by{" "}
             <Link to={"/user/" + post.author_uuid}>{post.author_username}</Link>{" "}
-            on {convertDate(post.pub_date)}
+            on{" "}
+            {convertDate(post.pub_date) +
+              (post.edited_flag
+                ? " [Edited on " + convertDate(post.edited_date) + "]"
+                : "")}
           </small>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
