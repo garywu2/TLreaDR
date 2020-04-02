@@ -5,6 +5,7 @@ import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
+import ArticleLinkButton from "../styled/ArticleLinkButton";
 
 const Display = styled.div`
   background-color: white;
@@ -71,15 +72,6 @@ const Title = styled.h2`
   color: inherit;
 `;
 
-const ArticleLink = styled.div`
-  margin: 15px 0px 15px 0px;
-  color: ${({ theme }) => theme.primaryColor};
-
-  & :hover {
-    color: #000000;
-  }
-`;
-
 export default function PostExpanded({
   post,
   handleThumbsUp,
@@ -87,20 +79,6 @@ export default function PostExpanded({
   handleExpand
 }) {
   const theme = useContext(ThemeContext);
-
-  const renderArticleButton = () => {
-    return (
-      <div>
-        {post.article_link && (
-          <ArticleLink theme={theme}>
-            <a target="_blank" href={post.article_link}>
-              Article Link
-            </a>
-          </ArticleLink>
-        )}
-      </div>
-    );
-  };
 
   return (
     <Display theme={theme}>
@@ -142,7 +120,7 @@ export default function PostExpanded({
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
-        {renderArticleButton()}
+        <ArticleLinkButton post={post} theme={theme} />
       </Body>
       <Icon onClick={handleExpand}>
         <FontAwesomeIcon size="2x" icon={faCaretUp}></FontAwesomeIcon>

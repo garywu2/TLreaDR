@@ -6,6 +6,7 @@ import { Link, useHistory } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
 import { upvotePost, downvotePost } from "../../actions/posts";
 import { useSelector } from "react-redux";
+import ArticleLinkButton from "../styled/ArticleLinkButton";
 
 const Display = styled.div`
   background-color: white;
@@ -67,20 +68,17 @@ const Img = styled.img`
   margin-bottom: 20px;
 `;
 
-const ArticleLink = styled.div`
-  margin: 15px 0px 15px 0px;
-  color: ${({ theme }) => theme.primaryColor};
-
-  & :hover {
-    color: #000000;
-  }
-`;
-
 const Footer = styled.div`
   display: flex;
-  justify-content: flex-start;
-  margin-top: 20px;
+  justify-content: space-between;
+  margin-top: 15px;
 `;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
 
 const EditButton = styled(Link)`
   cursor: pointer;
@@ -138,20 +136,6 @@ export default function PostInfo({
     }
   };
 
-  const renderArticleButton = () => {
-    return (
-      <div>
-        {post.article_link && (
-          <ArticleLink theme={theme}>
-            <a target="_blank" href={post.article_link}>
-              Article Link
-            </a>
-          </ArticleLink>
-        )}
-      </div>
-    );
-  };
-
   return (
     <Display theme={theme}>
       <Icons>
@@ -190,20 +174,22 @@ export default function PostInfo({
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
-        {renderArticleButton()}
-        {user && user.user_uuid === post.author_uuid && (
-          <Footer>
-            <EditButton
-              hovercolor="#62b0d1"
-              to={post.post_uuid.concat("/edit")}
-            >
-              <div>Edit</div>
-            </EditButton>
-            <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
-              <div>Delete</div>
-            </DeleteButton>
-          </Footer>
-        )}
+        <Footer>
+          {user && user.user_uuid === post.author_uuid && (
+            <ButtonWrapper>
+              <EditButton
+                hovercolor="#62b0d1"
+                to={post.post_uuid.concat("/edit")}
+              >
+                <div>Edit</div>
+              </EditButton>
+              <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
+                <div>Delete</div>
+              </DeleteButton>
+            </ButtonWrapper>
+          )}
+          <ArticleLinkButton post={post} theme={theme} />
+        </Footer>
         <ErrorMessage visible={hasErrors}>
           There was an error on the backend.
         </ErrorMessage>
