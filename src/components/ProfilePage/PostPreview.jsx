@@ -18,8 +18,6 @@ const Bar = styled.div`
 `;
 
 const Img = styled.img`
-  display: flex;
-  align-items: flex-start;
   width: 100px;
   height: auto;
   border-radius: 10px;
