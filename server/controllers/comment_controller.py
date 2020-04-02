@@ -2,7 +2,7 @@ import requests
 from flask import request
 from flask_restplus import Resource
 
-from server.models.api_models import *
+from server.api.models import *
 
 ns = api.namespace('comments', description='Operations related to server routes')
 
