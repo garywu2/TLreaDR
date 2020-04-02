@@ -1,7 +1,6 @@
 from datetime import datetime
 
-import requests
-from flask_restplus import Resource, fields, reqparse, marshal
+from flask_restplus import Resource, fields, marshal
 from sqlalchemy import desc
 
 from comment_service.api.restplus import api

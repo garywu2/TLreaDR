@@ -19,3 +19,8 @@ post_dto = api.model('post', {
     'edited_flag': fields.Boolean(required=True, description='new flag for the post'),
     'vote_type': fields.Integer(required=False, description='status of user vote')
 })
+
+category_dto = api.model('category', {
+    'category_uuid': fields.String(required=True, description='category uuid'),
+    'name': fields.String(required=True, description='category name'),
+})
