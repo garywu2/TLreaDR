@@ -74,6 +74,10 @@ const Title = styled.h2`
 const ArticleLink = styled.div`
   margin: 15px 0px 15px 0px;
   color: ${({ theme }) => theme.primaryColor};
+
+  & :hover {
+    color: #000000;
+  }
 `;
 
 export default function PostExpanded({
