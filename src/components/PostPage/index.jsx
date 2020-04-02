@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { getPostByUuid } from "../../actions/posts";
+import { useLocation, useHistory } from "react-router-dom";
+import { getPostByUuid, deletePost } from "../../actions/posts";
 import {
   getCommentsByPostUuid,
   postComment,
@@ -22,7 +22,9 @@ const PostPage = props => {
   const user = useSelector(state => state.user);
   const userLoaded = useSelector(state => state.loaded.userLoaded);
   const [post, setPost] = useState(null);
+  const [hasErrors, setHasErrors] = useState(false);
   const [comments, setComments] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
     const getPost = async () => {
@@ -184,6 +186,16 @@ const PostPage = props => {
     }
   };
 
+  const handleDeletePost = async () => {
+    try {
+      await deletePost(post.post_uuid);
+      history.push("/");
+    } catch (e) {
+      console.log(e);
+      setHasErrors(true);
+    }
+  }
+  
   const editCommentInTree = (commentText, parentList) => {
     // recursively find place to put comment
     // shallow copy comments
@@ -231,7 +243,12 @@ const PostPage = props => {
   return (
     <Wrapper>
       {post ? (
-        <PostInfo post={post} votePost={votePost}></PostInfo>
+        <PostInfo
+          post={post}
+          votePost={votePost}
+          handleDeleteClick={handleDeletePost}
+          hasErrors={hasErrors}
+        ></PostInfo>
       ) : (
         <div>Loading...</div>
       )}
