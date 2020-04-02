@@ -137,7 +137,7 @@ class PostItem(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-        return {'message': 'post has been deleted successfully.'}, 201
+        return {'message': 'post has been deleted successfully.'}, 200
 
 
 @ns.route('/search/<string:search>')
