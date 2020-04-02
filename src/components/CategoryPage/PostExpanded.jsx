@@ -6,6 +6,7 @@ import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
 import ArticleLinkButton from "../styled/ArticleLinkButton";
+import Label from "../styled/Label";
 
 const Display = styled.div`
   background-color: white;

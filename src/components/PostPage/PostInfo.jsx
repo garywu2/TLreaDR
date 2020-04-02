@@ -7,6 +7,7 @@ import convertDate from "../../utils/convertDate";
 import { upvotePost, downvotePost } from "../../actions/posts";
 import { useSelector } from "react-redux";
 import ArticleLinkButton from "../styled/ArticleLinkButton";
+import Label from "../styled/Label";
 
 const Display = styled.div`
   background-color: white;
