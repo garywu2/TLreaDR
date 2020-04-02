@@ -1,11 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
 const ArticleLink = styled.div`
   padding: 15px 20px;
   background-color: ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
@@ -17,6 +12,7 @@ const ArticleLink = styled.div`
   border-radius: 3px;
   font-family: "Prompt", -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 12pt;
+  text-align: center;
 
   &:hover {
     background-color: ${({ theme }) => (theme ? theme.darkerColor : "#c21a11")};
@@ -27,13 +23,11 @@ export default ({ post, theme }) => {
   return (
     <div>
       {post.article_link && (
-        <Wrapper>
           <ArticleLink theme={theme}>
             <a target="_blank" href={post.article_link}>
-              Article Link
+              Original Article Link
             </a>
           </ArticleLink>
-        </Wrapper>
       )}
     </div>
   );

@@ -70,15 +70,9 @@ const Img = styled.img`
 
 const Footer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   margin-top: 15px;
 `;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`
 
 const EditButton = styled(Link)`
   cursor: pointer;
@@ -174,9 +168,9 @@ export default function PostInfo({
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
-        <Footer>
+        <ArticleLinkButton post={post} theme={theme} />
           {user && user.user_uuid === post.author_uuid && (
-            <ButtonWrapper>
+            <Footer>
               <EditButton
                 hovercolor="#62b0d1"
                 to={post.post_uuid.concat("/edit")}
@@ -186,10 +180,8 @@ export default function PostInfo({
               <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
                 <div>Delete</div>
               </DeleteButton>
-            </ButtonWrapper>
+            </Footer>
           )}
-          <ArticleLinkButton post={post} theme={theme} />
-        </Footer>
         <ErrorMessage visible={hasErrors}>
           There was an error on the backend.
         </ErrorMessage>
