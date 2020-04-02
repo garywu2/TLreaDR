@@ -22,16 +22,16 @@ class UserCollection(Resource):
     @ns.expect(user_model, validate=False)
     def post(self):
         """ Creates a new user """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "add"
-        request.json["type"] = "user"
-        new_user_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "add"
+        event_json["type"] = "user"
+        new_user_event = Event(event_json)
         try:
             db.session.add(new_user_event)
             db.session.commit()
-            #response = requests.post('http://user_service:7082/api/users', json=request.json)
-            #return response.json(), response.status_code
-            return "New User Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(new_user_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             print(str(e))
@@ -48,34 +48,34 @@ class UserItem(Resource):
     @ns.expect(user_put_model, validate=False)
     def put(self, uuid):
         """ Updates a user """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "update"
-        request.json["type"] = "user"
-        request.json["id"] = uuid
-        updated_user_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "update"
+        event_json["type"] = "user"
+        event_json["id"] = uuid
+        updated_user_event = Event(event_json)
         try:
             db.session.add(updated_user_event)
             db.session.commit()
-            #response = requests.put('http://user_service:7082/api/users/' + uuid, json=request.json)
-            #return response.json(), response.status_code
-            return "Updated User Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(updated_user_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             return {"message": str(e)}, 500
 
     def delete(self, uuid):
         """ Deletes a user """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "delete"
-        request.json["type"] = "user"
-        request.json["id"] = uuid
-        deleted_user_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "delete"
+        event_json["type"] = "user"
+        event_json["id"] = uuid
+        deleted_user_event = Event(event_json)
         try:
             db.session.add(deleted_user_event)
             db.session.commit()
-            #response = requests.delete('http://user_service:7082/api/users/' + uuid)
-            #return response.json(), response.status_code
-            return "Deleted User Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(deleted_user_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             return {"message": str(e)}, 500

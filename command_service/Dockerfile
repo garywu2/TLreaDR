@@ -8,6 +8,6 @@ RUN mkdir -p /command_service
 ADD . /command_service
 WORKDIR /command_service
 
-EXPOSE 7086
+EXPOSE 7082
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=7086"]
+CMD ["flask", "run", "--host=0.0.0.0", "--port=7082"]

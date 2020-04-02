@@ -21,16 +21,16 @@ class CommentsCollection(Resource):
     @ns.expect(comment_model)
     def post(self):
         """ Creates a new comment """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "add"
-        request.json["type"] = "comment"
-        new_comment_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "add"
+        event_json["type"] = "comment"
+        new_comment_event = Event(event_json)
         try:
             db.session.add(new_comment_event)
             db.session.commit()
-            #response = requests.post('http://comment_service:7082/api/comments', json=request.json)
-            #return response.json(), response.status_code
-            return "New Comment Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(new_comment_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             print(str(e))
@@ -42,17 +42,17 @@ class PostItem(Resource):
     @ns.expect(comment_put_model, validate=False)
     def put(self, comment_uuid):
         """ Updates a comment """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "update"
-        request.json["type"] = "comment"
-        request.json["id"] = comment_uuid
-        updated_comment_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "update"
+        event_json["type"] = "comment"
+        event_json["id"] = comment_uuid
+        updated_comment_event = Event(event_json)
         try:
             db.session.add(updated_comment_event)
             db.session.commit()
-            #response = requests.put('http://comment_service:7082/api/comments/' + comment_uuid, json=request.json)
-            #return response.json(), response.status_code
-            return "Updated Comment Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(updated_comment_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             print(str(e))
@@ -60,17 +60,17 @@ class PostItem(Resource):
 
     def delete(self, comment_uuid):
         """ Deletes a comment """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "delete"
-        request.json["type"] = "comment"
-        request.json["id"] = comment_uuid
-        deleted_comment_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "delete"
+        event_json["type"] = "comment"
+        event_json["id"] = comment_uuid
+        deleted_comment_event = Event(event_json)
         try:
             db.session.add(deleted_comment_event)
             db.session.commit()
-            #response = requests.delete('http://comment_service:7082/api/comments/' + comment_uuid)
-            #return response.json(), response.status_code
-            return "Deleted Comment Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(deleted_comment_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             print(str(e))

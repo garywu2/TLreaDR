@@ -21,16 +21,16 @@ class CategoryCollection(Resource):
     @ns.expect(category_model)
     def post(self):
         """ Creates a new category """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "add"
-        request.json["type"] = "category"
-        new_user_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "add"
+        event_json["type"] = "category"
+        new_category_event = Event(event_json)
         try:
-            db.session.add(new_user_event)
+            db.session.add(new_category_event)
             db.session.commit()
-            #response = requests.post('http://post_service:7082/api/categories', json=request.json)
-            #return response.json(), response.status_code
-            return "New Category Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(new_category_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             print(str(e))
@@ -46,17 +46,17 @@ class CategoryItem(Resource):
 
     def delete(self, category):
         """ Deletes a category """
-        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        request.json["operation"] = "delete"
-        request.json["type"] = "category"
-        request.json["category"] = category
-        new_user_event = Event(request.json)
+        event_json = request.json
+        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        event_json["operation"] = "delete"
+        event_json["type"] = "category"
+        event_json["category"] = category
+        deleted_category_event = Event(event_json)
         try:
-            db.session.add(new_user_event)
+            db.session.add(deleted_category_event)
             db.session.commit()
-            #response = requests.delete('http://post_service:7082/api/categories/' + category)
-            #return response.json(), response.status_code
-            return "Deleted Category Event Created", 200
+            response = requests.get('http://command_service:7082/api/' + str(deleted_category_event.event_uuid))
+            return response.json(), response.status_code
 
         except Exception as e:
             print(str(e))
