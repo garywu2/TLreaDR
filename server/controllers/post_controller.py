@@ -2,7 +2,7 @@ import requests
 from flask import request
 from flask_restplus import Resource
 
-from server.models.api_models import *
+from server.api.models import *
 from server.parsers.server_parsers import *
 
 ns = api.namespace('posts', description='Operations related to post routes', path="/<string:category>")
@@ -57,11 +57,9 @@ class PostSearch(Resource):
 
 @ns.route('/posts/<string:user_uuid>')
 class UserPosts(Resource):
-    @ns.expect(post_get_parser)
     def get(self, category, user_uuid):
         """ Gets all posts by user """
-        response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid,
-                                params=post_get_parser.parse_args())
+        response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid)
         return response.json(), response.status_code
 
 

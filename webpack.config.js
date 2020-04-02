@@ -67,7 +67,7 @@ const common = {
         ],
       },
       {
-        test: /\.(png|jpg|gif)$/,
+        test: /\.(png|jpg|svg|gif)$/,
         exclude: /(node_modules)/,
         use: [
           {

@@ -1,24 +1,19 @@
-from flask_restplus import Resource, fields, reqparse, marshal
+from flask_restplus import Resource, marshal
 from datetime import datetime
-import uuid
 
+from post_service.api.models import category_dto
 from post_service.api.restplus import api
 from post_service.models import db
 from post_service.models.category import Category
+from post_service.parsers.category_parsers import category_parser
 
 ns = api.namespace('categories', description='Operations related to categories')
 
-category_dto = api.model('category', {
-    'category_uuid': fields.String(required=True, description='category uuid'),
-    'name': fields.String(required=True, description='category name'),
-})
-
-category_parser = reqparse.RequestParser()
-category_parser.add_argument('name', required=True, type=str, help='name of category', location='json')
 
 def date_converter(o):
     if isinstance(o, datetime):
         return o.__str__()
+
 
 @ns.route('')
 class CategoryCollection(Resource):
@@ -45,7 +40,7 @@ class CategoryCollection(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-        return {'message': 'category has been created successfully.'}, 201
+        return marshal(new_category, category_dto), 200
 
 
 @ns.route('/<string:category>')

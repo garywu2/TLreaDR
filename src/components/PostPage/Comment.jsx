@@ -93,16 +93,19 @@ export default function Comment({
         {!comment.is_deleted && (
           <React.Fragment>
             <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
-            {user && user.user_uuid === comment.author_uuid && (
-              <RightSide>
+            <RightSide>
+              {user && user.user_uuid === comment.author_uuid && (
                 <BottomBarButton onClick={handleEditClick}>
                   Edit
                 </BottomBarButton>
+              )}
+              {((user && user.user_uuid === comment.author_uuid) ||
+                user.is_admin) && (
                 <BottomBarButton onClick={handleDeleteClick}>
                   Delete
                 </BottomBarButton>
-              </RightSide>
-            )}
+              )}
+            </RightSide>
           </React.Fragment>
         )}
       </BottomBar>

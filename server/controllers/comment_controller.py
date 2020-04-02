@@ -2,7 +2,7 @@ import requests
 from flask import request
 from flask_restplus import Resource
 
-from server.models.api_models import *
+from server.api.models import *
 
 ns = api.namespace('comments', description='Operations related to server routes')
 
@@ -39,7 +39,7 @@ class PostItem(Resource):
 class PostComment(Resource):
     def get(self, post_uuid):
         """ Gets all comments for a post """
-        response = requests.get('http://comment_service:7082/api/comments/' + post_uuid)
+        response = requests.get('http://comment_service:7082/api/comments/post/' + post_uuid)
         return response.json(), response.status_code
 
 

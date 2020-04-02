@@ -7,7 +7,6 @@ import { useHistory } from "react-router-dom";
 
 const NewPostPage = () => {
   const history = useHistory();
-  const dispatch = useDispatch();
   const [hasErrors, setHasErrors] = useState(false);
   const user = useSelector(state => state.user);
 
@@ -15,12 +14,13 @@ const NewPostPage = () => {
     category: "",
     title: "",
     body: "",
-    image_link: ""
+    image_link: "",
+    article_link: ""
   });
 
   // later write code to post to API
   const handleUpload = async () => {
-    const { category, title, body, image_link } = formValues;
+    const { category, title, body, image_link, article_link } = formValues;
 
     try {
       const { postUuid } = await uploadPost(
@@ -28,6 +28,7 @@ const NewPostPage = () => {
         title,
         body,
         image_link,
+        article_link,
         user.user_uuid
       );
       // redirect

@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 import requests
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import column_property
 
 from post_service.models import db
 
@@ -24,7 +25,7 @@ class Post(db.Model):
 
     votes = db.Column(db.Integer, nullable=False, default=0)
 
-    new_flag = db.Column(db.Boolean, nullable=False, default=True)
+    new_flag = column_property(pub_date > (datetime.utcnow() - timedelta(days=3)))
 
     edited_flag = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -39,11 +40,6 @@ class Post(db.Model):
         # Request made to user_service to obtain author's username
         response = requests.get('http://user_service:7082/api/users/' + str(author_uuid)).json()
         self.author_username = response['username']
-
-    def invert_new_flag(self):
-        if self.new_flag is True:
-            self.new_flag = False
-        db.session.commit()
 
     def assign_vote(self, vote_type):
         self.votes += vote_type
