@@ -148,12 +148,15 @@ const PostPage = props => {
     // new comment doesn't have nestedComment attribute, add
     newComment.nested_comment = [];
 
+    // need this before pushing from array
+    const parentListLength = parentList.length;
+
     // shallow copy comments
     const newComments = [...comments];
     let parent = findTargetComment(newComments, parentList);
 
     // if root comment, push to top
-    if (parentList.length === 0) {
+    if (parentListLength === 0) {
       parent.nested_comment.splice(0, 0, newComment);
     } else {
       parent.nested_comment.push(newComment);
