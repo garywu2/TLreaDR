@@ -23,11 +23,11 @@ export default ({ post, theme }) => {
   return (
     <div>
       {post.article_link && (
-          <ArticleLink theme={theme}>
-            <a target="_blank" href={post.article_link}>
-              Original Article Link
-            </a>
-          </ArticleLink>
+        <ArticleLink theme={theme}>
+          <a target="_blank" href={post.article_link}>
+            Original Article Link
+          </a>
+        </ArticleLink>
       )}
     </div>
   );
