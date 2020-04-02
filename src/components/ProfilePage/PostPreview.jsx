@@ -7,7 +7,7 @@ const PostPreviewWrapper = styled(Link)`
   background-color: #f5edf3;
   margin-bottom: 20px;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: row;
 `;
 
 const Bar = styled.div`
@@ -18,7 +18,9 @@ const Bar = styled.div`
 `;
 
 const Img = styled.img`
-  width: 100px;
+  object-fit: cover;
+  width: 250px;
+  max-height: 144px;
   border-radius: 10px;
   margin: 10px;
 `;

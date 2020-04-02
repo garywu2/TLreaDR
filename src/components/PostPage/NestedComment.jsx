@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Comment from "./Comment";
 import CommentForm from "./CommentForm";
-import FormButton from "../styled/FormButton";
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const Display = styled.div`
   display: flex;
@@ -23,23 +24,54 @@ const Bar = styled.div`
   border-radius: 2px;
 `;
 
+const ReplyHeader = styled.h3`
+  margin-top: 10px;
+`;
+
 export default function NestedComment({
   comment,
   isRoot,
   handleCommentSubmit,
+  handleEditSubmit,
+  handleDelete,
   parentList
 }) {
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  // add this comment's id to the parent list
   const newParentList = [...parentList, comment.id];
+  const user = useSelector(state => state.user);
+  const history = useHistory();
 
   const handleReplyClick = () => {
-    setShowReplyForm(!showReplyForm);
+    if (user) {
+      setShowReplyForm(!showReplyForm);
+      setShowEditForm(false);
+    }
+    else {
+      history.push("/sign-in");
+    }
   };
 
-  const handleReplySubmit = async (commentText) => {
+  const handleEditClick = () => {
+    setShowReplyForm(false);
+    setShowEditForm(!showEditForm);
+  };
+
+  const handleDeleteClick = () => {
+    handleDelete(comment.comment_uuid, newParentList);
+  };
+
+  const handleReplySubmit = async commentText => {
     await handleCommentSubmit(commentText, newParentList);
     // wait for comment to be posted
     setShowReplyForm(!showReplyForm);
+  };
+
+  const handleEditFormSubmit = async commentText => {
+    await handleEditSubmit(comment.comment_uuid, commentText, newParentList);
+    // wait for comment to be posted
+    setShowEditForm(!showEditForm);
   };
 
   const renderChildrenComments = () => {
@@ -50,19 +82,32 @@ export default function NestedComment({
         comment={com}
         isRoot={false}
         handleCommentSubmit={handleCommentSubmit}
+        handleEditSubmit={handleEditSubmit}
+        handleDelete={handleDelete}
       ></NestedComment>
     ));
   };
 
-  const renderReplyForm = () => {
+  const renderReplyForm = () => (
     // comment form handlesubmit only passes in comment text as argument
-    return (
+    <React.Fragment>
+      <ReplyHeader>Reply to comment</ReplyHeader>
       <CommentForm
         handleSubmit={handleReplySubmit}
         placeholder="Type your reply here..."
       ></CommentForm>
-    );
-  };
+    </React.Fragment>
+  );
+
+  const renderEditForm = () => (
+    <React.Fragment>
+      <ReplyHeader>Edit comment</ReplyHeader>
+      <CommentForm
+        handleSubmit={handleEditFormSubmit}
+        value={comment.comment_text}
+      ></CommentForm>
+    </React.Fragment>
+  );
 
   return (
     <Display>
@@ -71,7 +116,11 @@ export default function NestedComment({
         <Comment
           comment={comment}
           handleReplyClick={handleReplyClick}
+          handleEditClick={handleEditClick}
+          handleDeleteClick={handleDeleteClick}
+          handleEditSubmit={handleEditSubmit}
         ></Comment>
+        {showEditForm && renderEditForm()}
         {showReplyForm && renderReplyForm()}
         {renderChildrenComments()}
       </Thread>
