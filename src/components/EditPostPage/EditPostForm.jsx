@@ -1,9 +1,7 @@
 import React, { useState, useContext } from "react";
 import FormInput from "../styled/FormInput";
-import FormDropdown from "../styled/FormDropdown";
 import styled, { ThemeContext } from "styled-components";
 import FormButton from "../styled/FormButton";
-import { useSelector } from "react-redux";
 
 const Wrapper = styled.form`
   background-color: white;
@@ -42,31 +40,22 @@ export default function EditPostForm({
 }) {
   const theme = useContext(ThemeContext);
   const [invalidSubmit, setInvalidSubmit] = useState(false);
-  const { category, title, body, image_link } = formValues;
-  const categories = useSelector(state => state.categories);
-  const categoryOptions = categories
-    ? categories.map(category => ({
-        value: category.name,
-        label: category.name[0].toUpperCase() + category.name.slice(1)
-      }))
-    : [];
+  const { title, body, image_link } = formValues;
 
-  const setCategory = category =>
-    setFormValues(prevState => ({ ...prevState, category }));
   const setTitle = title =>
     setFormValues(prevState => ({ ...prevState, title }));
   const setBody = body => setFormValues(prevState => ({ ...prevState, body }));
   const setImageLink = image_link =>
     setFormValues(prevState => ({ ...prevState, image_link }));
 
-  const [categoryError, titleError, bodyError] = useErrorCheck(
-    [category, title, body],
+  const [titleError, bodyError] = useErrorCheck(
+    [title, body],
     field => field.length === 0
   );
 
   const handleFormSubmit = e => {
     e.preventDefault();
-    if ([categoryError, titleError, bodyError].includes(true)) {
+    if ([titleError, bodyError].includes(true)) {
       setInvalidSubmit(true);
     } else {
       handleSubmit();
@@ -97,22 +86,10 @@ export default function EditPostForm({
         value={image_link}
         triedSubmit={invalidSubmit}
       />
-      <FormDropdown
-        label="Category"
-        handleInputChange={setCategory}
-        options={categoryOptions}
-        value={{
-          label: category
-            .charAt(0)
-            .toUpperCase()
-            .concat(category.slice(1)),
-          value: category
-        }}
-      />
       <ErrorMessage visible={hasErrors}>
         There was an error on the backend.
       </ErrorMessage>
-      <FormButton theme={theme}>Edit post</FormButton>
+      <FormButton theme={theme}>Edit Post</FormButton>
     </Wrapper>
   );
 }

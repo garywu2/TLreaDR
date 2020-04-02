@@ -1,6 +1,6 @@
 import axios from "axios";
 import config from "../config/client";
-import { FETCH_POSTS, CLEAR_POSTS, UPVOTE, DOWNVOTE, EDIT_POST } from "./types";
+import { FETCH_POSTS, CLEAR_POSTS, UPVOTE, DOWNVOTE, EDIT_POST, GET_POST, UPLOAD_POST } from "./types";
 
 export const getPostsByCategory = async (categoryName, userUuid) => {
   let response;
@@ -64,7 +64,7 @@ export const uploadPost = async (
   }
 
   const { post_uuid } = response.data;
-  return { type: "UPLOAD_POST", postUuid: post_uuid };
+  return { type: UPLOAD_POST, postUuid: post_uuid };
 };
 
 export const editPost = async (
@@ -92,6 +92,8 @@ export const editPost = async (
       ": " +
       response.data.message;
   }
+
+  return { type: EDIT_POST };
 };
 
 export const deletePost = async (post_uuid) => {
@@ -100,6 +102,8 @@ export const deletePost = async (post_uuid) => {
   if (response.status !== 200) {
     throw "deletePost failed with the error code " + response.status;
   }
+
+  return { type: DELETE_POST };
 }
 
 export const clearPosts = () => {
@@ -116,7 +120,7 @@ export const getPostByUuid = async (postUuid, userUuid) => {
   } else {
     response = await axios.get(`${config.endpoint}all/${postUuid}`);
   }
-  return { type: "GET_POST", post: response.data };
+  return { type: GET_POST, post: response.data };
 };
 
 export const getPostsByUserUuid = async user_uuid => {

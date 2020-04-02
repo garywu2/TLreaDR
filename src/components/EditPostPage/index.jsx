@@ -15,7 +15,6 @@ const EditPostPage = () => {
   const post_uuid = location.pathname.split("/")[2];
 
   const [formValues, setFormValues] = useState({
-    category: "",
     title: "",
     body: "",
     image_link: ""
@@ -28,7 +27,6 @@ const EditPostPage = () => {
         const { post } = await getPostByUuid(post_uuid, user_uuid);
         setPostAuthor(post.author_uuid);
         setFormValues({
-          category: post.category,
           title: post.title,
           body: post.body,
           image_link: post.image_link
@@ -42,10 +40,10 @@ const EditPostPage = () => {
   }, [getPostByUuid, post_uuid]);
 
   const handleEdit = async () => {
-    const { category, title, body, image_link } = formValues;
+    const { title, body, image_link } = formValues;
 
     try {
-      await editPost(category, post_uuid, title, body, image_link);
+      await editPost("all", post_uuid, title, body, image_link);
       history.push("/post/" + post_uuid);
     } catch (error) {
       console.log(error);
