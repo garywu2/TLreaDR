@@ -18,8 +18,9 @@ const Bar = styled.div`
 `;
 
 const Img = styled.img`
-  width: 100px;
-  height: auto;
+  object-fit: cover;
+  width: 250px;
+  max-height: 144px;
   border-radius: 10px;
   margin: 10px;
 `;
