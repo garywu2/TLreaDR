@@ -121,7 +121,7 @@ class CommentItem(Resource):
         return {'message': 'comment has been deleted successfully.'}, 201
 
 
-@ns.route('/<string:post_uuid>')
+@ns.route('/post/<string:post_uuid>')
 class PostComment(Resource):
     @ns.marshal_list_with(recursive_comment_mapping(10))
     def get(self, post_uuid):
@@ -140,6 +140,21 @@ class PostComment(Resource):
             return comments
         except Exception as e:
             return {"message": str(e)}, 500
+
+    def delete(self, post_uuid):
+        """
+        Deletes all comments for post specified
+        """
+        try:
+            comments_to_be_deleted = Comment.query.filter_by(post_uuid=post_uuid).all()
+
+            for comment in comments_to_be_deleted:
+                db.session.delete(comment)
+                db.session.commit()
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+        return {'message': 'comments for post has been deleted successfully.'}, 200
 
 
 @ns.route('/user/<string:user_uuid>')
