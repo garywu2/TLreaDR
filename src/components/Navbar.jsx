@@ -44,7 +44,7 @@ const LoggedOutButton = styled(Link)`
 `;
 
 const LogoImage = styled.img`
-  height: 50px;
+  height: 60px;
 `;
 
 const SubheaderWrapper = styled.div`
