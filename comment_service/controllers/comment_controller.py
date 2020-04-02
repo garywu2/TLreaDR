@@ -1,10 +1,13 @@
 from datetime import datetime
 
-from flask_restplus import Resource, fields, reqparse
+import requests
+from flask_restplus import Resource, fields, reqparse, marshal
+from sqlalchemy import desc
 
 from comment_service.api.restplus import api
 from comment_service.models import db
 from comment_service.models.comment import Comment
+from comment_service.parsers.comment_parsers import *
 
 ns = api.namespace('comments', description='Operations related to comments')
 
@@ -16,7 +19,12 @@ def recursive_comment_mapping(level):
         'comment_text': fields.String(required=True, description='comment text'),
         'comment_upvotes': fields.String(required=True, description='comment upvotes'),
         'comment_downvotes': fields.String(required=True, description='comment downvotes'),
+        'date_submitted': fields.String(required=True, description='submission date'),
+        'date_edited': fields.String(required=True, description='edit date'),
+        'is_edited': fields.Boolean(required=True, description='true if comment has been edited'),
+        'is_deleted': fields.Boolean(required=True, description='true if comment has been deleted'),
         'author_uuid': fields.String(required=True, description='author uuid'),
+        'author_username': fields.String(required=True, description='author uuid'),
         'post_uuid': fields.String(required=True, description='post uuid'),
         'path': fields.String(required=True, description='comment path'),
         'parent_id': fields.Integer(required=True, description='comment parent id')
@@ -24,16 +32,6 @@ def recursive_comment_mapping(level):
     if level:
         comment_dto['nested_comment'] = fields.Nested(recursive_comment_mapping(level - 1))
     return api.model('Comment' + str(level), comment_dto)
-
-
-comment_parser = reqparse.RequestParser()
-comment_parser.add_argument('text', required=True, type=str, help='comment text', location='json')
-comment_parser.add_argument('author_uuid', required=True, type=str, help='comment author uuid', location='json')
-comment_parser.add_argument('post_uuid', required=True, type=str, help='comment post uuid', location='json')
-comment_parser.add_argument('parent_id', type=str, help='comment parent id', location='json')
-
-comment_edit_parser = reqparse.RequestParser()
-comment_edit_parser.add_argument('new_text', required=True, type=str, help='new title of post', location='json')
 
 
 def nest_comment(comment):
@@ -76,7 +74,7 @@ class CommentCollection(Resource):
         except Exception as e:
             return {"message": str(e)}, 500
 
-        return {'message': 'comment has been created successfully.'}, 201
+        return marshal(new_comment, recursive_comment_mapping(0)), 201
 
 
 @ns.route('/<string:comment_uuid>')
@@ -134,9 +132,28 @@ class PostComment(Resource):
             comments = Comment.query \
                 .filter_by(parent_id=None) \
                 .filter_by(post_uuid=post_uuid) \
-                .order_by(Comment.path).all()
+                .order_by(desc(Comment.date_submitted)).all()
+
             for comment in comments:
                 nest_comment(comment)
+
+            return comments
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+
+@ns.route('/user/<string:user_uuid>')
+class UserComments(Resource):
+    @ns.marshal_list_with(recursive_comment_mapping(0))
+    def get(self, user_uuid):
+        """
+        Gets all comments for user specified
+        """
+        try:
+            comments = Comment.query \
+                .filter_by(author_uuid=user_uuid) \
+                .order_by(desc(Comment.date_submitted)).all()
+
             return comments
         except Exception as e:
             return {"message": str(e)}, 500

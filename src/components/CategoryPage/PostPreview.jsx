@@ -3,6 +3,7 @@ import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import convertDate from "../../utils/convertDate";
 
 const Display = styled.div`
   background-color: white;
@@ -47,6 +48,12 @@ const Img = styled.img`
   max-height: 144px;
 `;
 
+const Title = styled.h2`
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+`;
+
 export default function PostPreview({ post, handleExpand }) {
   const theme = useContext(ThemeContext);
 
@@ -55,18 +62,24 @@ export default function PostPreview({ post, handleExpand }) {
       <Img theme={theme} src={post.image_link}></Img>
       <Body>
         <Header>
-          <h2>{post.title}</h2>
+          <Link to={`/post/${post.post_uuid}`}>
+            <Title>{post.title}</Title>
+          </Link>
           <small>
             by{" "}
-            <Link to={"/user/" + post.author.username}>
-              {post.author.username}
+            <Link to={"/user/" + post.author_uuid}>
+              {post.author_username}
             </Link>{" "}
-            on {post.pub_date.slice(0, 10).replace(/-/g, "/")}
+            on {convertDate(post.pub_date)}
           </small>
         </Header>
       </Body>
       <Icon>
-        <FontAwesomeIcon onClick={handleExpand} size="2x" icon={faCaretDown}></FontAwesomeIcon>
+        <FontAwesomeIcon
+          onClick={handleExpand}
+          size="2x"
+          icon={faCaretDown}
+        ></FontAwesomeIcon>
       </Icon>
     </Display>
   );

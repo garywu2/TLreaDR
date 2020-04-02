@@ -1,12 +1,10 @@
-import uuid
-from datetime import datetime
-
-from flask_restplus import Resource, fields, reqparse, marshal
+from flask_restplus import Resource, fields, marshal
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from user_service.api.restplus import api
 from user_service.models import db
 from user_service.models.user import User
+from user_service.parsers.user_parsers import *
 
 ns = api.namespace('users', description='Operations related to users')
 
@@ -14,21 +12,8 @@ user_dto = api.model('user', {
     'user_uuid': fields.String(required=True, description='user uuid'),
     'email': fields.String(required=True, description='user email address'),
     'username': fields.String(required=True, description='user username'),
+    'is_admin': fields.Boolean(required=True, description='true if user is an admin'),
 })
-
-user_add_parser = reqparse.RequestParser()
-user_add_parser.add_argument('email', required=True, type=str, help='email of user', location='json')
-user_add_parser.add_argument('username', required=True, type=str, help='username of user', location='json')
-user_add_parser.add_argument('password', required=True, type=str, help='password of user', location='json')
-
-user_edit_parser = reqparse.RequestParser()
-user_edit_parser.add_argument('new_email', nullable=True, required=False, type=str, help='new email of user', location='json')
-user_edit_parser.add_argument('new_username', nullable=True, required=False, type=str, help='new username of user', location='json')
-user_edit_parser.add_argument('new_password', nullable=True, required=False, type=str, help='new password of user', location='json')
-
-user_login_parser = reqparse.RequestParser()
-user_login_parser.add_argument('username', required=True, type=str, help='username of user')
-user_login_parser.add_argument('password', required=True, type=str, help='password of user')
 
 
 @ns.route('')
@@ -50,9 +35,9 @@ class UserCollection(Resource):
         Adds a new user
         """
         args = user_add_parser.parse_args()
-        
+
         try:
-            new_user = User(args['username'], args['email'], args['password'])
+            new_user = User(args['username'], args['email'], args['password'], args['is_admin'])
             db.session.add(new_user)
             db.session.commit()
 
@@ -63,6 +48,7 @@ class UserCollection(Resource):
 
         except Exception as e:
             return {"message": str(e)}, 500
+
 
 @ns.route('/login')
 class UserLogin(Resource):
@@ -88,6 +74,7 @@ class UserLogin(Resource):
 
         except Exception as e:
             return {"message": str(e)}, 404
+
 
 @ns.route('/<string:uuid>')
 class UserItem(Resource):

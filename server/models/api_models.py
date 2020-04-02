@@ -1,4 +1,4 @@
-from flask_restplus import fields
+from flask_restplus import fields, reqparse
 
 from server.api.restplus import api
 
@@ -42,4 +42,18 @@ comment_model = api.model('Comment', {
 
 comment_put_model = api.model('Comment', {
     "new_text": fields.String(description='new text of comment'),
+})
+
+vote_post_model = api.model('Vote', {
+    "user_uuid": fields.String(description='user voting'),
+    "vote_type": fields.Integer(description='type of vote')
+})
+
+vote_put_model = api.model('Vote', {
+    "user_uuid": fields.String(description='user voting'),
+    "new_vote_type": fields.Integer(description='new type of vote')
+})
+
+vote_delete_model = api.model('Vote', {
+    "user_uuid": fields.String(description='user voting'),
 })

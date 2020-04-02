@@ -2,6 +2,9 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import PostExpanded from "./PostExpanded";
 import PostPreview from "./PostPreview";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { upvotePost, downvotePost } from "../../actions/posts";
 
 const Display = styled.div`
   background-color: white;
@@ -57,27 +60,43 @@ const Img = styled.img`
 
 export default function PostDisplay({ post }) {
   const [expanded, setExpanded] = useState(false);
+  const user = useSelector(state => state.user);
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   const handleExpand = () => {
     setExpanded(!expanded);
   };
 
-  const handleThumbsUp = () => {
-    console.log("handleThumbsUp called");
+  const handleThumbsUp = async () => {
+    console.log("handle");
+    if (user) {
+      dispatch(
+        await upvotePost(post.post_uuid, user.user_uuid, post.vote_type)
+      );
+    } else {
+      history.push("/sign-in");
+    }
   };
 
-  const handleThumbsDown = () => {
-    console.log("handleThumbsDown called");
+  const handleThumbsDown = async () => {
+    if (user) {
+      dispatch(
+        await downvotePost(post.post_uuid, user.user_uuid, post.vote_type)
+      );
+    } else {
+      history.push("/sign-in");
+    }
   };
 
   return expanded ? (
-    <PostExpanded post={post} handleExpand={handleExpand} />
-  ) : (
-    <PostPreview
+    <PostExpanded
       post={post}
+      handleExpand={handleExpand}
       handleThumbsUp={handleThumbsUp}
       handleThumbsDown={handleThumbsDown}
-      handleExpand={handleExpand}
     />
+  ) : (
+    <PostPreview post={post} handleExpand={handleExpand} />
   );
 }
