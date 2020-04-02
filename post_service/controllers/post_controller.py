@@ -125,9 +125,15 @@ class PostItem(Resource):
         try:
             post_to_be_deleted = Post.query.filter_by(post_uuid=post_uuid).first()
 
+            # Delete all comments related to post
             response = requests.delete('http://comment_service:7082/api/comments/post/' + str(post_uuid))
             if response.status_code != 200:
                 return {'message': 'error deleting posts comments'}, response.status_code
+
+            # Delete all votes related to post
+            votes_to_be_deleted = Postvote.query.filter_by(post_uuid=post_uuid).all()
+            for vote in votes_to_be_deleted:
+                db.session.delete(vote)
 
             if post_to_be_deleted:
                 db.session.delete(post_to_be_deleted)
@@ -185,7 +191,11 @@ class PostVote(Resource):
 
             post_voted_on.assign_vote(args['vote_type'])
 
-            db.session.add(new_post_vote)
+            if(post_voted_on.votes <= -20):
+                db.session.delete(post_voted_on)
+            else:
+                db.session.add(new_post_vote)
+
             db.session.commit()
 
         except Exception as e:
@@ -215,6 +225,10 @@ class PostVote(Resource):
             else:
                 return {'message': 'vote or post not found.'}, 404
 
+            if (post_to_be_edited.votes <= -20):
+                db.session.delete(post_to_be_edited)
+            else:
+                db.session.add(post_to_be_edited)
             db.session.commit()
 
             return {'message': 'vote has been edited successfully.'}, 201
