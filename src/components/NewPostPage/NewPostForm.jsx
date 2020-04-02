@@ -42,7 +42,7 @@ export default function NewPostForm({
 }) {
   const theme = useContext(ThemeContext);
   const [invalidSubmit, setInvalidSubmit] = useState(false);
-  const { category, title, body, image_link } = formValues;
+  const { category, title, body, image_link, article_link } = formValues;
   const categories = useSelector(state => state.categories);
   const categoryOptions = categories
     ? categories.map(category => ({
@@ -58,6 +58,8 @@ export default function NewPostForm({
   const setBody = body => setFormValues(prevState => ({ ...prevState, body }));
   const setImageLink = image_link =>
     setFormValues(prevState => ({ ...prevState, image_link }));
+  const setArticleLink = article_link =>
+    setFormValues(prevState => ({ ...prevState, article_link}));
 
   const [categoryError, titleError, bodyError] = useErrorCheck(
     [category, title, body],
@@ -95,6 +97,12 @@ export default function NewPostForm({
         label="Image Link (optional)"
         handleInputChange={setImageLink}
         value={image_link}
+        triedSubmit={invalidSubmit}
+      />
+      <FormInput
+        label="Article Link (optional)"
+        handleInputChange={setArticleLink}
+        value={article_link}
         triedSubmit={invalidSubmit}
       />
       <FormDropdown

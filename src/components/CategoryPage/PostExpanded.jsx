@@ -5,6 +5,7 @@ import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
+import ArticleLinkButton from "../styled/ArticleLinkButton";
 import Label from "../styled/Label";
 
 const Display = styled.div`
@@ -130,6 +131,7 @@ export default function PostExpanded({
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
+        <ArticleLinkButton post={post} theme={theme} />
       </Body>
       <Icon onClick={handleExpand}>
         <FontAwesomeIcon size="2x" icon={faCaretUp}></FontAwesomeIcon>

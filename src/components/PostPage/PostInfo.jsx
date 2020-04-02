@@ -6,6 +6,7 @@ import { Link, useHistory } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
 import { upvotePost, downvotePost } from "../../actions/posts";
 import { useSelector } from "react-redux";
+import ArticleLinkButton from "../styled/ArticleLinkButton";
 import Label from "../styled/Label";
 
 const Display = styled.div`
@@ -74,7 +75,7 @@ const Img = styled.img`
 const Footer = styled.div`
   display: flex;
   justify-content: flex-start;
-  margin-top: 20px;
+  margin-top: 15px;
 `;
 
 const EditButton = styled(Link)`
@@ -178,6 +179,7 @@ export default function PostInfo({
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
+        <ArticleLinkButton post={post} theme={theme} />
         {user && user.user_uuid === post.author_uuid && (
           <Footer>
             <EditButton
