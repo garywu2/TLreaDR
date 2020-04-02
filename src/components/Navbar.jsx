@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import logo from "../assets/TLreaDR-logo.png";
+import logo from "../assets/image.svg";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,7 +11,7 @@ const NavbarWrapper = styled.div`
   background-color: #ef3e36;
   display: flex;
   align-items: center;
-  padding: 10px 25px;
+  padding: 0px 25px;
 `;
 
 const NavbarHeaderChild = styled.div`
@@ -44,7 +44,7 @@ const LoggedOutButton = styled(Link)`
 `;
 
 const LogoImage = styled.img`
-  height: 60px;
+  height: 80px;
 `;
 
 const SubheaderWrapper = styled.div`
