@@ -32,3 +32,12 @@ services:
       - "7082:7082"
     environment:
       - DEBUG=True
+  front_end:
+    container_name: front_end
+    build:
+      context: .
+      dockerfile: ./src/Dockerfile
+    ports:
+      - "7081:7081"
+    environment:
+      - DEBUG=True
