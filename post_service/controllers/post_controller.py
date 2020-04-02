@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import requests
 from flask_restplus import Resource, fields, marshal
 
 import post_service.managers.post_manager as post_manager
@@ -123,6 +124,11 @@ class PostItem(Resource):
 
         try:
             post_to_be_deleted = Post.query.filter_by(post_uuid=post_uuid).first()
+
+            response = requests.delete('http://comment_service:7082/api/comments/post/' + str(post_uuid))
+            if response.status_code != 200:
+                return {'message': 'error deleting posts comments'}, response.status_code
+
             if post_to_be_deleted:
                 db.session.delete(post_to_be_deleted)
                 db.session.commit()
