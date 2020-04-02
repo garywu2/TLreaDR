@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { getPostByUuid, deletePost } from "../../actions/posts";
-import { getCommentsByPostUuid } from "../../actions/comments";
+import {
+  getCommentsByPostUuid,
+  postComment,
+  editComment,
+  deleteComment
+} from "../../actions/comments";
 import PostInfo from "./PostInfo";
 import CommentsList from "./CommentsList";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { postComment } from "../../actions/comments";
 import { UPVOTE, DOWNVOTE } from "../../actions/types";
 
 const Wrapper = styled.div`
@@ -122,6 +126,22 @@ const PostPage = props => {
     }
   };
 
+  const findTargetComment = (commentTree, parentList) => {
+    // original response is an array - make fake root node
+    // nested_comment to conform to rest of nested comments
+    let comment = { nested_comment: commentTree };
+
+    while (parentList.length) {
+      const commentId = parentList.shift();
+
+      comment = comment.nested_comment.find(
+        comment => comment.id === commentId
+      );
+    }
+
+    return comment;
+  };
+
   const insertComment = (newComment, parentList) => {
     // recursively find place to put comment
 
@@ -130,15 +150,14 @@ const PostPage = props => {
 
     // shallow copy comments
     const newComments = [...comments];
-    // nested_comment to conform to rest of nested comments
-    let parent = { nested_comment: newComments };
+    let parent = findTargetComment(newComments, parentList);
 
-    while (parentList.length) {
-      const commentId = parentList.shift();
-
-      parent = parent.nested_comment.find(comment => comment.id === commentId);
+    // if root comment, push to top
+    if (parentList.length === 0) {
+      parent.nested_comment.splice(0, 0, newComment);
+    } else {
+      parent.nested_comment.push(newComment);
     }
-    parent.nested_comment.push(newComment);
 
     setComments(newComments);
   };
@@ -172,6 +191,50 @@ const PostPage = props => {
       console.log(e);
       setHasErrors(true);
     }
+  }
+  
+  const editCommentInTree = (commentText, parentList) => {
+    // recursively find place to put comment
+    // shallow copy comments
+    const newComments = [...comments];
+    let comment = findTargetComment(newComments, parentList);
+
+    comment.comment_text = commentText;
+    comment.is_edited = true;
+    comment.date_edited = new Date().toISOString();
+
+    setComments(newComments);
+  };
+
+  const deleteCommentInTree = parentList => {
+    // recursively find place to put comment
+    // shallow copy comments
+    const newComments = [...comments];
+    let comment = findTargetComment(newComments, parentList);
+
+    comment.is_deleted = true;
+
+    setComments(newComments);
+  };
+
+  const handleEditSubmit = async (commentUuid, commentText, parentList) => {
+    try {
+      await editComment(commentText, commentUuid);
+      // parentList to traverse - no commentUuid needed
+      editCommentInTree(commentText, parentList);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDeleteComment = async (commentUuid, parentList) => {
+    try {
+      await deleteComment(commentUuid);
+      // parentList to traverse - no commentUuid needed
+      deleteCommentInTree(parentList);
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -190,6 +253,8 @@ const PostPage = props => {
         <CommentsList
           comments={comments}
           handleCommentSubmit={handleCommentSubmit}
+          handleEditSubmit={handleEditSubmit}
+          handleDelete={handleDeleteComment}
         ></CommentsList>
       ) : (
         <div>Loading...</div>
