@@ -24,6 +24,7 @@ class UserCollection(Resource):
         """ Creates a new user """
         request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         request.json["operation"] = "add"
+        request.json["type"] = "user"
         new_user_event = Event(request.json)
         try:
             db.session.add(new_user_event)
@@ -49,9 +50,11 @@ class UserItem(Resource):
         """ Updates a user """
         request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         request.json["operation"] = "update"
-        deleted_user_event = Event(request.json)
+        request.json["type"] = "user"
+        request.json["id"] = uuid
+        updated_user_event = Event(request.json)
         try:
-            db.session.add(deleted_user_event)
+            db.session.add(updated_user_event)
             db.session.commit()
             #response = requests.put('http://user_service:7082/api/users/' + uuid, json=request.json)
             #return response.json(), response.status_code
@@ -64,6 +67,8 @@ class UserItem(Resource):
         """ Deletes a user """
         request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         request.json["operation"] = "delete"
+        request.json["type"] = "user"
+        request.json["id"] = uuid
         deleted_user_event = Event(request.json)
         try:
             db.session.add(deleted_user_event)

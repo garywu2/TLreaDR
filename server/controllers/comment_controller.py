@@ -2,6 +2,10 @@ import requests
 from flask import request
 from flask_restplus import Resource
 
+import datetime
+from server.models.event import Event
+
+from server.models.event import db
 from server.models.api_models import *
 
 ns = api.namespace('comments', description='Operations related to server routes')
@@ -17,8 +21,20 @@ class CommentsCollection(Resource):
     @ns.expect(comment_model)
     def post(self):
         """ Creates a new comment """
-        response = requests.post('http://comment_service:7082/api/comments', json=request.json)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "add"
+        request.json["type"] = "comment"
+        new_comment_event = Event(request.json)
+        try:
+            db.session.add(new_comment_event)
+            db.session.commit()
+            #response = requests.post('http://comment_service:7082/api/comments', json=request.json)
+            #return response.json(), response.status_code
+            return "New Comment Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
 
 @ns.route('/<string:comment_uuid>')
@@ -26,13 +42,39 @@ class PostItem(Resource):
     @ns.expect(comment_put_model, validate=False)
     def put(self, comment_uuid):
         """ Updates a comment """
-        response = requests.put('http://comment_service:7082/api/comments/' + comment_uuid, json=request.json)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "update"
+        request.json["type"] = "comment"
+        request.json["id"] = comment_uuid
+        updated_comment_event = Event(request.json)
+        try:
+            db.session.add(updated_comment_event)
+            db.session.commit()
+            #response = requests.put('http://comment_service:7082/api/comments/' + comment_uuid, json=request.json)
+            #return response.json(), response.status_code
+            return "Updated Comment Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
     def delete(self, comment_uuid):
         """ Deletes a comment """
-        response = requests.delete('http://comment_service:7082/api/comments/' + comment_uuid)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "delete"
+        request.json["type"] = "comment"
+        request.json["id"] = comment_uuid
+        deleted_comment_event = Event(request.json)
+        try:
+            db.session.add(deleted_comment_event)
+            db.session.commit()
+            #response = requests.delete('http://comment_service:7082/api/comments/' + comment_uuid)
+            #return response.json(), response.status_code
+            return "Deleted Comment Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
 
 @ns.route('/<string:post_uuid>')

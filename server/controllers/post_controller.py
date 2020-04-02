@@ -2,6 +2,10 @@ import requests
 from flask import request
 from flask_restplus import Resource
 
+import datetime
+from server.models.event import db
+from server.models.event import Event
+
 from server.models.api_models import *
 from server.parsers.server_parsers import *
 
@@ -20,8 +24,21 @@ class PostCollection(Resource):
     @ns.expect(post_model, validate=False)
     def post(self, category):
         """ Creates a new post """
-        response = requests.post('http://post_service:7082/api/' + category + '/posts', json=request.json)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "add"
+        request.json["type"] = "post"
+        request.json["category"] = category
+        deleted_post_event = Event(request.json)
+        try:
+            db.session.add(deleted_post_event)
+            db.session.commit()
+            #response = requests.post('http://post_service:7082/api/' + category + '/posts', json=request.json)
+            #return response.json(), response.status_code
+            return "New Post Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
 
 @ns.route('/<string:post_uuid>')
@@ -36,13 +53,41 @@ class PostItem(Resource):
     @ns.expect(post_put_model, validate=False)
     def put(self, category, post_uuid):
         """ Updates a post """
-        response = requests.put('http://post_service:7082/api/' + category + '/' + post_uuid, json=request.json)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "update"
+        request.json["type"] = "post"
+        request.json["category"] = category
+        request.json["id"] = post_uuid
+        deleted_post_event = Event(request.json)
+        try:
+            db.session.add(deleted_post_event)
+            db.session.commit()
+            # response = requests.put('http://post_service:7082/api/' + category + '/' + post_uuid, json=request.json)
+            # return response.json(), response.status_code
+            return "Updated Post Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
     def delete(self, category, post_uuid):
         """ Deletes a post """
-        response = requests.delete('http://post_service:7082/api/' + category + '/' + post_uuid)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "delete"
+        request.json["type"] = "post"
+        request.json["category"] = category
+        request.json["id"] = post_uuid
+        deleted_post_event = Event(request.json)
+        try:
+            db.session.add(deleted_post_event)
+            db.session.commit()
+            #response = requests.delete('http://post_service:7082/api/' + category + '/' + post_uuid)
+            #return response.json(), response.status_code
+            return "Deleted Post Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
 
 @ns.route('/search/<string:search>')
@@ -70,20 +115,62 @@ class PostVote(Resource):
     @ns.expect(vote_post_model)
     def post(self, category, post_uuid):
         """ Creates a vote on a post """
-        response = requests.post('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
-                                 json=request.json)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "add"
+        request.json["type"] = "vote"
+        request.json["category"] = category
+        request.json["id"] = post_uuid
+        updated_vote_event = Event(request.json)
+        try:
+            db.session.add(updated_vote_event)
+            db.session.commit()
+            # response = requests.post('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
+            #                          json=request.json)
+            # return response.json(), response.status_code
+            return "New Vote Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
     @ns.expect(vote_put_model)
     def put(self, category, post_uuid):
         """ Updates a vote on a post """
-        response = requests.put('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
-                                json=request.json)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "update"
+        request.json["type"] = "vote"
+        request.json["category"] = category
+        request.json["id"] = post_uuid
+        updated_vote_event = Event(request.json)
+        try:
+            db.session.add(updated_vote_event)
+            db.session.commit()
+            # response = requests.put('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
+            #                         json=request.json)
+            # return response.json(), response.status_code
+            return "Updated Vote Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
 
     @ns.expect(vote_delete_model)
     def delete(self, category, post_uuid):
         """ Deletes a vote on a post """
-        response = requests.delete('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
-                                   json=request.json)
-        return response.json(), response.status_code
+        request.json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+        request.json["operation"] = "delete"
+        request.json["type"] = "vote"
+        request.json["category"] = category
+        request.json["id"] = post_uuid
+        deleted_vote_event = Event(request.json)
+        try:
+            db.session.add(deleted_vote_event)
+            db.session.commit()
+            # response = requests.delete('http://post_service:7082/api/' + category + '/' + post_uuid + '/vote',
+            #                            json=request.json)
+            # return response.json(), response.status_code
+            return "Deleted Vote Event Created", 200
+
+        except Exception as e:
+            print(str(e))
+            return {"message": str(e)}, 500
