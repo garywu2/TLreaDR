@@ -25,6 +25,7 @@ const PostPage = props => {
   const [hasErrors, setHasErrors] = useState(false);
   const [comments, setComments] = useState(null);
   const history = useHistory();
+  const [commentRequestError, setCommentRequestError] = useState(false);
 
   useEffect(() => {
     const getPost = async () => {
@@ -49,8 +50,12 @@ const PostPage = props => {
         try {
           const { comments } = await getCommentsByPostUuid(post.post_uuid);
           setComments(comments);
+          setCommentRequestError(false);
         } catch (e) {
-          console.log(e);
+          const code = +e.message.split(" ").pop();
+          if (code === 503) {
+            setCommentRequestError(true);
+          }
         }
       }
     };
@@ -194,8 +199,8 @@ const PostPage = props => {
       console.log(e);
       setHasErrors(true);
     }
-  }
-  
+  };
+
   const editCommentInTree = (commentText, parentList) => {
     // recursively find place to put comment
     // shallow copy comments
@@ -259,6 +264,8 @@ const PostPage = props => {
           handleEditSubmit={handleEditSubmit}
           handleDelete={handleDeleteComment}
         ></CommentsList>
+      ) : commentRequestError ? (
+        <div>The comment service is down.</div>
       ) : (
         <div>Loading...</div>
       )}

@@ -17,7 +17,8 @@ const EditPostPage = () => {
   const [formValues, setFormValues] = useState({
     title: "",
     body: "",
-    image_link: ""
+    image_link: "",
+    article_link: ""
   });
 
   useEffect(() => {
@@ -29,7 +30,8 @@ const EditPostPage = () => {
         setFormValues({
           title: post.title,
           body: post.body,
-          image_link: post.image_link
+          image_link: post.image_link,
+          article_link: post.article_link
         });
       } catch (e) {
         console.log(e);
@@ -40,10 +42,10 @@ const EditPostPage = () => {
   }, [getPostByUuid, post_uuid]);
 
   const handleEdit = async () => {
-    const { title, body, image_link } = formValues;
+    const { title, body, image_link, article_link } = formValues;
 
     try {
-      await editPost("all", post_uuid, title, body, image_link);
+      await editPost("all", post_uuid, title, body, image_link, article_link);
       history.push("/post/" + post_uuid);
     } catch (error) {
       console.log(error);
@@ -65,7 +67,11 @@ const EditPostPage = () => {
     );
   };
 
-  return <div>{user && user.user_uuid == postAuthor && renderForm()}</div>;
+  return (
+    <div>
+      {user && ((user.user_uuid == postAuthor) || user.is_admin) && renderForm()}
+    </div>
+  );
 };
 
 export default EditPostPage;

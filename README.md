@@ -1,15 +1,8 @@
-# Flask React Boilerplate
+# TLreaDR
 
 [![Build Status](https://travis-ci.org/YaleDHLab/flask-react-boilerplate.svg?branch=master)](https://travis-ci.org/YaleDHLab/flask-react-boilerplate)
 
-Simple boilerplate for a Flask backend and React client including:
-
-* ES6 transpiling via Webpack
-* Hot module reloading via Webpack Dev Server
-* State management via Redux
-* Tests via Pytest and Jest
-* Linting via Pylint and Eslint
-* Travis CI for automatic testing and linting
+TLreaDR web application built with a Flask backend and React client.
 
 ## Dependencies
 
@@ -42,6 +35,8 @@ SECRET_KEY='the secret key you generated in step 2'
 SQLALCHEMY_DATABASE_URI='postgresql://{username}:{password}@{JDBC_URL}/postgres
 ```
 
+4. Copy paste the .env file into each of the microservices directories so that they can have access to the database.
+
 ### Configuring Docker Microservices
 
 *  Download docker for your platform and check if it is correctly installed using:
@@ -58,6 +53,8 @@ docker-compose up --build
 
 ## Quickstart
 
+### Development
+
 To run both the server and client, you can run the following command:
 
 ```bash
@@ -66,34 +63,15 @@ npm run dev
 
 This will run the the client on 7081 and the server's microservices will run on:
 
-* User service: 7082
-* Post service: 7083
-* Comment service: 7084
+* Server service: 7082
+* User service: 7083
+* Post service: 7084
+* Comment service: 7085
+* Command service: 7086
 
-## Tests
-
-To run the Javascript tests (located in `src/tests/`), run:
-
+### Production
+To run all services including the front-end as a docker container 
+uncomment the front-end service from the docker-compose.yml and run the following
 ```bash
-npm run jest
-```
-
-To run the Python tests (located in `server/tests/`), run:
-
-```bash
-pytest
-```
-
-## Linting
-
-To lint the Javascript files (located in `src`), run:
-
-```bash
-npm run lint-js
-```
-
-To lint the Python files (located in `server`), run:
-
-```bash
-npm run lint-py
+docker-compose up --build
 ```
