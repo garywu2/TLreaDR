@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-const ArticleLink = styled.div`
+const ArticleLink = styled.a`
+  display: block;
   padding: 15px 20px;
   background-color: ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   color: ${({ theme }) => (theme ? theme.secondaryTextColor : "#fff")};
@@ -23,10 +24,8 @@ export default ({ post, theme }) => {
   return (
     <div>
       {post.article_link && (
-        <ArticleLink theme={theme}>
-          <a target="_blank" href={post.article_link}>
-            Original Article Link
-          </a>
+        <ArticleLink theme={theme} target="_blank" href={post.article_link}>
+          Original Article Link
         </ArticleLink>
       )}
     </div>

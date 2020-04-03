@@ -180,19 +180,20 @@ export default function PostInfo({
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
         <ArticleLinkButton post={post} theme={theme} />
-        {user && user.user_uuid === post.author_uuid && (
-          <Footer>
-            <EditButton
-              hovercolor="#62b0d1"
-              to={post.post_uuid.concat("/edit")}
-            >
-              <div>Edit</div>
-            </EditButton>
-            <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
-              <div>Delete</div>
-            </DeleteButton>
-          </Footer>
-        )}
+        {(user && user.user_uuid === post.author_uuid) ||
+          (user.is_admin && (
+            <Footer>
+              <EditButton
+                hovercolor="#62b0d1"
+                to={post.post_uuid.concat("/edit")}
+              >
+                <div>Edit</div>
+              </EditButton>
+              <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
+                <div>Delete</div>
+              </DeleteButton>
+            </Footer>
+          ))}
         <ErrorMessage visible={hasErrors}>
           There was an error on the backend.
         </ErrorMessage>

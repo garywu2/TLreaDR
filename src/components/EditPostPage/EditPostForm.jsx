@@ -40,13 +40,15 @@ export default function EditPostForm({
 }) {
   const theme = useContext(ThemeContext);
   const [invalidSubmit, setInvalidSubmit] = useState(false);
-  const { title, body, image_link } = formValues;
+  const { title, body, image_link, article_link } = formValues;
 
   const setTitle = title =>
     setFormValues(prevState => ({ ...prevState, title }));
   const setBody = body => setFormValues(prevState => ({ ...prevState, body }));
   const setImageLink = image_link =>
     setFormValues(prevState => ({ ...prevState, image_link }));
+  const setArticleLink = article_link =>
+    setFormValues(prevState => ({ ...prevState, article_link }));
 
   const [titleError, bodyError] = useErrorCheck(
     [title, body],
@@ -84,6 +86,12 @@ export default function EditPostForm({
         label="Image Link (optional)"
         handleInputChange={setImageLink}
         value={image_link}
+        triedSubmit={invalidSubmit}
+      />
+      <FormInput
+        label="Article Link (optional)"
+        handleInputChange={setArticleLink}
+        value={article_link}
         triedSubmit={invalidSubmit}
       />
       <ErrorMessage visible={hasErrors}>
