@@ -7,7 +7,7 @@ import json
 from server.models.event import Event
 
 from server.models.event import db
-from server.models.api_models import *
+from server.api.models import *
 
 ns = api.namespace('comments', description='Operations related to server routes')
 

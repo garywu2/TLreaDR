@@ -6,7 +6,7 @@ import datetime
 import json
 from server.models.event import db
 from server.models.event import Event
-from server.models.api_models import *
+from server.api.models import *
 from server.parsers.server_parsers import *
 
 ns = api.namespace('users', description='Operations related to users routes')
