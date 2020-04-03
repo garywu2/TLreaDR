@@ -3,6 +3,7 @@ from flask import request
 from flask_restplus import Resource
 
 import datetime
+import json
 from server.models.event import Event
 
 from server.models.event import db
@@ -29,7 +30,7 @@ class CommentsCollection(Resource):
         try:
             db.session.add(new_comment_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(new_comment_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(new_comment_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -51,7 +52,7 @@ class PostItem(Resource):
         try:
             db.session.add(updated_comment_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(updated_comment_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(updated_comment_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -60,7 +61,8 @@ class PostItem(Resource):
 
     def delete(self, comment_uuid):
         """ Deletes a comment """
-        event_json = request.json
+        event_json = {}
+        event_json = json.dumps(event_json)
         event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         event_json["operation"] = "delete"
         event_json["type"] = "comment"
@@ -69,7 +71,7 @@ class PostItem(Resource):
         try:
             db.session.add(deleted_comment_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(deleted_comment_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(deleted_comment_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:

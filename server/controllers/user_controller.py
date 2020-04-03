@@ -30,7 +30,7 @@ class UserCollection(Resource):
         try:
             db.session.add(new_user_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(new_user_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(new_user_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -57,7 +57,7 @@ class UserItem(Resource):
         try:
             db.session.add(updated_user_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(updated_user_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(updated_user_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -74,7 +74,7 @@ class UserItem(Resource):
         try:
             db.session.add(deleted_user_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(deleted_user_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(deleted_user_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:

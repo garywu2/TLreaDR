@@ -3,6 +3,7 @@ from flask import request
 from flask_restplus import Resource
 
 import datetime
+import json
 from server.models.event import db
 
 from server.models.event import Event
@@ -29,7 +30,7 @@ class CategoryCollection(Resource):
         try:
             db.session.add(new_category_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(new_category_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(new_category_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -46,7 +47,8 @@ class CategoryItem(Resource):
 
     def delete(self, category):
         """ Deletes a category """
-        event_json = request.json
+        event_json = {}
+        event_json = json.dumps(event_json)
         event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         event_json["operation"] = "delete"
         event_json["type"] = "category"
@@ -55,7 +57,7 @@ class CategoryItem(Resource):
         try:
             db.session.add(deleted_category_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(deleted_category_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(deleted_category_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:

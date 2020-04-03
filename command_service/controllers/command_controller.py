@@ -13,14 +13,6 @@ event_model = api.model('Event', {
     "event_uuid": fields.String(description='event uuid'),
 })
 
-def stripEvent(event_json):
-    del event_json['time']
-    del event_json['operation']
-    del event_json['type']
-    del event_json['category']
-    del event_json['id']
-    return event_json
-
 # User events
 def constructUser(request_json):
     response = requests.post('http://user_service:7082/api/users', json=request_json)
@@ -93,71 +85,57 @@ class PostItem(Resource):
         event = Event.query.filter_by(event_uuid=event_uuid).first()
         if event.event_blob['type'] == 'category':
             if event.event_blob['operation'] == 'add':
-                event.event_blob = stripEvent(event.event_blob)
                 return constructCategory(event.event_blob)
             elif event.event_blob['operation'] == 'delete':
                 remove_category = event.event_blob['category']
-                event.event_blob = stripEvent(event.event_blob)
                 return removeCategory(remove_category)
 
         elif event.event_blob['type'] == 'user':
             if event.event_blob['operation'] == 'add':
-                event.event_blob = stripEvent(event.event_blob)
                 return constructUser(event.event_blob)
             elif event.event_blob['operation'] == 'update':
                 update_user_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return updateUser(update_user_id, request.json)
             elif event.event_blob['operation'] == 'delete':
                 delete_user_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return removeUser(delete_user_id)
 
         elif event.event_blob['type'] == 'comment':
             if event.event_blob['operation'] == 'add':
-                event.event_blob = stripEvent(event.event_blob)
                 return constructComment(event.event_blob)
             elif event.event_blob['operation'] == 'update':
                 update_comment_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return updateComment(update_comment_id, event.event_blob)
             elif event.event_blob['operation'] == 'delete':
                 delete_comment_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return removeComment(delete_comment_id)
 
         elif event.event_blob['type'] == 'post':
             if event.event_blob['operation'] == 'add':
                 add_post_category = event.event_blob['category']
-                event.event_blob = stripEvent(event.event_blob)
                 return constructPost(add_post_category, event.event_blob)
             elif event.event_blob['operation'] == 'update':
                 update_post_category = event.event_blob['category']
                 update_post_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return updatePost(update_post_category, update_post_id, event.event_blob)
             elif event.event_blob['operation'] == 'delete':
                 delete_post_category = event.event_blob['category']
                 delete_post_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return removePost(delete_post_category, delete_post_id)
 
         elif event.event_blob['type'] == 'vote':
             if event.event_blob['operation'] == 'add':
                 add_vote_category = event.event_blob['category']
                 add_vote_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return constructVote(add_vote_category, add_vote_id, event.event_blob)
             elif event.event_blob['operation'] == 'update':
                 update_vote_category = event.event_blob['category']
                 update_vote_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
                 return updateVote(update_vote_category, update_vote_id, event.event_blob)
             elif event.event_blob['operation'] == 'delete':
                 delete_vote_category = event.event_blob['category']
                 delete_vote_id = event.event_blob['id']
-                event.event_blob = stripEvent(event.event_blob)
-                return removePost(delete_vote_category, delete_vote_id)
+                return removeVote(delete_vote_category, delete_vote_id, event.event_blob)
 
         else:
             return "Failed to execute request", 500

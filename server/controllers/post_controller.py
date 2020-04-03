@@ -18,7 +18,7 @@ class PostCollection(Resource):
     @ns.expect(post_get_parser)
     def get(self, category):
         """ Gets all posts """
-        response = requests.get('http//post_service:7082/api/' + category + '/posts',
+        response = requests.get('http://post_service:7082/api/' + category + '/posts',
                                 params=post_get_parser.parse_args())
         return response.json(), response.status_code
 
@@ -34,7 +34,7 @@ class PostCollection(Resource):
         try:
             db.session.add(new_post_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(new_post_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(new_post_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -64,7 +64,7 @@ class PostItem(Resource):
         try:
             db.session.add(updated_post_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(updated_post_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events' + str(updated_post_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -83,7 +83,7 @@ class PostItem(Resource):
         try:
             db.session.add(deleted_post_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(deleted_post_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(deleted_post_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -124,7 +124,7 @@ class PostVote(Resource):
         try:
             db.session.add(new_vote_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(new_vote_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(new_vote_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -144,7 +144,7 @@ class PostVote(Resource):
         try:
             db.session.add(updated_vote_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(updated_vote_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(updated_vote_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -164,7 +164,7 @@ class PostVote(Resource):
         try:
             db.session.add(deleted_vote_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/' + str(deleted_vote_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(deleted_vote_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
