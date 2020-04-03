@@ -6,7 +6,14 @@ import { getCommentsByUserUuid } from "../../actions/comments";
 import { getUserFromUserUuid } from "../../actions/users";
 import PostsPreviewList from "./PostsPreviewList";
 import CommentsPreviewList from "./CommentsPreviewList";
+import FormButton from "../styled/FormButton";
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 
+const EditButton = styled(FormButton)`
+  margin: 5px 0px;
+  padding: 10px;
+`;
 
 const Display = styled.div`
   background-color: white;
@@ -47,10 +54,11 @@ const ProfilePage = () => {
   const [selectedPost, setSelectedPost] = useState(true);
   const [posts, setPosts] = useState(null);
   const [comments, setComments] = useState(null);
+  const loggedInUser = useSelector(state => state.user);
   const theme = useContext(ThemeContext);
   const location = useLocation();
-
-  const user_uuid = location.pathname.split("/").reverse()[0];
+  const history = useHistory();
+  const user_uuid = location.pathname.split("/user/").reverse()[0];
 
   useEffect(() => {
     const getUsername = async () => {
@@ -90,6 +98,10 @@ const ProfilePage = () => {
     user_uuid
   ]);
 
+  const goToEditPage = () => {
+    history.push("/user/edit/" + user_uuid);
+  };
+
   const renderButtonsAndPosts = () => {
     if (selectedPost) {
       return (
@@ -111,27 +123,26 @@ const ProfilePage = () => {
           <PostsPreviewList posts={posts} />
         </div>
       );
-    } else {
-      return (
-        <div>
-          <ButtonWrapper>
-            <ProfileButton
-              style={{ fontWeight: "normal" }}
-              onClick={handlePostsClick}
-            >
-              Posts
-            </ProfileButton>
-            <ProfileButton
-              style={{ fontWeight: "bold" }}
-              onClick={handleCommentsClick}
-            >
-              Comments
-            </ProfileButton>
-          </ButtonWrapper>
-          <CommentsPreviewList comments={comments} username={user.username} />
-        </div>
-      );
     }
+    return (
+      <div>
+        <ButtonWrapper>
+          <ProfileButton
+            style={{ fontWeight: "normal" }}
+            onClick={handlePostsClick}
+          >
+            Posts
+          </ProfileButton>
+          <ProfileButton
+            style={{ fontWeight: "bold" }}
+            onClick={handleCommentsClick}
+          >
+            Comments
+          </ProfileButton>
+        </ButtonWrapper>
+        <CommentsPreviewList comments={comments} username={user.username} />
+      </div>
+    );
   };
 
   const handlePostsClick = () => {
@@ -148,6 +159,11 @@ const ProfilePage = () => {
         <Header>
           <h2>{user ? user.username : <div>Loading...</div>}</h2>
         </Header>
+        {user && loggedInUser && loggedInUser.user_uuid == user.user_uuid && (
+          <EditButton theme={theme} onClick={goToEditPage}>
+            Edit Profile
+          </EditButton>
+        )}
         {renderButtonsAndPosts()}
       </Display>
     </Wrapper>
