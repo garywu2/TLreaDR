@@ -21,28 +21,19 @@ const Row = styled.div`
   }
 `;
 
-const WordFormat = styled.div`
-  visibility: ${props => props.visible ? "visible" : "hidden"};
+const ErrorMessage = styled.div`
+  visibility: ${props => (props.visible ? "visible" : "hidden")};
   text-align: center;
-  color: #FF2A2A;
+  color: #ff2a2a;
 `;
 
-const profileTheme = {
-  primaryColor: "#03FF14",
-  darkerColor: "#52C180",
-  primaryTextColor: "#131516",
-  secondaryTextColor: "#fff"
-}
-
-
-export default function editProfile({handleSubmit}) {
+export default function EditProfile({ handleSubmit, hasErrors }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const theme = useContext(ThemeContext);
-  const user_uuid = location.pathname.split("/user/edit/").reverse()[0];
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = e => {
     e.preventDefault();
     handleSubmit(email, username, password);
   };
@@ -63,10 +54,14 @@ export default function editProfile({handleSubmit}) {
       />
       <FormInput
         label="Password"
+        type="password"
         handleInputChange={setPassword}
         value={password}
-        autocomplete= "password"
+        autocomplete="password"
       />
+      <ErrorMessage visible={hasErrors}>
+        That username already exists!
+      </ErrorMessage>
       <Row>
         <FormButton theme={theme}>Finish Edits</FormButton>
       </Row>
