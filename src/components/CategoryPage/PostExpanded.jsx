@@ -126,7 +126,7 @@ export default function PostExpanded({
             </small>
           </div>
           <div>
-            <Label>New</Label>
+            {post.new_flag && <Label>New</Label>}
           </div>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
