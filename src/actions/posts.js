@@ -1,6 +1,15 @@
 import axios from "axios";
 import config from "../config/client";
-import { FETCH_POSTS, CLEAR_POSTS, UPVOTE, DOWNVOTE, EDIT_POST, GET_POST, UPLOAD_POST, DELETE_POST } from "./types";
+import {
+  FETCH_POSTS,
+  CLEAR_POSTS,
+  UPVOTE,
+  DOWNVOTE,
+  EDIT_POST,
+  GET_POST,
+  UPLOAD_POST,
+  DELETE_POST
+} from "./types";
 
 export const getPostsByCategory = async (categoryName, userUuid) => {
   let response;
@@ -28,7 +37,10 @@ export const getPostsBySearch = async searchInput => {
   );
 
   if (response.status != 200) {
-    throw "getPostsBySearch failed with error code" + response.status;
+    throw {
+      message: "getPostsBySearch failed with error code" + response.status,
+      status: response.status
+    };
   }
 
   const { posts } = response.data;
@@ -98,7 +110,7 @@ export const editPost = async (
   return { type: EDIT_POST };
 };
 
-export const deletePost = async (post_uuid) => {
+export const deletePost = async post_uuid => {
   const response = await axios.delete(`${config.endpoint}all/${post_uuid}`);
 
   if (response.status !== 200) {
@@ -106,7 +118,7 @@ export const deletePost = async (post_uuid) => {
   }
 
   return { type: DELETE_POST };
-}
+};
 
 export const clearPosts = () => {
   return { type: CLEAR_POSTS };
@@ -128,14 +140,14 @@ export const getPostByUuid = async (postUuid, userUuid) => {
 export const getPostsByUserUuid = async user_uuid => {
   const response = await axios.get(`${config.endpoint}all/posts/${user_uuid}`);
 
-  if(response.status !== 200) {
+  if (response.status !== 200) {
     throw "getPostsByUserUuid failed with the error code " + response.status;
   }
 
   const { posts } = response.data;
 
   return { type: FETCH_POSTS, posts };
-}
+};
 
 export const upvotePost = async (postUuid, userUuid, voteStatus) => {
   const body = {};
