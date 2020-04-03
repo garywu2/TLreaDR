@@ -4,9 +4,17 @@ import { useLocation } from "react-router";
 import { getPostsByUserUuid } from "../../actions/posts";
 import { getCommentsByUserUuid } from "../../actions/comments";
 import { getUserFromUserUuid } from "../../actions/users";
+import { getProfileFromUuid } from "../../actions/users";
 import PostsPreviewList from "./PostsPreviewList";
 import CommentsPreviewList from "./CommentsPreviewList";
+import FormButton from "../styled/FormButton";
+import { useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router';
 
+const EditButton = styled(FormButton)`
+  margin: 5px 0px;
+  padding: 10px;
+`;
 
 const Display = styled.div`
   background-color: white;
@@ -46,11 +54,13 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [selectedPost, setSelectedPost] = useState(true);
   const [posts, setPosts] = useState(null);
+  const [profile, setProfile] = useState(null);
   const [comments, setComments] = useState(null);
   const theme = useContext(ThemeContext);
   const location = useLocation();
-
-  const user_uuid = location.pathname.split("/").reverse()[0];
+  const history = useHistory();
+  const edit_page = location.pathname;
+  const user_uuid = location.pathname.split("/user/").reverse()[0];
 
   useEffect(() => {
     const getUsername = async () => {
@@ -61,6 +71,7 @@ const ProfilePage = () => {
         console.log(e);
       }
     };
+    
 
     const getComments = async () => {
       try {
@@ -80,9 +91,19 @@ const ProfilePage = () => {
       }
     };
 
+    const getProfile = async () => {
+      try {
+        const { profile } = await getProfileFromUuid(user_uuid);
+        setProfile(profile);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
     getUsername();
     getPosts();
     getComments();
+    getProfile();
   }, [
     getPostsByUserUuid,
     getCommentsByUserUuid,
@@ -90,11 +111,20 @@ const ProfilePage = () => {
     user_uuid
   ]);
 
+  const goToEditPage = () => {
+    history.push("/user/edit/" + user_uuid);
+  };
+
   const renderButtonsAndPosts = () => {
     if (selectedPost) {
       return (
         <div>
           <ButtonWrapper>
+            <ProfileButton 
+              style={{fontWeight: "normal"}}
+              >
+                Profile
+            </ProfileButton>
             <ProfileButton
               style={{ fontWeight: "bold" }}
               onClick={handlePostsClick}
@@ -115,6 +145,11 @@ const ProfilePage = () => {
       return (
         <div>
           <ButtonWrapper>
+            <ProfileButton 
+              style={{fontWeight: "normal"}}
+              >
+                Profile
+            </ProfileButton>
             <ProfileButton
               style={{ fontWeight: "normal" }}
               onClick={handlePostsClick}
@@ -148,6 +183,7 @@ const ProfilePage = () => {
         <Header>
           <h2>{user ? user.username : <div>Loading...</div>}</h2>
         </Header>
+        <EditButton theme={theme} onClick={goToEditPage} >Edit Profilie</EditButton>
         {renderButtonsAndPosts()}
       </Display>
     </Wrapper>

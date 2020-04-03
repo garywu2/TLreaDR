@@ -50,3 +50,23 @@ export const getUserFromUserUuid = async user_uuid => {
 
   return { type: FETCH_USER, user: response.data };
 }
+
+export const uploadUserProfile = async (
+  name,
+  email,
+  bio,
+) => {
+  const reqBody = {
+    name,
+    email,
+    bio,
+  };
+
+  const response = await axios.post(config.endpoint + "users/{uuid}}", {reqBody});
+
+  if (response.status !== 200) {
+    throw "Registration failed with error code " + response.status;
+  }
+
+  return { type: LOGIN_USER, user: response.data };
+};
