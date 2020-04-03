@@ -12,9 +12,11 @@ ns = api.namespace('users', description='Operations related to users routes')
 class UserCollection(Resource):
     def get(self):
         """ Gets all users """
-        response = requests.get('http://user_service:7082/api/users')
-        return response.json(), response.status_code
-
+        try:
+            response = requests.get('http://user_service:7082/api/users')
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "user service is unavailable"}, 503
     @ns.expect(user_model, validate=False)
     def post(self):
         """ Creates a new user """
@@ -26,9 +28,11 @@ class UserCollection(Resource):
 class UserItem(Resource):
     def get(self, uuid):
         """ Gets a specified user by uuid """
-        response = requests.get('http://user_service:7082/api/users/' + uuid)
-        return response.json(), response.status_code
-
+        try:
+            response = requests.get('http://user_service:7082/api/users/' + uuid)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "user service is unavailable"}, 503
     @ns.expect(user_put_model, validate=False)
     def put(self, uuid):
         """ Updates a user """
@@ -46,5 +50,8 @@ class UserLogin(Resource):
     @ns.expect(user_login_parser, validate=False)
     def get(self):
         """ Login for user """
-        response = requests.get('http://user_service:7082/api/users/login', params=request.args)
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://user_service:7082/api/users/login', params=request.args)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "user service is unavailable"}, 503

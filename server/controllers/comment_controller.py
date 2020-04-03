@@ -11,8 +11,12 @@ ns = api.namespace('comments', description='Operations related to server routes'
 class CommentsCollection(Resource):
     def get(self):
         """ Gets all comments """
-        response = requests.get('http://comment_service:7082/api/comments')
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://comment_service:7082/api/comments')
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "comment service is unavailable"}, 503
+
 
     @ns.expect(comment_model)
     def post(self):
@@ -39,13 +43,21 @@ class PostItem(Resource):
 class PostComment(Resource):
     def get(self, post_uuid):
         """ Gets all comments for a post """
-        response = requests.get('http://comment_service:7082/api/comments/post/' + post_uuid)
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://comment_service:7082/api/comments/post/' + post_uuid)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "comment service is unavailable"}, 503
+
 
 
 @ns.route('/user/<string:user_uuid>')
 class UserComments(Resource):
     def get(self, user_uuid):
         """ Gets all comments for a user """
-        response = requests.get('http://comment_service:7082/api/comments/user/' + user_uuid)
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://comment_service:7082/api/comments/user/' + user_uuid)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "comment service is unavailable"}, 503
+
