@@ -1,6 +1,4 @@
 from flask import request
-import datetime
-import time
 from flask_restplus import Resource
 from command_service.models.event import Event
 from flask_restplus import fields
