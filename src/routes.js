@@ -10,6 +10,8 @@ import NewPostPage from "./components/NewPostPage";
 import ProfilePage from "./components/ProfilePage";
 import PostPage from "./components/PostPage";
 import EditPostPage from "./components/EditPostPage";
+import ManageCategoryPage from './components/ManageCategoryPage';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const routes = (
   <App>
@@ -23,6 +25,7 @@ const routes = (
       <Route path='/search/:input' component={SearchResultsPage} />
       <Route path="/new" component={NewPostPage} />
       <Route path="/user/:uuid" component={ProfilePage} />
+      <Route path="/category-edit" component={ManageCategoryPage} />
     </Switch>
   </App>
 );

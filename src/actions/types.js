@@ -16,6 +16,5 @@ export const POST_COMMENT = "POST_COMMENT";
 export const EDIT_COMMENT = "EDIT_COMMENT";
 export const DELETE_COMMENT = "DELETE_COMMENT";
 export const UPLOAD_COMMENTS = "UPLOAD_COMMENTS";
-
-
-
+export const ADD_CATEGORY = "ADD_CATEGORY";
+export const DELETE_CATEGORY = "DELETE_CATEGORY";
