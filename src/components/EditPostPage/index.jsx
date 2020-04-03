@@ -69,8 +69,7 @@ const EditPostPage = () => {
 
   return (
     <div>
-      {(user && user.user_uuid == postAuthor) ||
-        (user && user.is_admin) && renderForm()}
+      {user && ((user.user_uuid == postAuthor) || user.is_admin) && renderForm()}
     </div>
   );
 };
