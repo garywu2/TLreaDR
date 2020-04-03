@@ -64,7 +64,7 @@ class PostItem(Resource):
         try:
             db.session.add(updated_post_event)
             db.session.commit()
-            response = requests.get('http://command_service:7082/api/events' + str(updated_post_event.event_uuid))
+            response = requests.get('http://command_service:7082/api/events/' + str(updated_post_event.event_uuid))
             return response.json(), response.status_code
 
         except Exception as e:
@@ -73,7 +73,7 @@ class PostItem(Resource):
 
     def delete(self, category, post_uuid):
         """ Deletes a post """
-        event_json = request.json
+        event_json = {}
         event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         event_json["operation"] = "delete"
         event_json["type"] = "post"

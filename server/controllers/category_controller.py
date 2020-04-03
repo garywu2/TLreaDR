@@ -48,7 +48,6 @@ class CategoryItem(Resource):
     def delete(self, category):
         """ Deletes a category """
         event_json = {}
-        event_json = json.dumps(event_json)
         event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         event_json["operation"] = "delete"
         event_json["type"] = "category"

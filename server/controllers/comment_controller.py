@@ -62,7 +62,6 @@ class PostItem(Resource):
     def delete(self, comment_uuid):
         """ Deletes a comment """
         event_json = {}
-        event_json = json.dumps(event_json)
         event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
         event_json["operation"] = "delete"
         event_json["type"] = "comment"
