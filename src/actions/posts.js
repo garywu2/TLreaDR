@@ -74,12 +74,14 @@ export const editPost = async (
   post_uuid,
   new_title,
   new_body,
-  new_image_link
+  new_image_link,
+  new_article_link
 ) => {
   const reqBody = {
     new_title,
     new_body,
-    new_image_link
+    new_image_link,
+    new_article_link
   };
 
   const response = await axios.put(
