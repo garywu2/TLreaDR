@@ -75,7 +75,7 @@ export const getProfileFromUserUuid = async (
     new_password,
   };
 
-  const response = await axios.put(config.endpoint + "users/" + user_uuid, {reqBody});
+  const response = await axios.put(`${config.endpoint}users/${user_uuid}`, reqBody);
 
   if (response.status !== 200) {
     throw "Registration failed with error code " + response.status;
