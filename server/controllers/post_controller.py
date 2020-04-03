@@ -13,9 +13,12 @@ class PostCollection(Resource):
     @ns.expect(post_get_parser)
     def get(self, category):
         """ Gets all posts """
-        response = requests.get('http://post_service:7082/api/' + category + '/posts',
-                                params=post_get_parser.parse_args())
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://post_service:7082/api/' + category + '/posts',
+                                    params=post_get_parser.parse_args())
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "post service is unavailable"}, 503
 
     @ns.expect(post_model, validate=False)
     def post(self, category):
@@ -29,9 +32,12 @@ class PostItem(Resource):
     @ns.expect(post_get_parser)
     def get(self, category, post_uuid):
         """ Gets a specified post by post_uuid """
-        response = requests.get('http://post_service:7082/api/' + category + '/' + post_uuid,
-                                params=post_get_parser.parse_args())
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://post_service:7082/api/' + category + '/' + post_uuid,
+                                    params=post_get_parser.parse_args())
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "post service is unavailable"}, 503
 
     @ns.expect(post_put_model, validate=False)
     def put(self, category, post_uuid):
@@ -50,18 +56,22 @@ class PostSearch(Resource):
     @ns.expect(post_get_parser)
     def get(self, category, search):
         """ Searches for posts """
-        response = requests.get('http://post_service:7082/api/' + category + '/search/' + search,
+        try:
+            response = requests.get('http://post_service:7082/api/' + category + '/search/' + search,
                                 params=post_get_parser.parse_args())
-        return response.json(), response.status_code
-
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "post service is unavailable"}, 503
 
 @ns.route('/posts/<string:user_uuid>')
 class UserPosts(Resource):
     def get(self, category, user_uuid):
         """ Gets all posts by user """
-        response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid)
-        return response.json(), response.status_code
-
+        try:
+            response = requests.get('http://post_service:7082/api/' + category + '/posts/' + user_uuid)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "post service is unavailable"}, 503
 
 @ns.route('/<string:post_uuid>/vote')
 class PostVote(Resource):

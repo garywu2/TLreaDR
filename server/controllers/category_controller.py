@@ -11,8 +11,11 @@ ns = api.namespace('categories', description='Operations related to category rou
 class CategoryCollection(Resource):
     def get(self):
         """ Gets all categories """
-        response = requests.get('http://post_service:7082/api/categories')
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://post_service:7082/api/categories')
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "post (category) service is unavailable"}, 503
 
     @ns.expect(category_model)
     def post(self):
@@ -25,8 +28,11 @@ class CategoryCollection(Resource):
 class CategoryItem(Resource):
     def get(self, category):
         """ Gets a specified category by name """
-        response = requests.get('http://post_service:7082/api/categories/' + category)
-        return response.json(), response.status_code
+        try:
+            response = requests.get('http://post_service:7082/api/categories/' + category)
+            return response.json(), response.status_code
+        except requests.exceptions.ConnectionError as c:
+            return {"message": "post (category) service is unavailable"}, 503
 
     def delete(self, category):
         """ Deletes a category """
