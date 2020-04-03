@@ -12,6 +12,12 @@ from server.parsers.server_parsers import *
 
 ns = api.namespace('posts', description='Operations related to post routes', path="/<string:category>")
 
+def createEventJSON(event, operation, type, category):
+    event["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+    event["operation"] = operation
+    event["type"] = type
+    event["category"] = category
+    return event
 
 @ns.route('/posts')
 class PostCollection(Resource):
@@ -25,11 +31,7 @@ class PostCollection(Resource):
     @ns.expect(post_model, validate=False)
     def post(self, category):
         """ Creates a new post """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "add"
-        event_json["type"] = "post"
-        event_json["category"] = category
+        event_json = createEventJSON(request.json, "add", "post", category)
         new_post_event = Event(event_json)
         try:
             db.session.add(new_post_event)
@@ -54,11 +56,7 @@ class PostItem(Resource):
     @ns.expect(post_put_model, validate=False)
     def put(self, category, post_uuid):
         """ Updates a post """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "update"
-        event_json["type"] = "post"
-        event_json["category"] = category
+        event_json = createEventJSON(request.json, "update", "post", category)
         event_json["id"] = post_uuid
         updated_post_event = Event(event_json)
         try:
@@ -74,10 +72,7 @@ class PostItem(Resource):
     def delete(self, category, post_uuid):
         """ Deletes a post """
         event_json = {}
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "delete"
-        event_json["type"] = "post"
-        event_json["category"] = category
+        event_json = createEventJSON(event_json, "delete", "post", category)
         event_json["id"] = post_uuid
         deleted_post_event = Event(event_json)
         try:
@@ -114,11 +109,7 @@ class PostVote(Resource):
     @ns.expect(vote_post_model)
     def post(self, category, post_uuid):
         """ Creates a vote on a post """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "add"
-        event_json["type"] = "vote"
-        event_json["category"] = category
+        event_json = createEventJSON(request.json, "add", "vote", category)
         event_json["id"] = post_uuid
         new_vote_event = Event(event_json)
         try:
@@ -134,11 +125,7 @@ class PostVote(Resource):
     @ns.expect(vote_put_model)
     def put(self, category, post_uuid):
         """ Updates a vote on a post """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "update"
-        event_json["type"] = "vote"
-        event_json["category"] = category
+        event_json = createEventJSON(request.json, "update", "vote", category)
         event_json["id"] = post_uuid
         updated_vote_event = Event(event_json)
         try:
@@ -154,11 +141,7 @@ class PostVote(Resource):
     @ns.expect(vote_delete_model)
     def delete(self, category, post_uuid):
         """ Deletes a vote on a post """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "delete"
-        event_json["type"] = "vote"
-        event_json["category"] = category
+        event_json = createEventJSON(request.json, "delete", "vote", category)
         event_json["id"] = post_uuid
         deleted_vote_event = Event(event_json)
         try:

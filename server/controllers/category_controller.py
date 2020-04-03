@@ -11,6 +11,11 @@ from server.api.models import *
 
 ns = api.namespace('categories', description='Operations related to category routes')
 
+def createEventJSON(event, operation, type):
+    event["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+    event["operation"] = operation
+    event["type"] = type
+    return event
 
 @ns.route('')
 class CategoryCollection(Resource):
@@ -22,10 +27,7 @@ class CategoryCollection(Resource):
     @ns.expect(category_model)
     def post(self):
         """ Creates a new category """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "add"
-        event_json["type"] = "category"
+        event_json = createEventJSON(request.json, "add", "category")
         new_category_event = Event(event_json)
         try:
             db.session.add(new_category_event)
@@ -48,9 +50,7 @@ class CategoryItem(Resource):
     def delete(self, category):
         """ Deletes a category """
         event_json = {}
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "delete"
-        event_json["type"] = "category"
+        event_json = createEventJSON(event_json, "delete", "category")
         event_json["category"] = category
         deleted_category_event = Event(event_json)
         try:

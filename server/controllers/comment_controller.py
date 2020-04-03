@@ -11,6 +11,11 @@ from server.api.models import *
 
 ns = api.namespace('comments', description='Operations related to server routes')
 
+def createEventJSON(event, operation, type):
+    event["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+    event["operation"] = operation
+    event["type"] = type
+    return event
 
 @ns.route('')
 class CommentsCollection(Resource):
@@ -22,10 +27,7 @@ class CommentsCollection(Resource):
     @ns.expect(comment_model)
     def post(self):
         """ Creates a new comment """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "add"
-        event_json["type"] = "comment"
+        event_json = createEventJSON(request.json, "add", "comment")
         new_comment_event = Event(event_json)
         try:
             db.session.add(new_comment_event)
@@ -43,10 +45,7 @@ class PostItem(Resource):
     @ns.expect(comment_put_model, validate=False)
     def put(self, comment_uuid):
         """ Updates a comment """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "update"
-        event_json["type"] = "comment"
+        event_json = createEventJSON(request.json, "update", "comment")
         event_json["id"] = comment_uuid
         updated_comment_event = Event(event_json)
         try:
@@ -62,9 +61,7 @@ class PostItem(Resource):
     def delete(self, comment_uuid):
         """ Deletes a comment """
         event_json = {}
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "delete"
-        event_json["type"] = "comment"
+        event_json = createEventJSON(event_json, "delete", "comment")
         event_json["id"] = comment_uuid
         deleted_comment_event = Event(event_json)
         try:

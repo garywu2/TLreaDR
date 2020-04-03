@@ -11,6 +11,11 @@ from server.parsers.server_parsers import *
 
 ns = api.namespace('users', description='Operations related to users routes')
 
+def createEventJSON(event, operation, type):
+    event["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
+    event["operation"] = operation
+    event["type"] = type
+    return event
 
 @ns.route('')
 class UserCollection(Resource):
@@ -22,10 +27,7 @@ class UserCollection(Resource):
     @ns.expect(user_model, validate=False)
     def post(self):
         """ Creates a new user """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "add"
-        event_json["type"] = "user"
+        event_json = createEventJSON(request.json, "add", "user")
         new_user_event = Event(event_json)
         try:
             db.session.add(new_user_event)
@@ -48,10 +50,7 @@ class UserItem(Resource):
     @ns.expect(user_put_model, validate=False)
     def put(self, uuid):
         """ Updates a user """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "update"
-        event_json["type"] = "user"
+        event_json = createEventJSON(request.json, "update", "user")
         event_json["id"] = uuid
         updated_user_event = Event(event_json)
         try:
@@ -65,10 +64,7 @@ class UserItem(Resource):
 
     def delete(self, uuid):
         """ Deletes a user """
-        event_json = request.json
-        event_json["time"] = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S.%f")
-        event_json["operation"] = "delete"
-        event_json["type"] = "user"
+        event_json = createEventJSON(request.json, "delete", "user")
         event_json["id"] = uuid
         deleted_user_event = Event(event_json)
         try:
