@@ -188,3 +188,6 @@ def delete_post_vote(post_uuid, args):
     post_to_be_edited.delete_vote(vote_to_be_deleted.vote_type)
     db.session.delete(vote_to_be_deleted)
     db.session.commit()
+
+def delete_posts_with_same_article_link():
+    pass

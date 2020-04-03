@@ -7,6 +7,9 @@ from post_service.api.restplus import api
 
 from post_service.controllers.post_controller import ns as post_ns
 from post_service.controllers.category_controller import ns as category_ns
+from post_service.managers.post_manager import delete_posts_with_same_article_link
+
+from apscheduler.schedulers.background import BackgroundScheduler
 
 def create_app():
     """Main wrapper for app creation"""
@@ -25,5 +28,11 @@ def create_app():
 
     '''Initialize models'''
     db.init_app(app)
+
+    '''Background scheduler'''
+    scheduler = BackgroundScheduler()
+    week_seconds = 604800
+    scheduler.add_job(func=delete_posts_with_same_article_link(), trigger="interval", seconds=week_seconds)
+    scheduler.start()
 
     return app
