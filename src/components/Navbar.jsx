@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import logo from "../assets/TLreaDR-logo.png";
+import logo from "../assets/image.svg";
 import styled from "styled-components";
 import { Link, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,13 +11,17 @@ const NavbarWrapper = styled.div`
   background-color: #ef3e36;
   display: flex;
   align-items: center;
-  padding: 10px 25px;
+  padding: 0px 25px;
 `;
 
 const NavbarHeaderChild = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
+
+  &:first-child > div {
+    margin-right: auto;
+  }
 
   &:last-child > div {
     margin-left: auto;
@@ -44,7 +48,7 @@ const LoggedOutButton = styled(Link)`
 `;
 
 const LogoImage = styled.img`
-  height: 50px;
+  height: 80px;
 `;
 
 const SubheaderWrapper = styled.div`
@@ -114,8 +118,12 @@ const Navbar = () => {
       <NavbarHeaderChild>
         {userAccount ? (
           <div>
-            <LoggedInButton onClick={viewProfileButtonClick}>Profile</LoggedInButton>
-            <LoggedInButton onClick={newPostButtonClick}>New Post</LoggedInButton>
+            <LoggedInButton onClick={viewProfileButtonClick}>
+              Profile
+            </LoggedInButton>
+            <LoggedInButton onClick={newPostButtonClick}>
+              New Post
+            </LoggedInButton>
             <LoggedInButton onClick={handleLogout}>Log Out</LoggedInButton>
           </div>
         ) : (
@@ -127,13 +135,17 @@ const Navbar = () => {
     );
   };
 
+  const manageCategoriesClick = () => {
+    history.push(`/category-edit`);
+  };
+
   const viewProfileButtonClick = () => {
     history.push(`/user/${userAccount.user_uuid}`);
   };
 
   const newPostButtonClick = () => {
-    history.push('/new');
-  }
+    history.push("/new");
+  };
 
   const handleLogout = () => {
     dispatch({ type: LOGOUT_USER });
@@ -143,7 +155,15 @@ const Navbar = () => {
   return (
     <React.Fragment>
       <NavbarWrapper>
-        <NavbarHeaderChild></NavbarHeaderChild>
+        <NavbarHeaderChild>
+          <div>
+            {userAccount && userAccount.is_admin && (
+              <LoggedInButton onClick={manageCategoriesClick}>
+                Manage Categories
+              </LoggedInButton>
+            )}
+          </div>
+        </NavbarHeaderChild>
         <NavbarHeaderChild>
           <LogoImage src={logo} alt="TLreaDR" />
         </NavbarHeaderChild>

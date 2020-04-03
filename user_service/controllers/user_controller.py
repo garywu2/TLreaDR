@@ -1,19 +1,13 @@
-from flask_restplus import Resource, fields, marshal
+from flask_restplus import Resource, marshal
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from user_service.api.models import user_dto
 from user_service.api.restplus import api
 from user_service.models import db
 from user_service.models.user import User
 from user_service.parsers.user_parsers import *
 
 ns = api.namespace('users', description='Operations related to users')
-
-user_dto = api.model('user', {
-    'user_uuid': fields.String(required=True, description='user uuid'),
-    'email': fields.String(required=True, description='user email address'),
-    'username': fields.String(required=True, description='user username'),
-    'is_admin': fields.Boolean(required=True, description='true if user is an admin'),
-})
 
 
 @ns.route('')

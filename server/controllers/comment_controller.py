@@ -83,7 +83,7 @@ class PostItem(Resource):
 class PostComment(Resource):
     def get(self, post_uuid):
         """ Gets all comments for a post """
-        response = requests.get('http://comment_service:7082/api/comments/' + post_uuid)
+        response = requests.get('http://comment_service:7082/api/comments/post/' + post_uuid)
         return response.json(), response.status_code
 
 
