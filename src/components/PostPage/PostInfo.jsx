@@ -173,9 +173,7 @@ export default function PostInfo({
                   : "")}
             </small>
           </div>
-          <div>
-            <Label>New</Label>
-          </div>
+          <div>{post.new_flag && <Label>New</Label>}</div>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
