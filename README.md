@@ -35,6 +35,8 @@ SECRET_KEY='the secret key you generated in step 2'
 SQLALCHEMY_DATABASE_URI='postgresql://{username}:{password}@{JDBC_URL}/postgres
 ```
 
+4. Copy paste the .env file into each of the microservices directories so that they can have access to the database.
+
 ### Configuring Docker Microservices
 
 *  Download docker for your platform and check if it is correctly installed using:
