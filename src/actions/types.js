@@ -16,6 +16,8 @@ export const POST_COMMENT = "POST_COMMENT";
 export const EDIT_COMMENT = "EDIT_COMMENT";
 export const DELETE_COMMENT = "DELETE_COMMENT";
 export const UPLOAD_COMMENTS = "UPLOAD_COMMENTS";
+export const UPLOAD_PROFILE = "UPLOAD_PROFILE";
+export const GET_PROFILE = "GET_PROFILE";
 
 
 

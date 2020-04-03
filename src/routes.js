@@ -21,8 +21,8 @@ const routes = (
       <Route path="/post/:post" component={PostPage} />
       <Route path='/search/:input' component={SearchResultsPage} />
       <Route path="/new" component={NewPostPage} />
-      <Route path="/user/:uuid" component={ProfilePage} />
       <Route path="/user/edit/:uuid" component={EditProfilePage} />
+      <Route path="/user/:uuid" component={ProfilePage} />
     </Switch>
   </App>
 );

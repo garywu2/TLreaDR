@@ -4,12 +4,13 @@ import { useLocation } from "react-router";
 import { getPostsByUserUuid } from "../../actions/posts";
 import { getCommentsByUserUuid } from "../../actions/comments";
 import { getUserFromUserUuid } from "../../actions/users";
-import { getProfileFromUuid } from "../../actions/users";
+import { getProfileFromUserUuid } from "../../actions/users";
 import PostsPreviewList from "./PostsPreviewList";
 import CommentsPreviewList from "./CommentsPreviewList";
 import FormButton from "../styled/FormButton";
 import { useHistory } from 'react-router-dom';
-import { Redirect } from 'react-router';
+import { fetchProfile } from "../../actions/users";
+import ProfilePreview from "./ProfilePreview";
 
 const EditButton = styled(FormButton)`
   margin: 5px 0px;
@@ -52,14 +53,13 @@ const Wrapper = styled.div`
 
 const ProfilePage = () => {
   const [user, setUser] = useState(null);
-  const [selectedPost, setSelectedPost] = useState(true);
+  const [selectedPost, setSelectedPost] = useState("0");
   const [posts, setPosts] = useState(null);
   const [profile, setProfile] = useState(null);
   const [comments, setComments] = useState(null);
   const theme = useContext(ThemeContext);
   const location = useLocation();
   const history = useHistory();
-  const edit_page = location.pathname;
   const user_uuid = location.pathname.split("/user/").reverse()[0];
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const ProfilePage = () => {
 
     const getProfile = async () => {
       try {
-        const { profile } = await getProfileFromUuid(user_uuid);
+        const { profile } = await fetch(user_uuid);
         setProfile(profile);
       } catch (e) {
         console.log(e);
@@ -108,6 +108,7 @@ const ProfilePage = () => {
     getPostsByUserUuid,
     getCommentsByUserUuid,
     getUserFromUserUuid,
+    getProfileFromUserUuid,
     user_uuid
   ]);
 
@@ -116,12 +117,13 @@ const ProfilePage = () => {
   };
 
   const renderButtonsAndPosts = () => {
-    if (selectedPost) {
+    if (selectedPost == "1") {
       return (
         <div>
           <ButtonWrapper>
             <ProfileButton 
               style={{fontWeight: "normal"}}
+              onClick={handleProfileClick}
               >
                 Profile
             </ProfileButton>
@@ -141,12 +143,13 @@ const ProfilePage = () => {
           <PostsPreviewList posts={posts} />
         </div>
       );
-    } else {
+    } else if (selectedPost == "2"){
       return (
         <div>
           <ButtonWrapper>
             <ProfileButton 
               style={{fontWeight: "normal"}}
+              onClick={handleProfileClick}
               >
                 Profile
             </ProfileButton>
@@ -166,15 +169,44 @@ const ProfilePage = () => {
           <CommentsPreviewList comments={comments} username={user.username} />
         </div>
       );
+    } else if(selectedPost == "0") {
+      return (
+        <div>
+          <ButtonWrapper>
+            <ProfileButton 
+              style={{fontWeight: "bold"}}
+              onClick={handleProfileClick}
+              >
+                Profile
+            </ProfileButton>
+            <ProfileButton
+              style={{ fontWeight: "normal" }}
+              onClick={handlePostsClick}
+            >
+              Posts
+            </ProfileButton>
+            <ProfileButton
+              style={{ fontWeight: "normal" }}
+              onClick={handleCommentsClick}
+            >
+              Comments
+            </ProfileButton>
+          </ButtonWrapper>
+          <ProfilePreview profile={profile} ></ProfilePreview>
+        </div>
+      );
     }
   };
 
   const handlePostsClick = () => {
-    setSelectedPost(true);
+    setSelectedPost("1");
   };
 
   const handleCommentsClick = () => {
-    setSelectedPost(false);
+    setSelectedPost("2");
+  };
+  const handleProfileClick = () => {
+    setSelectedPost("0");
   };
 
   return (
