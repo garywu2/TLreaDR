@@ -24,6 +24,14 @@ services:
       - "7085:7082"
     environment:
       - DEBUG=True
+  command_service:
+    container_name: command_service
+    build:
+      context: ./command_service
+    ports:
+      - "7086:7082"
+    environment:
+      - DEBUG=True
   server:
     container_name: server
     build:
@@ -32,3 +40,13 @@ services:
       - "7082:7082"
     environment:
       - DEBUG=True
+    # Uncomment this when code is ready for production
+#  front_end:
+#    container_name: front_end
+#    build:
+#      context: .
+#      dockerfile: ./src/Dockerfile
+#    ports:
+#      - "7081:7081"
+#    environment:
+#      - DEBUG=True
