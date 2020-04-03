@@ -99,7 +99,7 @@ export default function Comment({
                   Edit
                 </BottomBarButton>
               )}
-              {((user && user.user_uuid === comment.author_uuid) ||
+              {user && ((user.user_uuid === comment.author_uuid) ||
                 user.is_admin) && (
                 <BottomBarButton onClick={handleDeleteClick}>
                   Delete
