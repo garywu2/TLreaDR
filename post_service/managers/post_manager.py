@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 from flask_restplus import marshal
@@ -189,5 +189,18 @@ def delete_post_vote(post_uuid, args):
     db.session.delete(vote_to_be_deleted)
     db.session.commit()
 
+# TODO replace datetime stuff with new_flag if possible
 def delete_posts_with_same_article_link():
-    pass
+    posts = Post.query.filter(Post.article_link.isnot(None)) \
+                      .filter(Post.pub_date > (datetime.utcnow() - timedelta(days=3))).all()
+
+    for post in posts:
+        posts_to_be_deleted = Post.query.filter_by(article_link=post.article_link) \
+                                          .filter_by(Post.pub_date > (datetime.utcnow() - timedelta(days=3))) \
+                                          .filter(Post.votes < post.votes).all()
+        for p in posts_to_be_deleted:
+            db.session.delete(p)
+
+        db.session.commit()
+
+

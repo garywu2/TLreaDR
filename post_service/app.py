@@ -31,8 +31,8 @@ def create_app():
 
     '''Background scheduler'''
     scheduler = BackgroundScheduler()
-    week_seconds = 604800
-    scheduler.add_job(func=delete_posts_with_same_article_link(), trigger="interval", seconds=week_seconds)
+    week_seconds = 10
+    scheduler.add_job(delete_posts_with_same_article_link, trigger="interval", seconds=week_seconds)
     scheduler.start()
 
     return app
