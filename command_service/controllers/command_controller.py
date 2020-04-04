@@ -28,7 +28,7 @@ class PostItem(Resource):
                 return constructUser(event.event_blob)
             if event.event_blob['operation'] == 'update':
                 update_user_id = event.event_blob['id']
-                return updateUser(update_user_id, request.json)
+                return updateUser(update_user_id, event.event_blob)
             if event.event_blob['operation'] == 'delete':
                 delete_user_id = event.event_blob['id']
                 return removeUser(delete_user_id)
