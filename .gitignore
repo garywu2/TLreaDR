@@ -11,11 +11,13 @@ venv/
 user_service/.env
 user_service/key.json
 post_service/.env
-service/.env
-service/key.json
+server/.env
+server/key.json
 post_service/key.json
 comment_service/.env
 comment_service/key.json
+command_service/.env
+command_service/key.json
 .idea
 migrations/
 .vscode/
