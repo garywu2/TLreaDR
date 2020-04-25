@@ -1,5 +1,6 @@
 from flask_restplus import Resource, marshal
 from werkzeug.security import generate_password_hash, check_password_hash
+import re
 
 from user_service.api.models import user_dto
 from user_service.api.restplus import api
@@ -9,6 +10,7 @@ from user_service.parsers.user_parsers import *
 
 ns = api.namespace('users', description='Operations related to users')
 
+regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
 
 @ns.route('')
 class UserCollection(Resource):
@@ -31,6 +33,10 @@ class UserCollection(Resource):
         args = user_add_parser.parse_args()
 
         try:
+            enteredEmail = args['email']
+            if not re.search(regex, enteredEmail):
+                return {"message": "Invalid Email Address"}, 422
+
             new_user = User(args['username'], args['email'], args['password'], args['is_admin'])
             db.session.add(new_user)
             db.session.commit()
