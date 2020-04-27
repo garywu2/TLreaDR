@@ -5,6 +5,7 @@ from post_service.api.models import category_dto
 from post_service.api.restplus import api
 from post_service.models import db
 from post_service.models.category import Category
+from post_service.models.post import Post
 from post_service.parsers.category_parsers import category_parser
 
 ns = api.namespace('categories', description='Operations related to categories')
@@ -68,7 +69,13 @@ class CategoryItem(Resource):
         """
         try:
             category_to_be_deleted = Category.query.filter_by(name=category).first()
+
             if category_to_be_deleted:
+                posts_in_category_to_be_deleted = Post.query.filter_by(category_uuid=category_to_be_deleted.category_uuid).all()
+
+                for post in posts_in_category_to_be_deleted:
+                    db.session.delete(post)
+
                 db.session.delete(category_to_be_deleted)
                 db.session.commit()
 
