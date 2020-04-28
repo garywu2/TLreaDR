@@ -73,8 +73,8 @@ const PageReference = styled(Link)`
 `;
 
 const Navbar = () => {
-  const userAccount = useSelector(state => state.user);
-  const categories = useSelector(state => state.categories);
+  const userAccount = useSelector((state) => state.user);
+  const categories = useSelector((state) => state.categories);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -99,7 +99,7 @@ const Navbar = () => {
         <div key="all">
           <PageReference to="/category/all">Home</PageReference>
         </div>
-        {categories.map(category => (
+        {categories.map((category) => (
           <div key={category.name}>
             <PageReference to={"/category/".concat(category.name)}>
               {category.name
@@ -165,7 +165,9 @@ const Navbar = () => {
           </div>
         </NavbarHeaderChild>
         <NavbarHeaderChild>
-          <LogoImage src={logo} alt="TLreaDR" />
+          <Link to="/">
+            <LogoImage src={logo} alt="TLreaDR" />
+          </Link>
         </NavbarHeaderChild>
         {renderMenuButtons()}
       </NavbarWrapper>
