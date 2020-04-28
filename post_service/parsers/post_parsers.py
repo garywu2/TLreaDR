@@ -26,3 +26,6 @@ post_vote_edit_parser.add_argument('new_vote_type', required=True, type=int, hel
 
 post_vote_delete_parser = reqparse.RequestParser()
 post_vote_delete_parser.add_argument('user_uuid', required=True, type=str, help='uuid of user', location='json')
+
+article_summarize_parser = reqparse.RequestParser()
+article_summarize_parser.add_argument('article_link', required=True, type=str, help='link of article to be summarized')

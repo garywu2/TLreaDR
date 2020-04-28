@@ -163,3 +163,17 @@ class PostVote(Resource):
         except Exception as e:
             print(str(e))
             return {"message": str(e)}, 500
+
+@ns.route('/summarize')
+class PostSummarize(Resource):
+    @ns.expect(article_summarize_parser)
+    def get(self, category):
+        """
+        Summarizes an article
+        """
+        try:
+            args = article_summarize_parser.parse_args()
+            response = requests.get('http://post_service:7082/api/all/summarize', params=args)
+            return response.json(), response.status_code
+        except Exception as e:
+            return {"message": str(e)}, 500
