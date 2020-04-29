@@ -109,8 +109,13 @@ class CommentItem(Resource):
         """
         try:
             comment_to_be_deleted = Comment.query.filter_by(comment_uuid=comment_uuid).first()
+            deleted_text = "[deleted]"
+            deleted_uuid = "00000000-00000000-00000000-00000000"
             if comment_to_be_deleted:
                 comment_to_be_deleted.is_deleted = True
+                comment_to_be_deleted.comment_text = deleted_text
+                comment_to_be_deleted.author_username = deleted_text
+                comment_to_be_deleted.author_uuid = deleted_uuid
                 db.session.commit()
             else:
                 return {'message': 'comment not found.'}, 404
