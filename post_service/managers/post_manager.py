@@ -149,6 +149,7 @@ def add_post_vote(post_uuid, args):
         db.session.add(new_post_vote)
 
     db.session.commit()
+    update_post_hot_rating(post_voted_on)
 
 
 def edit_post_vote(post_uuid, args):
@@ -176,6 +177,7 @@ def edit_post_vote(post_uuid, args):
         else:
             db.session.add(post_to_be_edited)
         db.session.commit()
+        update_post_hot_rating(post_to_be_edited)
         return {'message': 'vote has been edited successfully.'}, 201
     return {'message': 'vote or post not found.'}, 404
 
@@ -187,4 +189,12 @@ def delete_post_vote(post_uuid, args):
         .filter_by(user_uuid=user_uuid).first()
     post_to_be_edited.delete_vote(vote_to_be_deleted.vote_type)
     db.session.delete(vote_to_be_deleted)
+    db.session.commit()
+    update_post_hot_rating(post_to_be_edited)
+
+def update_post_hot_rating(post_to_be_updated):
+    time_since_posted = datetime.utcnow() - post_to_be_updated.pub_date
+    hours_since_posted = (time_since_posted.days * 24) + (time_since_posted.seconds / 3600)
+    post_to_be_updated.hot_rating = post_to_be_updated.votes / hours_since_posted
+
     db.session.commit()
