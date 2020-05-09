@@ -24,7 +24,7 @@ class Post(db.Model):
     author_username = db.Column(db.String(200), nullable=True)
 
     votes = db.Column(db.Integer, nullable=False, default=0)
-    hot_rating = db.Column(db.Float, nullable=False, default=0)
+    hot_rating = db.Column(db.Float, default=0)
 
     new_flag = column_property(pub_date > (datetime.utcnow() - timedelta(days=3)))
 
