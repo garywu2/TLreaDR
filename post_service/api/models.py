@@ -12,6 +12,7 @@ post_dto = api.model('post', {
     'article_link': fields.String(description='article link of the post'),
     'votes': fields.Integer(required=True, description='votes of the post'),
     'hot_rating': fields.Float(required=True, description='rating for hotness of the post'),
+    'hot_flag': fields.Boolean(required=True, description='hot flag for the post'),
     'category_uuid': fields.String(required=True, description='category uuid'),
     'category': fields.String(required=True, description='category of the post'),
     'author_uuid': fields.String(required=True, description='uuid of author'),

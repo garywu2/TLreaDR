@@ -30,7 +30,7 @@ class Post(db.Model):
 
     edited_flag = db.Column(db.Boolean, nullable=False, default=False)
 
-    hot_flag = db.Column(db.Boolean, nullable=False, default=False)
+    hot_flag = db.Column(db.Boolean, default=False)
 
     def __init__(self, title, body, category_uuid, author_uuid, image_link, article_link):
         self.title = title
