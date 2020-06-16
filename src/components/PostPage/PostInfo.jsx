@@ -62,6 +62,12 @@ const Header = styled.div`
   align-items: center;
 `;
 
+const Tag = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+`;
+
 const Img = styled.img`
   width: 100%;
   object-fit: cover;
@@ -173,7 +179,10 @@ export default function PostInfo({
                   : "")}
             </small>
           </div>
-          <div>{post.new_flag && <Label>New</Label>}</div>
+          <Tag>
+            {post.new_flag && <Label>New</Label>}
+            {post.hot_flag && <Label>Hot</Label>}
+          </Tag>
         </Header>
         <Img theme={theme} src={post.image_link}></Img>
         <p>{post.body}</p>
