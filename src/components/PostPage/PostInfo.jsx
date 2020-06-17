@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled, { ThemeContext } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faThumbsUp, faThumbsDown } from "@fortawesome/free-regular-svg-icons";
@@ -8,6 +8,7 @@ import { upvotePost, downvotePost } from "../../actions/posts";
 import { useSelector } from "react-redux";
 import ArticleLinkButton from "../styled/ArticleLinkButton";
 import Label from "../styled/Label";
+import Confirmation from "../styled/Confirmation"
 
 const Display = styled.div`
   background-color: white;
@@ -107,12 +108,13 @@ const ErrorMessage = styled.div`
 export default function PostInfo({
   post,
   votePost,
-  handleDeleteClick,
+  handleDelete,
   hasErrors
 }) {
   const theme = useContext(ThemeContext);
   const history = useHistory();
   const user = useSelector(state => state.user);
+  const [postDeleteClicked, setPostDeleteClicked] = useState(false);
 
   const handleThumbsUp = async () => {
     if (user) {
@@ -187,11 +189,15 @@ export default function PostInfo({
               >
                 <div>Edit</div>
               </EditButton>
-              <DeleteButton hovercolor="#e2493b" onClick={handleDeleteClick}>
+              <DeleteButton hovercolor="#e2493b" onClick={() => setPostDeleteClicked(true)}>
                 <div>Delete</div>
-              </DeleteButton>
+              </DeleteButton> 
             </Footer>
           ))}
+          {postDeleteClicked && (<Confirmation 
+            handleYesClick={handleDelete}
+            handleNoClick={() => setPostDeleteClicked(false)}>
+          </Confirmation>)}
         <ErrorMessage visible={hasErrors}>
           There was an error on the backend.
         </ErrorMessage>
