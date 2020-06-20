@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
 import { useSelector } from "react-redux";
+import Confirmation from "../styled/Confirmation";
 
 const Wrapper = styled.div`
   background-color: #e9e9e9;
@@ -58,13 +59,20 @@ const BottomBarButton = styled.button`
   }
 `;
 
+const ConfirmationMessage = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px;
+`;
+
 export default function Comment({
   comment,
   handleEditClick,
-  handleDeleteClick,
+  handleDelete,
   handleReplyClick
 }) {
   const user = useSelector(state => state.user);
+  const [commentDeleteClicked, setCommentDeleteClicked] = useState(false);
 
   const commentText = comment.is_deleted ? "[deleted]" : comment.comment_text;
 
@@ -101,7 +109,7 @@ export default function Comment({
               )}
               {user && ((user.user_uuid === comment.author_uuid) ||
                 user.is_admin) && (
-                <BottomBarButton onClick={handleDeleteClick}>
+                <BottomBarButton onClick={() => setCommentDeleteClicked(true)}>
                   Delete
                 </BottomBarButton>
               )}
@@ -109,6 +117,12 @@ export default function Comment({
           </React.Fragment>
         )}
       </BottomBar>
+      <ConfirmationMessage>
+        {commentDeleteClicked && (<Confirmation
+              handleYesClick={handleDelete}
+              handleNoClick={() => setCommentDeleteClicked(false)}>
+            </Confirmation>)}
+      </ConfirmationMessage>
     </Wrapper>
   );
 }
