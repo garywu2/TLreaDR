@@ -8,3 +8,14 @@ comment_parser.add_argument('parent_id', type=str, help='comment parent id', loc
 
 comment_edit_parser = reqparse.RequestParser()
 comment_edit_parser.add_argument('new_text', required=True, type=str, help='new title of post', location='json')
+
+comment_vote_add_parser = reqparse.RequestParser()
+comment_vote_add_parser.add_argument('user_uuid', required=True, type=str, help='uuid of user', location='json')
+comment_vote_add_parser.add_argument('vote_type', required=True, type=int, help='vote type', location='json')
+
+comment_vote_edit_parser = reqparse.RequestParser()
+comment_vote_edit_parser.add_argument('user_uuid', required=True, type=str, help='uuid of user', location='json')
+comment_vote_edit_parser.add_argument('new_vote_type', required=True, type=int, help='vote type', location='json')
+
+comment_vote_delete_parser = reqparse.RequestParser()
+comment_vote_delete_parser.add_argument('user_uuid', required=True, type=str, help='uuid of user', location='json')

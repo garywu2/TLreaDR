@@ -176,3 +176,64 @@ class UserComments(Resource):
             return comments
         except Exception as e:
             return {"message": str(e)}, 500
+
+@ns.route('/<string:comment_uuid>/vote')
+class CommentVote(Resource):
+    @ns.expect(comment_vote_add_parser)
+    def post(self, category, comment_uuid):
+        """
+        Creates a comment vote record
+        """
+        args = comment_vote_add_parser.parse_args()
+        try:
+            new_comment_vote = CommentVote(comment_uuid, args['user_uuid'], args['vote_type'])
+            comment_voted_on = Comment.query.filter_by(comment_uuid=comment_uuid).first()
+            comment_voted_on.assign_vote(args['vote_type'])
+            db.session.add(new_comment_vote)
+            db.session.commit()
+            return {'message': 'vote has been created successfully.'}, 201
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+    @ns.expect(comment_vote_edit_parser)
+    def put(self, comment_uuid, category):
+        """
+        Updates a vote record
+        """
+        args = comment_vote_edit_parser.parse_args()
+        try:
+            user_uuid = args['user_uuid']
+            new_vote_type = args['new_vote_type']
+            comment_to_be_edited = Comment.query.filter_by(comment_uuid=comment_uuid).first()
+            vote_to_be_edited = CommentVote.query.filter_by(comment_uuid=comment_uuid) \
+                .filter_by(user_uuid=user_uuid).first()
+
+            if vote_to_be_edited and comment_to_be_edited:
+                if vote_to_be_edited.vote_type == new_vote_type:
+                    return {'message': 'cannot vote twice on the same comment'}, 404
+                vote_to_be_edited.vote_type = new_vote_type
+                comment_to_be_edited.assign_vote(2 * new_vote_type)
+                db.session.add(comment_to_be_edited)
+                db.session.commit()
+                return {'message': 'vote has been edited successfully.'}, 201
+            return {'message': 'vote or comment not found.'}, 404
+        except Exception as e:
+            return {"message": str(e)}, 500
+
+    @ns.expect(comment_vote_delete_parser)
+    def delete(self, comment_uuid, category):
+        """
+        Deletes a vote
+        """
+        args = comment_vote_delete_parser.parse_args()
+        try:
+            user_uuid = args['user_uuid']
+            comment_to_be_edited = Comment.query.filter_by(comment_uuid=comment_uuid).first()
+            vote_to_be_deleted = CommentVote.query.filter_by(comment_uuid=comment_uuid) \
+                .filter_by(user_uuid=user_uuid).first()
+            comment_to_be_edited.delete_vote(vote_to_be_deleted.vote_type)
+            db.session.delete(vote_to_be_deleted)
+            db.session.commit()
+            return {'message': 'vote has been deleted successfully.'}, 201
+        except Exception as e:
+            return {"message": str(e)}, 500
