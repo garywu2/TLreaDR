@@ -51,6 +51,7 @@ const Icon = styled.div`
   }
 `;
 const BottomBarButton = styled.button`
+  border-radius: 4px;
   padding: 4px 8px;
   color: ${({ theme }) => (theme ? theme.secondaryTextColor : "#fff")};
   background-color: #c9c9c9;

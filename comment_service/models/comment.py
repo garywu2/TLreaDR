@@ -11,6 +11,8 @@ class Comment(db.Model):
 
     comment_uuid = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True)
     comment_text = db.Column(db.String())
+    comment_upvotes = db.Column(db.Integer, default=0)
+    comment_downvotes = db.Column(db.Integer, default=0)
     votes = db.Column(db.Integer, default=0)
     date_submitted = db.Column(db.DateTime(), default=datetime.utcnow)
     date_edited = db.Column(db.DateTime)

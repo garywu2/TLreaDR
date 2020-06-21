@@ -1,21 +1,27 @@
 from datetime import datetime
 
-from flask_restplus import Resource, fields, marshal
+from flask_restplus import Resource, fields, marshal, reqparse
 from sqlalchemy import desc
+from sqlalchemy.orm import aliased
 
 from comment_service.api.restplus import api
 from comment_service.models import db
 from comment_service.models.comment import Comment
+from comment_service.models.commentvote import Commentvote
 from comment_service.parsers.comment_parsers import *
 
 ns = api.namespace('comments', description='Operations related to comments')
 
+comment_get_parser = reqparse.RequestParser()
+comment_get_parser.add_argument('user_uuid', required=False, type=str, help='user that requested get')
 
 def recursive_comment_mapping(level):
     comment_dto = {
         'comment_uuid': fields.String(required=True, description='comment uuid'),
         'id': fields.Integer(required=True, description='comment id'),
         'comment_text': fields.String(required=True, description='comment text'),
+        'votes': fields.Integer(required=True, description='comment upvotes'),
+        'vote_type': fields.Integer(required=False, description='status of user vote'),
         'comment_upvotes': fields.String(required=True, description='comment upvotes'),
         'comment_downvotes': fields.String(required=True, description='comment downvotes'),
         'date_submitted': fields.String(required=True, description='submission date'),
@@ -43,6 +49,7 @@ def nest_comment(comment):
 @ns.route('')
 class CommentCollection(Resource):
     @ns.marshal_list_with(recursive_comment_mapping(10))
+    @ns.expect(comment_get_parser)
     def get(self):
         """
         Gets all comments
@@ -180,13 +187,13 @@ class UserComments(Resource):
 @ns.route('/<string:comment_uuid>/vote')
 class CommentVote(Resource):
     @ns.expect(comment_vote_add_parser)
-    def post(self, category, comment_uuid):
+    def post(self, comment_uuid):
         """
         Creates a comment vote record
         """
         args = comment_vote_add_parser.parse_args()
         try:
-            new_comment_vote = CommentVote(comment_uuid, args['user_uuid'], args['vote_type'])
+            new_comment_vote = Commentvote(comment_uuid, args['user_uuid'], args['vote_type'])
             comment_voted_on = Comment.query.filter_by(comment_uuid=comment_uuid).first()
             comment_voted_on.assign_vote(args['vote_type'])
             db.session.add(new_comment_vote)
@@ -196,7 +203,7 @@ class CommentVote(Resource):
             return {"message": str(e)}, 500
 
     @ns.expect(comment_vote_edit_parser)
-    def put(self, comment_uuid, category):
+    def put(self, comment_uuid):
         """
         Updates a vote record
         """
@@ -205,7 +212,7 @@ class CommentVote(Resource):
             user_uuid = args['user_uuid']
             new_vote_type = args['new_vote_type']
             comment_to_be_edited = Comment.query.filter_by(comment_uuid=comment_uuid).first()
-            vote_to_be_edited = CommentVote.query.filter_by(comment_uuid=comment_uuid) \
+            vote_to_be_edited = Commentvote.query.filter_by(comment_uuid=comment_uuid) \
                 .filter_by(user_uuid=user_uuid).first()
 
             if vote_to_be_edited and comment_to_be_edited:
@@ -221,7 +228,7 @@ class CommentVote(Resource):
             return {"message": str(e)}, 500
 
     @ns.expect(comment_vote_delete_parser)
-    def delete(self, comment_uuid, category):
+    def delete(self, comment_uuid):
         """
         Deletes a vote
         """
@@ -229,7 +236,7 @@ class CommentVote(Resource):
         try:
             user_uuid = args['user_uuid']
             comment_to_be_edited = Comment.query.filter_by(comment_uuid=comment_uuid).first()
-            vote_to_be_deleted = CommentVote.query.filter_by(comment_uuid=comment_uuid) \
+            vote_to_be_deleted = Commentvote.query.filter_by(comment_uuid=comment_uuid) \
                 .filter_by(user_uuid=user_uuid).first()
             comment_to_be_edited.delete_vote(vote_to_be_deleted.vote_type)
             db.session.delete(vote_to_be_deleted)
