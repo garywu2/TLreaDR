@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import convertDate from "../../utils/convertDate";
 import { useSelector } from "react-redux";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faThumbsDown, faThumbsUp} from "@fortawesome/free-regular-svg-icons";
 
 const Wrapper = styled.div`
   background-color: #e9e9e9;
@@ -36,6 +38,9 @@ const RightSide = styled.div`
 const Icon = styled.div`
   color: #828282;
   cursor: pointer;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 
   & :hover {
     color: ${({ hoverColor }) => hoverColor || "#131516"};
@@ -56,6 +61,20 @@ const BottomBarButton = styled.button`
   &:hover {
     background-color: #898989;
   }
+`;
+
+const Icons = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const Points = styled.div`
+  color: ${({ points }) => (points < 0 ? "red" : "black")};
+  text-align: center;
+  margin: 10px 0px;
+  font-weight: bold;
+  font-family: Arvo, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 `;
 
 export default function Comment({
@@ -90,10 +109,31 @@ export default function Comment({
         <Text>{commentText}</Text>
       </Body>
       <BottomBar>
+        <Icons>
+        <Icon
+          //onClick={handleThumbsUp}
+          hoverColor="#2eaa3a"
+          //enabled={post.vote_type === 1}
+        >
+          <FontAwesomeIcon size="1x" icon={faThumbsUp}></FontAwesomeIcon>
+        </Icon>
+        <Points points={0}>0</Points>
+        <Icon
+          //onClick={handleThumbsDown}
+          hoverColor="#e2493b"
+          //enabled={post.vote_type === -1}
+        >
+          <FontAwesomeIcon
+            size="1x"
+            flip="horizontal"
+            icon={faThumbsDown}
+          ></FontAwesomeIcon>
+        </Icon>
+      </Icons>
         {!comment.is_deleted && (
           <React.Fragment>
-            <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
             <RightSide>
+              <BottomBarButton onClick={handleReplyClick}>Reply</BottomBarButton>
               {user && user.user_uuid === comment.author_uuid && (
                 <BottomBarButton onClick={handleEditClick}>
                   Edit
