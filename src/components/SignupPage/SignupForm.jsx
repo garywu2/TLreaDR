@@ -47,15 +47,18 @@ export default function SignupForm({ handleSubmit, hasErrors }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
   const [adminKey, setAdminKey] = useState("");
   const [invalidSubmit, setInvalidSubmit] = useState(false);
   const theme = useContext(ThemeContext);
   const [showAdminField, setShowAdminField] = useState(false);
 
-  const [usernameError, passwordError, emailError] = useErrorCheck(
-    [username, password, email],
+  const [usernameError, passwordError] = useErrorCheck(
+    [username, password],
     field => field.length === 0
   );
+
+  const emailError = email.length === 0 || !validEmail
 
   const adminError = showAdminField && adminKey !== "plsmakemeadmin";
 
@@ -74,6 +77,18 @@ export default function SignupForm({ handleSubmit, hasErrors }) {
   const handleAdminClick = () => {
     setShowAdminField(!showAdminField);
   };
+
+  const handleValidateEmail = (email) => {
+      let validator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+      setEmail(email);
+    if (validator.test(email) ) {
+        setValidEmail(true);
+    }
+    else {
+        setValidEmail(false);
+    }
+  }
 
   return (
     <Wrapper onSubmit={handleFormSubmit}>
@@ -98,12 +113,12 @@ export default function SignupForm({ handleSubmit, hasErrors }) {
       />
       <FormInput
         label="Email address"
-        handleInputChange={setEmail}
+        handleInputChange={handleValidateEmail}
         value={email}
         autocomplete="email"
         hasError={emailError}
         triedSubmit={invalidSubmit}
-        errorMessage="Email address cannot be blank!"
+        errorMessage="Invalid Email Address!"
       />
       <div>
           <AdminMessage theme={theme} onClick={handleAdminClick}>
