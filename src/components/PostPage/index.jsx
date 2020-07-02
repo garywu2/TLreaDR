@@ -251,7 +251,7 @@ const PostPage = props => {
         <PostInfo
           post={post}
           votePost={votePost}
-          handleDeleteClick={handleDeletePost}
+          handleDelete={handleDeletePost}
           hasErrors={hasErrors}
         ></PostInfo>
       ) : (

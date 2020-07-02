@@ -137,3 +137,13 @@ class PostVote(Resource):
             return {'message': 'vote has been deleted successfully.'}, 201
         except Exception as e:
             return {"message": str(e)}, 500
+
+@ns.route('/summarize')
+class PostSummary(Resource):
+    @ns.expect(article_summarize_parser)
+    def get(self, category):
+        """
+        Summarizes an article
+        """
+        args = article_summarize_parser.parse_args()
+        return post_manager.get_summary(args['article_link'])
