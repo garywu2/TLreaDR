@@ -238,3 +238,22 @@ export const downvotePost = async (postUuid, userUuid, voteStatus) => {
 
   return { type: DOWNVOTE, oldVoteStatus: voteStatus, postUuid };
 };
+
+export const autoSummarizePost = async (articleLink) => {
+  const body = {}
+  let axiosReqFunc = axios.get
+  body.article_link = articleLink
+  const response = await axios.get(config.endpoint + "all/summarize", {
+    params: body
+  });
+
+  if (response.status !== 200) {
+    console.log(response);
+    throw "summarize request failed with error code " +
+      response.status +
+      ": " +
+      response.data.message;
+  }
+
+  return response.data;
+}

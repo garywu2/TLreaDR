@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import requests
@@ -188,3 +189,12 @@ def delete_post_vote(post_uuid, args):
     post_to_be_edited.delete_vote(vote_to_be_deleted.vote_type)
     db.session.delete(vote_to_be_deleted)
     db.session.commit()
+
+def get_summary(article_url):
+    api_url = "http://api.smmry.com/&SM_API_KEY=" + os.environ.get('SUMMARY_API_KEY') + "&SM_URL=" + article_url
+
+    try:
+        response = requests.get(api_url)
+        return response.json(), response.status_code
+    except requests.exceptions.ConnectionError as c:
+        return {"message": "summary service is unavailable"}, 503
