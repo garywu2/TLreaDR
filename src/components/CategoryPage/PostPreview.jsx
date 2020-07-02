@@ -45,6 +45,12 @@ const Header = styled.div`
   flex-direction: column;
 `;
 
+const Tag = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+`;
+
 const Img = styled.img`
   object-fit: cover;
   width: 250px;
@@ -65,7 +71,10 @@ export default function PostPreview({ post, handleExpand }) {
       <Img theme={theme} src={post.image_link}></Img>
       <Body>
         <Header>
-          {post.new_flag && <Label>New</Label>}
+            <Tag>
+                {post.new_flag && <Label>New</Label>}
+                {post.hot_flag && <Label>Hot</Label>}
+            </Tag>
           <Link to={`/post/${post.post_uuid}`}>
             <Title>{post.title}</Title>
           </Link>

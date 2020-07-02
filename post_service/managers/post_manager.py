@@ -21,9 +21,9 @@ def get_posts_by_category(category, user_uuid):
         queried_category = Category.query.filter_by(name=category).first()
         post_query = post_query.filter_by(category_uuid=queried_category.category_uuid)
 
-    # Order posts by new, then by votes, then by publish date
+    # Order posts by hot, new, then by votes, then by publish date
     post_query = aliased(Post, post_query.
-                         order_by(desc(Post.new_flag), desc(Post.votes), desc(Post.pub_date)).subquery())
+                         order_by(desc(Post.hot_flag), desc(Post.new_flag), desc(Post.votes), desc(Post.pub_date)).subquery())
 
     # Filter post votes to only those made by the user
     post_vote_query = aliased(Postvote, db.session.query(Postvote).filter_by(user_uuid=user_uuid).subquery())
@@ -150,6 +150,7 @@ def add_post_vote(post_uuid, args):
         db.session.add(new_post_vote)
 
     db.session.commit()
+    update_post_hot_rating(post_voted_on)
 
 
 def edit_post_vote(post_uuid, args):
@@ -177,6 +178,7 @@ def edit_post_vote(post_uuid, args):
         else:
             db.session.add(post_to_be_edited)
         db.session.commit()
+        update_post_hot_rating(post_to_be_edited)
         return {'message': 'vote has been edited successfully.'}, 201
     return {'message': 'vote or post not found.'}, 404
 
@@ -188,6 +190,19 @@ def delete_post_vote(post_uuid, args):
         .filter_by(user_uuid=user_uuid).first()
     post_to_be_edited.delete_vote(vote_to_be_deleted.vote_type)
     db.session.delete(vote_to_be_deleted)
+    db.session.commit()
+    update_post_hot_rating(post_to_be_edited)
+
+def update_post_hot_rating(post_to_be_updated):
+    time_since_posted = datetime.utcnow() - post_to_be_updated.pub_date
+    hours_since_posted = (time_since_posted.days * 24) + (time_since_posted.seconds / 3600)
+    post_to_be_updated.hot_rating = post_to_be_updated.votes / hours_since_posted
+
+    if abs(post_to_be_updated.hot_rating) > 1:
+        post_to_be_updated.hot_flag = True
+    else:
+        post_to_be_updated.hot_flag = False
+
     db.session.commit()
 
 def get_summary(article_url):

@@ -5,7 +5,7 @@ const Label = styled.span`
   border-radius: 3px;
   background-color: ${({ theme }) => (theme ? theme.primaryColor : "#ef3e36")};
   color: ${({ theme }) => (theme ? theme.secondaryTextColor : "#fff")};
-  margin: 5px 0px;
+  margin: 5px 5px;
   align-self: flex-end;
 `
 

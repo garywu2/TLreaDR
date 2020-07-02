@@ -24,10 +24,13 @@ class Post(db.Model):
     author_username = db.Column(db.String(200), nullable=True)
 
     votes = db.Column(db.Integer, nullable=False, default=0)
+    hot_rating = db.Column(db.Float, default=0)
 
     new_flag = column_property(pub_date > (datetime.utcnow() - timedelta(days=3)))
 
     edited_flag = db.Column(db.Boolean, nullable=False, default=False)
+
+    hot_flag = db.Column(db.Boolean, default=False)
 
     def __init__(self, title, body, category_uuid, author_uuid, image_link, article_link):
         self.title = title
