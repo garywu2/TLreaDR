@@ -117,7 +117,7 @@ export default function NestedComment({
           comment={comment}
           handleReplyClick={handleReplyClick}
           handleEditClick={handleEditClick}
-          handleDeleteClick={handleDeleteClick}
+          handleDelete={handleDeleteClick}
           handleEditSubmit={handleEditSubmit}
         ></Comment>
         {showEditForm && renderEditForm()}
