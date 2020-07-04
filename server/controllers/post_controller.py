@@ -174,6 +174,6 @@ class PostSummarize(Resource):
         try:
             args = article_summarize_parser.parse_args()
             response = requests.get('http://post_service:7082/api/all/summarize', params=args)
-            return response.json(), response.status_code
+            return json.loads(response.text), response.status_code
         except Exception as e:
             return {"message": str(e)}, 500

@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime
 
@@ -210,6 +211,6 @@ def get_summary(article_url):
 
     try:
         response = requests.get(api_url)
-        return response.json(), response.status_code
+        return json.loads(response.text), response.status_code
     except requests.exceptions.ConnectionError as c:
         return {"message": "summary service is unavailable"}, 503
