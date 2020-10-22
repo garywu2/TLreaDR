@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/YaleDHLab/flask-react-boilerplate.svg?branch=master)](https://travis-ci.org/YaleDHLab/flask-react-boilerplate)
 
-TLreaDR is a React + Flask application which allows users to summarize news articles into "easy to read" posts with other's through liking, disliking and commenting on content.
+TLreaDR is a React + Flask application which allows users to share and interact with summarized news articles about current affairs.
 
 ## Dependencies
 
